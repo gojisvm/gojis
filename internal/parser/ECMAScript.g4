@@ -3,7 +3,7 @@ grammar ECMAScript;
 // 11: Lexical Grammar
 
 fragment SourceCharacter
-    : '\u0000'..'\u10FFFF'
+    : [\u0000-\u{10FFFF}]
     ;
 
 InputElementDiv
@@ -116,7 +116,7 @@ fragment MultiLineNotAsteriskChar
     ;
 
 fragment MultilineNotForwardSlashOrAsteriskChar
-    : ~[*\/] // SourceCharacter but not one of / or *
+    : ~[*/] // SourceCharacter but not one of / or *
     ;
 
 SingleLineComment
@@ -149,11 +149,7 @@ CommonToken
 //     ;
 
 IdentifierName
-    : IdentifierStart IdentifierR
-    ;
-
-IdentifierR
-    : (IdentifierPart IdentifierR)?
+    : IdentifierStart IdentifierPart?
     ;
 
 fragment IdentifierStart
@@ -1359,25 +1355,25 @@ fragment Hex4Digits
 // 11.8.5: Regular Expression Literals
 
 RegularExpressionLiteral
-    : '/' RegularExpressionBody '/' RegularExpressionFlags
+    : '/' RegularExpressionBody '/' RegularExpressionFlags*
     ;
 
 RegularExpressionBody
-    : RegularExpressionFirstChar RegularExpressionChars
+    : RegularExpressionFirstChar RegularExpressionChars*
     ;
 
 RegularExpressionChars
-    : RegularExpressionChar*
+    : RegularExpressionChar
     ;
 
 RegularExpressionFirstChar
-    : ~[*\\\/[\r\n\u2028\u2029] // RegularExpressionNonTerminator but not one of * or \ or / or [
+    : ~[*/[\r\n\u2028\u2029] // RegularExpressionNonTerminator but not one of * or \ or / or [
     | RegularExpressionBackslashSequence
     | RegularExpressionClass
     ;
 
 RegularExpressionChar
-    : ~[\\\/[\r\n\u2028\u2029] // RegularExpressionNonTerminator but not one of \ or / or [
+    : ~[/[\r\n\u2028\u2029] // RegularExpressionNonTerminator but not one of \ or / or [
     | RegularExpressionBackslashSequence
     | RegularExpressionClass
     ;
@@ -1391,11 +1387,11 @@ RegularExpressionNonTerminator
     ;
 
 RegularExpressionClass
-    : '[' RegularExpressionClassChars ']'
+    : '[' RegularExpressionClassChars* ']'
     ;
 
 RegularExpressionClassChars
-    : RegularExpressionClassChar*
+    : RegularExpressionClassChar
     ;
 
 RegularExpressionClassChar
@@ -1404,7 +1400,7 @@ RegularExpressionClassChar
     ;
 
 RegularExpressionFlags
-    : IdentifierPart*
+    : IdentifierPart
     ;
 
 // 11.8.6: Template Literal Lexical Components
