@@ -3,3 +3,4 @@
 /test/conformance/test262/
 /internal/parser/test262-parser-tests/
 /bin/
+.antlr
