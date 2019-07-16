@@ -2,7 +2,7 @@ grammar ECMAScript;
 
 // 11: Lexical Grammar
 
-SourceCharacter
+fragment SourceCharacter
     : '\u0000'..'\u10FFFF'
     ;
 
@@ -57,7 +57,7 @@ fragment SP   : '\u0009';
 fragment NBSP : '\u0009';
 // TODO: Any other Unicode "Space-Separator" code point <USP>
 
-WhiteSpace
+fragment WhiteSpace
     : TAB
     | VT
     | FF
@@ -101,21 +101,21 @@ MultiLineComment
     : '/*' MultiLineCommentChars? '*/'
     ;
 
-MultiLineCommentChars
+fragment MultiLineCommentChars
     : MultiLineNotAsteriskChar MultiLineCommentChars?
     | '*' PostAsteriskCommentChars?
     ;
 
-PostAsteriskCommentChars
+fragment PostAsteriskCommentChars
     : MultilineNotForwardSlashOrAsteriskChar MultiLineCommentChars?
     | '*' PostAsteriskCommentChars?
     ;
 
-MultiLineNotAsteriskChar
+fragment MultiLineNotAsteriskChar
     : ~[*] // SourceCharacter but not *
     ;
 
-MultilineNotForwardSlashOrAsteriskChar
+fragment MultilineNotForwardSlashOrAsteriskChar
     : ~[*\/] // SourceCharacter but not one of / or *
     ;
 
@@ -123,11 +123,11 @@ SingleLineComment
     : '//' SingleLineCommentChars?
     ;
 
-SingleLineCommentChars
+fragment SingleLineCommentChars
     : SingleLineCommentChar SingleLineCommentChars?
     ;
 
-SingleLineCommentChar
+fragment SingleLineCommentChar
     : ~[\r\n\u2028\u2029]
     ;
 
@@ -143,19 +143,27 @@ CommonToken
 
 // 11.6: Names and Keywords
 
+// IdentifierName
+//     : IdentifierStart
+//     | IdentifierName IdentifierPart
+//     ;
+
 IdentifierName
-    : IdentifierStart
-    | IdentifierName IdentifierPart
+    : IdentifierStart IdentifierR
     ;
 
-IdentifierStart
+IdentifierR
+    : (IdentifierPart IdentifierR)?
+    ;
+
+fragment IdentifierStart
     : UnicodeIDStart
     | '$'
     | '_'
     | '\\' UnicodeEscapeSequence
     ;
 
-IdentifierPart
+fragment IdentifierPart
     : UnicodeIDContinue
     | '$'
     | '\\' UnicodeEscapeSequence
@@ -163,7 +171,7 @@ IdentifierPart
     | ZWJ
     ;
 
-UnicodeIDStart
+fragment UnicodeIDStart
     : [A-Za-z]
     | '\u00AA'
     | '\u00B5'
@@ -578,7 +586,7 @@ UnicodeIDStart
     | '\uFFDA'..'\uFFDC'
     ;
 
-UnicodeIDContinue
+fragment UnicodeIDContinue
     : [0-9A-Z_a-z]
     | '\u00AA'
     | '\u00B5'
@@ -1197,34 +1205,33 @@ DecimalLiteral
     | DecimalIntegerLiteral ExponentPart?
     ;
 
-DecimalIntegerLiteral
+fragment DecimalIntegerLiteral
     : '0'
     | NonZeroDigit DecimalDigits?
     ;
 
-DecimalDigits
-    : DecimalDigit
-    | DecimalDigits DecimalDigit
+fragment DecimalDigits
+    : DecimalDigit+
     ;
 
-DecimalDigit
+fragment DecimalDigit
     : [0-9]
     ;
 
-NonZeroDigit
+fragment NonZeroDigit
     : [1-9]
     ;
 
-ExponentPart
+fragment ExponentPart
     : ExponentIndicator SignedInteger
     ;
 
-ExponentIndicator
+fragment ExponentIndicator
     : 'e'
     | 'E'
     ;
 
-SignedInteger
+fragment SignedInteger
     : DecimalDigits
     | '+' DecimalDigits
     | '-' DecimalDigits
@@ -1235,12 +1242,11 @@ BinaryIntegerLiteral
     | '0B' BinaryDigits
     ;
 
-BinaryDigits
-    : BinaryDigit
-    | BinaryDigits BinaryDigit
+fragment BinaryDigits
+    : BinaryDigit+
     ;
 
-BinaryDigit
+fragment BinaryDigit
     : '0'
     | '1'
     ;
@@ -1250,12 +1256,11 @@ OctalIntegerLiteral
     | '0O' OctalDigits
     ;
 
-OctalDigits
-    : OctalDigit
-    | OctalDigits OctalDigit
+fragment OctalDigits
+    : OctalDigit+
     ;
 
-OctalDigit
+fragment OctalDigit
     : [0-7]
     ;
 
@@ -1264,12 +1269,11 @@ HexIntegerLiteral
     | '0X' HexDigits
     ;
 
-HexDigits
-    : HexDigit
-    | HexDigits HexDigit
+fragment HexDigits
+    : HexDigit+
     ;
 
-HexDigit
+fragment HexDigit
     : [0-9a-zA-Z]
     ;
 
@@ -1280,43 +1284,43 @@ StringLiteral
     | '\'' SingleStringCharacters '\''
     ;
 
-DoubleStringCharacters
+fragment DoubleStringCharacters
     : DoubleStringCharacter DoubleStringCharacters?
     ;
 
-SingleStringCharacters
+fragment SingleStringCharacters
     : SingleStringCharacter SingleStringCharacters?
     ;
 
-DoubleStringCharacter
+fragment DoubleStringCharacter
     : ~["\\\r\n\u2028\u2029]
     | '\\' EscapeSequence
     | LineContinuation
     ;
 
-SingleStringCharacter
+fragment SingleStringCharacter
     : ~['\\\r\n\u2028\u2029]
     | '\\' EscapeSequence
     | LineContinuation
     ;
 
-LineContinuation
+fragment LineContinuation
     : '\\' LineTerminatorSequence
     ;
 
-EscapeSequence
+fragment EscapeSequence
     : CharacterEscapeSequence
     | '0' { _input.LA(1) != DecimalDigit }?
     | HexEscapeSequence
     | UnicodeEscapeSequence
     ;
 
-CharacterEscapeSequence
+fragment CharacterEscapeSequence
     : SingleEscapeCharacter
     | NonEscapeCharacter
     ;
 
-SingleEscapeCharacter
+fragment SingleEscapeCharacter
     : '\''
     | '"'
     | '\\'
@@ -1328,27 +1332,27 @@ SingleEscapeCharacter
     | 'v'
     ;
 
-NonEscapeCharacter
+fragment NonEscapeCharacter
     : ~['"\bfnrtv0-9xu\r\n\u2028\u2029] // SourceCharacter but not one of EscapeCharacter or LineTerminator
     ;
 
-EscapeCharacter
+fragment EscapeCharacter
     : SingleEscapeCharacter
     | DecimalDigit
     | 'x'
     | 'u'
     ;
 
-HexEscapeSequence
+fragment HexEscapeSequence
     : 'x' HexDigit HexDigit
     ;
 
-UnicodeEscapeSequence
+fragment UnicodeEscapeSequence
     : 'u' Hex4Digits
     | 'u{' CodePoint '}'
     ;
 
-Hex4Digits
+fragment Hex4Digits
     : HexDigit HexDigit HexDigit HexDigit
     ;
 
@@ -1363,8 +1367,7 @@ RegularExpressionBody
     ;
 
 RegularExpressionChars
-    : ''
-    | RegularExpressionChars RegularExpressionChar
+    : RegularExpressionChar*
     ;
 
 RegularExpressionFirstChar
@@ -1392,8 +1395,7 @@ RegularExpressionClass
     ;
 
 RegularExpressionClassChars
-    : ''
-    | RegularExpressionClassChars RegularExpressionClassChar
+    : RegularExpressionClassChar*
     ;
 
 RegularExpressionClassChar
@@ -1402,8 +1404,7 @@ RegularExpressionClassChar
     ;
 
 RegularExpressionFlags
-    : ''
-    | RegularExpressionFlags IdentifierPart
+    : IdentifierPart*
     ;
 
 // 11.8.6: Template Literal Lexical Components
