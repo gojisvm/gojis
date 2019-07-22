@@ -6,7 +6,7 @@ fragment SourceCharacter
     : [\u0000-\u{10FFFF}]
     ;
 
-InputElementDiv
+inputElementDiv
     : WhiteSpace
     | LineTerminator
     | Comment
@@ -15,25 +15,25 @@ InputElementDiv
     | RightBracePunctuator
     ;
 
-InputElementRegExp
+inputElementRegExp
     : WhiteSpace
     | LineTerminator
     | Comment
     | CommonToken
     | RightBracePunctuator
-    | RegularExpressionLiteral
+    | regularExpressionLiteral
     ;
 
-InputElementRegExpOrTemplateTail
+inputElementRegExpOrTemplateTail
     : WhiteSpace
     | LineTerminator
     | Comment
     | CommonToken
-    | RegularExpressionLiteral
+    | regularExpressionLiteral
     | TemplateSubstitutionTail
     ;
 
-InputElementTemplateTail
+inputElementTemplateTail
     : WhiteSpace
     | LineTerminator
     | Comment
@@ -1306,7 +1306,7 @@ fragment LineContinuation
 
 fragment EscapeSequence
     : CharacterEscapeSequence
-    | '0' { _input.LA(1) != DecimalDigit }?
+    | '0' { negativeLookahead(DecimalDigit) }?
     | HexEscapeSequence
     | UnicodeEscapeSequence
     ;
@@ -1354,7 +1354,7 @@ fragment Hex4Digits
 
 // 11.8.5: Regular Expression Literals
 
-RegularExpressionLiteral
+regularExpressionLiteral
     : '/' RegularExpressionBody '/' RegularExpressionFlags*
     ;
 
@@ -1436,7 +1436,7 @@ TemplateCharacters
     ;
 
 TemplateCharacter
-    : '$' { _input.LA(1) != '{' }?
+    : '$' { negativeLookahead('{') }?
     | '\\' EscapeSequence
     | '\\' NotEscapeSequence
     | LineContinuation
@@ -1447,15 +1447,15 @@ TemplateCharacter
 NotEscapeSequence
     : '0' DecimalDigit
     | [1-9]
-    | 'x' { _input.LA(1) != HexDigit }?
-    | 'x' HexDigit { _input.LA(1) != HexDigit }?
-    | 'u' { _input.LA(1) != HexDigit && _input.LA(1) != '{' }?
-    | 'u' HexDigit { _input.LA(1) != HexDigit }?
-    | 'u' HexDigit HexDigit { _input.LA(1) != HexDigit }?
-    | 'u' HexDigit HexDigit HexDigit { _input.LA(1) != HexDigit }?
-    | 'u' '{' { _input.LA(1) != HexDigit }?
-    | 'u' '{' NotCodePoint { _input.LA(1) != HexDigit }?
-    | 'u' '{' CodePoint { _input.LA(1) != HexDigit && _input.LA(1) != '{' }?
+    | 'x' { negativeLookahead(HexDigit) }?
+    | 'x' HexDigit { negativeLookahead(HexDigit) }?
+    | 'u' { negativeLookahead(HexDigit && _input.LA(1) != '{') }?
+    | 'u' HexDigit { negativeLookahead(HexDigit) }?
+    | 'u' HexDigit HexDigit { negativeLookahead(HexDigit) }?
+    | 'u' HexDigit HexDigit HexDigit { negativeLookahead(HexDigit) }?
+    | 'u' '{' { negativeLookahead(HexDigit) }?
+    | 'u' '{' NotCodePoint { negativeLookahead(HexDigit) }?
+    | 'u' '{' CodePoint { negativeLookahead(HexDigit && _input.LA(1) != '{') }?
     ;
 
 NotCodePoint
@@ -1464,4 +1464,2380 @@ NotCodePoint
 
 CodePoint
     : HexDigits { codePoint(_input.LT(1).Text()) }?
+    ;
+
+// ********************************************
+// *** 12: ECMAScript Language: Expressions ***
+// ********************************************
+
+// 12.1: Identifiers
+
+identifierReference
+    : Identifier
+    | 'yield'
+    | 'await'
+    ;
+
+identifierReference_Yield
+    : Identifier
+    | 'await'
+    ;
+
+identifierReference_Await
+    : Identifier
+    | 'yield'
+    ;
+
+identifierReference_Yield_Await
+    : Identifier
+    ;
+
+bindingIdentifier
+    : Identifier
+    | 'yield'
+    | 'await'
+    ;
+
+bindingIdentifier_Yield
+    : Identifier
+    | 'yield'
+    | 'await'
+    ;
+
+bindingIdentifier_Await
+    : Identifier
+    | 'yield'
+    | 'await'
+    ;
+
+bindingIdentifier_Yield_Await
+    : Identifier
+    | 'yield'
+    | 'await'
+    ;
+
+labelIdentifier
+    : Identifier
+    | 'yield'
+    | 'await'
+    ;
+
+labelIdentifier_Yield
+    : Identifier
+    | 'await'
+    ;
+
+labelIdentifier_Await
+    : Identifier
+    | 'yield'
+    ;
+
+labelIdentifier_Yield_Await
+    : Identifier
+    ;
+
+
+Identifier
+    : IdentifierName { not(ReservedWord) }?
+    ;
+
+// 12.2: Primary Expression
+
+primaryExpression
+    : 'this'
+    | identifierReference
+    | literal
+    | arrayLiteral
+    | objectLiteral
+    | functionExpression
+    | classExpression
+    | generatorExpression
+    | asyncFunctionExpression
+    | asyncGeneratorExpression
+    | regularExpressionLiteral
+    | templateLiteral
+    | coverParenthesizedExpressionAndArrowParameterList
+    ;
+
+primaryExpression_Yield
+    : 'this'
+    | identifierReference_Yield
+    | literal
+    | arrayLiteral_Yield
+    | objectLiteral_Yield
+    | functionExpression
+    | classExpression_Yield
+    | generatorExpression
+    | asyncFunctionExpression
+    | asyncGeneratorExpression
+    | regularExpressionLiteral
+    | templateLiteral_Yield
+    | coverParenthesizedExpressionAndArrowParameterList_Yield
+    ;
+
+primaryExpression_Await
+    : 'this'
+    | identifierReference_Await
+    | literal
+    | arrayLiteral_Await
+    | objectLiteral_Await
+    | functionExpression
+    | classExpression_Await
+    | generatorExpression
+    | asyncFunctionExpression
+    | asyncGeneratorExpression
+    | regularExpressionLiteral
+    | templateLiteral_Await
+    | coverParenthesizedExpressionAndArrowParameterList_Await
+    ;
+
+primaryExpression_Yield_Await
+    : 'this'
+    | identifierReference_Yield_Await
+    | literal
+    | arrayLiteral_Yield_Await
+    | objectLiteral_Yield_Await
+    | functionExpression
+    | classExpression_Yield_Await
+    | generatorExpression
+    | asyncFunctionExpression
+    | asyncGeneratorExpression
+    | regularExpressionLiteral
+    | templateLiteral_Yield_Await
+    | coverParenthesizedExpressionAndArrowParameterList_Yield_Await
+    ;
+
+coverParenthesizedExpressionAndArrowParameterList
+    : '(' expression_In ')'
+    | '(' expression_In ')'
+    | '(' ')'
+    | '(' '...' bindingIdentifier ')'
+    | '(' '...' bindingIdentifier ')'
+    | '(' expression_In ',' '...' bindingIdentifier ')'
+    | '(' expression_In ',' '...' bindingPattern ')'
+    ;
+
+coverParenthesizedExpressionAndArrowParameterList_Yield
+    : '(' expression_In_Yield ')'
+    | '(' expression_In_Yield ')'
+    | '(' ')'
+    | '(' '...' bindingIdentifier ')'
+    | '(' '...' bindingIdentifier ')'
+    | '(' expression_In_Yield ',' '...' bindingIdentifier_Yield ')'
+    | '(' expression_In_Yield ',' '...' bindingPattern_Yield ')'
+    ;
+
+coverParenthesizedExpressionAndArrowParameterList_Await
+    : '(' expression_In_Await ')'
+    | '(' expression_In_Await ')'
+    | '(' ')'
+    | '(' '...' bindingIdentifier ')'
+    | '(' '...' bindingIdentifier ')'
+    | '(' expression_In_Await ',' '...' bindingIdentifier_Await ')'
+    | '(' expression_In_Await ',' '...' bindingPattern_Await ')'
+    ;
+
+coverParenthesizedExpressionAndArrowParameterList_Yield_Await
+    : '(' expression_In_Yield_Await ')'
+    | '(' expression_In_Yield_Await ')'
+    | '(' ')'
+    | '(' '...' bindingIdentifier ')'
+    | '(' '...' bindingIdentifier ')'
+    | '(' expression_In_Yield_Await ',' '...' bindingIdentifier_Yield_Await ')'
+    | '(' expression_In_Yield_Await ',' '...' bindingPattern_Yield_Await ')'
+    ;
+
+// 12.2.4: Literals
+
+literal
+    : NullLiteral
+    | BooleanLiteral
+    | NumericLiteral
+    | StringLiteral
+    ;
+
+// 12.2.5: Array Initializer
+
+arrayLiteral
+    : '[' elision? ']'
+    | '[' elementList ']'
+    | '[' elementList ',' elision? ']'
+    ;
+
+arrayLiteral_Yield
+    : '[' elision? ']'
+    | '[' elementList_Yield ']'
+    | '[' elementList_Yield ',' elision? ']'
+    ;
+
+arrayLiteral_Await
+    : '[' elision? ']'
+    | '[' elementList_Await ']'
+    | '[' elementList_Await ',' elision? ']'
+    ;
+
+arrayLiteral_Yield_Await
+    : '[' elision? ']'
+    | '[' elementList_Yield_Await ']'
+    | '[' elementList_Yield_Await ',' elision? ']'
+    ;
+
+elementList
+    : elision? assignmentExpression_In
+    | elision? spreadElement
+    | elementList ',' elision? assignmentExpression_In
+    | elementList ',' elision? spreadElement
+    ;
+
+elementList_Yield
+    : elision? assignmentExpression_In_Yield
+    | elision? spreadElement_Yield
+    | elementList_Yield ',' elision? assignmentExpression_In_Yield
+    | elementList_Yield ',' elision? spreadElement_Yield
+    ;
+
+elementList_Await
+    : elision? assignmentExpression_In_Await
+    | elision? spreadElement_Await
+    | elementList_Await ',' elision? assignmentExpression_In_Await
+    | elementList_Await ',' elision? spreadElement_Await
+    ;
+
+elementList_Yield_Await
+    : elision? assignmentExpression_In_Yield_Await
+    | elision? spreadElement_Yield_Await
+    | elementList_Yield_Await ',' elision? assignmentExpression_In_Yield_Await
+    | elementList_Yield_Await ',' elision? spreadElement_Yield_Await
+    ;
+
+elision
+    : elision? ','
+    ;
+
+spreadElement
+    : '...' assignmentExpression_In
+    ;
+
+spreadElement_Yield
+    : '...' assignmentExpression_In_Yield
+    ;
+
+spreadElement_Await
+    : '...' assignmentExpression_In_Await
+    ;
+
+spreadElement_Yield_Await
+    : '...' assignmentExpression_In_Yield_Await
+    ;
+
+// 12.2.6: Object Initializer
+
+objectLiteral
+    : '{' '}'
+    | '{' propertyDefinitionList '}'
+    | '{' propertyDefinitionList ',' '}'
+    ;
+
+objectLiteral_Yield
+    : '{' '}'
+    | '{' propertyDefinitionList_Yield '}'
+    | '{' propertyDefinitionList_Yield ',' '}'
+    ;
+
+objectLiteral_Await
+    : '{' '}'
+    | '{' propertyDefinitionList_Await '}'
+    | '{' propertyDefinitionList_Await ',' '}'
+    ;
+
+objectLiteral_Yield_Await
+    : '{' '}'
+    | '{' propertyDefinitionList_Yield_Await '}'
+    | '{' propertyDefinitionList_Yield_Await ',' '}'
+    ;
+
+propertyDefinitionList
+    : propertyDefinitionList* propertyDefinition
+    ;
+
+propertyDefinitionList_Yield
+    : propertyDefinitionList_Yield* propertyDefinition_Yield
+    ;
+
+propertyDefinitionList_Await
+    : propertyDefinitionList_Await* propertyDefinition_Await
+    ;
+
+propertyDefinitionList_Yield_Await
+    : propertyDefinitionList_Yield_Await* propertyDefinition_Yield_Await
+    ;
+
+propertyDefinition
+    : identifierReference
+    | coverInitializedName
+    | propertyName ':' assignmentExpression_In
+    | methodDefinition
+    | '...' assignmentExpression_In
+    ;
+
+propertyDefinition_Yield
+    : identifierReference_Yield
+    | coverInitializedName_Yield
+    | propertyName_Yield ':' assignmentExpression_In_Yield
+    | methodDefinition_Yield
+    | '...' assignmentExpression_In_Yield
+    ;
+
+propertyDefinition_Await
+    : identifierReference_Await
+    | coverInitializedName_Await
+    | propertyName_Await ':' assignmentExpression_In_Await
+    | methodDefinition_Await
+    | '...' assignmentExpression_In_Await
+    ;
+
+propertyDefinition_Yield_Await
+    : identifierReference_Yield_Await
+    | coverInitializedName_Yield_Await
+    | propertyName_Yield_Await ':' assignmentExpression_In_Yield_Await
+    | methodDefinition_Yield_Await
+    | '...' assignmentExpression_In_Yield_Await
+    ;
+
+propertyName
+    : literalPropertyName
+    | computedPropertyName
+    ;
+
+propertyName_Yield
+    : literalPropertyName
+    | computedPropertyName_Yield
+    ;
+
+propertyName_Await
+    : literalPropertyName
+    | computedPropertyName_Await
+    ;
+
+propertyName_Yield_Await
+    : literalPropertyName
+    | computedPropertyName_Yield_Await
+    ;
+
+literalPropertyName
+    : IdentifierName
+    | StringLiteral
+    | NumericLiteral
+    ;
+
+computedPropertyName
+    : '[' assignmentExpression_In ']'
+    ;
+
+computedPropertyName_Yield
+    : '[' assignmentExpression_In_Yield ']'
+    ;
+
+computedPropertyName_Await
+    : '[' assignmentExpression_In_Await ']'
+    ;
+
+computedPropertyName_Yield_Await
+    : '[' assignmentExpression_In_Yield_Await ']'
+    ;
+
+coverInitializedName
+    : identifierReference initializer_In
+    ;
+
+coverInitializedName_Yield
+    : identifierReference_Yield initializer_In_Yield
+    ;
+
+coverInitializedName_Await
+    : identifierReference_Await initializer_In_Await
+    ;
+
+coverInitializedName_Yield_Await
+    : identifierReference_Yield_Await initializer_In_Yield_Await
+    ;
+
+initializer
+    : '=' assignmentExpression
+    ;
+
+initializer_In
+    : '=' assignmentExpression_In
+    ;
+
+initializer_Yield
+    : '=' assignmentExpression_Yield
+    ;
+
+initializer_In_Yield
+    : '=' assignmentExpression_In_Yield
+    ;
+
+initializer_Await
+    : '=' assignmentExpression_Await
+    ;
+
+initializer_In_Await
+    : '=' assignmentExpression_In_Await
+    ;
+
+initializer_Yield_Await
+    : '=' assignmentExpression_Yield_Await
+    ;
+
+initializer_In_Yield_Await
+    : '=' assignmentExpression_In_Yield_Await
+    ;
+
+// 12.2.9: Template Literals
+
+templateLiteral
+    : NoSubstitutionTemplate
+    | substitutionTemplate
+    ;
+
+templateLiteral_Yield
+    : NoSubstitutionTemplate
+    | substitutionTemplate_Yield
+    ;
+
+templateLiteral_Await
+    : NoSubstitutionTemplate
+    | substitutionTemplate_Await
+    ;
+
+templateLiteral_Yield_Await
+    : NoSubstitutionTemplate
+    | substitutionTemplate_Yield_Await
+    ;
+
+templateLiteral_Tagged
+    : NoSubstitutionTemplate
+    | substitutionTemplate_Tagged
+    ;
+
+templateLiteral_Yield_Tagged
+    : NoSubstitutionTemplate
+    | substitutionTemplate_Yield_Tagged
+    ;
+
+templateLiteral_Await_Tagged
+    : NoSubstitutionTemplate
+    | substitutionTemplate_Await_Tagged
+    ;
+
+templateLiteral_Yield_Await_Tagged
+    : NoSubstitutionTemplate
+    | substitutionTemplate_Yield_Await_Tagged
+    ;
+
+substitutionTemplate
+    : TemplateHead expression_In templateSpans
+    ;
+
+substitutionTemplate_Yield
+    : TemplateHead expression_In_Yield templateSpans_Yield
+    ;
+
+substitutionTemplate_Await
+    : TemplateHead expression_In_Await templateSpans_Await
+    ;
+
+substitutionTemplate_Yield_Await
+    : TemplateHead expression_In_Yield_Await templateSpans_Yield_Await
+    ;
+
+substitutionTemplate_Tagged
+    : TemplateHead expression_In templateSpans_Tagged
+    ;
+
+substitutionTemplate_Yield_Tagged
+    : TemplateHead expression_In_Yield templateSpans_Yield_Tagged
+    ;
+
+substitutionTemplate_Await_Tagged
+    : TemplateHead expression_In_Await templateSpans_Await_Tagged
+    ;
+
+substitutionTemplate_Yield_Await_Tagged
+    : TemplateHead expression_In_Yield_Await templateSpans_Yield_Await_Tagged
+    ;
+
+templateSpans
+    : templateMiddleList* TemplateTail
+    ;
+
+templateSpans_Yield
+    : templateMiddleList_Yield* TemplateTail
+    ;
+
+templateSpans_Await
+    : templateMiddleList_Await* TemplateTail
+    ;
+
+templateSpans_Yield_Await
+    : templateMiddleList_Yield_Await* TemplateTail
+    ;
+
+templateSpans_Tagged
+    : templateMiddleList_Tagged* TemplateTail
+    ;
+
+templateSpans_Yield_Tagged
+    : templateMiddleList_Yield_Tagged* TemplateTail
+    ;
+
+templateSpans_Await_Tagged
+    : templateMiddleList_Await_Tagged* TemplateTail
+    ;
+
+templateSpans_Yield_Await_Tagged
+    : templateMiddleList_Yield_Await_Tagged* TemplateTail
+    ;
+
+templateMiddleList
+    : templateMiddleList* TemplateTail expression_In
+    ;
+
+templateMiddleList_Yield
+    : templateMiddleList_Yield* TemplateTail expression_In_Yield
+    ;
+
+templateMiddleList_Await
+    : templateMiddleList_Await* TemplateTail expression_In_Await
+    ;
+
+templateMiddleList_Yield_Await
+    : templateMiddleList_Yield_Await* TemplateTail expression_In_Yield_Await
+    ;
+
+templateMiddleList_Tagged
+    : templateMiddleList_Tagged* TemplateTail expression_In
+    ;
+
+templateMiddleList_Yield_Tagged
+    : templateMiddleList_Yield_Tagged* TemplateTail expression_In_Yield
+    ;
+
+templateMiddleList_Await_Tagged
+    : templateMiddleList_Await_Tagged* TemplateTail expression_In_Await
+    ;
+
+templateMiddleList_Yield_Await_Tagged
+    : templateMiddleList_Yield_Await_Tagged* TemplateTail expression_In_Yield_Await
+    ;
+
+// 12.3: Left-Hand-Side Expressions
+
+memberExpression
+    : primaryExpression
+    | memberExpression '[' expression_In ']'
+    | memberExpression '.' IdentifierName
+    | memberExpression templateLiteral_Tagged
+    | superProperty
+    | metaProperty
+    | 'new' memberExpression arguments
+    ;
+
+memberExpression_Yield
+    : primaryExpression_Yield
+    | memberExpression_Yield '[' expression_In_Yield ']'
+    | memberExpression_Yield '.' IdentifierName
+    | memberExpression_Yield templateLiteral_Yield_Tagged
+    | superProperty_Yield
+    | metaProperty
+    | 'new' memberExpression_Yield arguments_Yield
+    ;
+
+memberExpression_Await
+    : primaryExpression_Await
+    | memberExpression_Await '[' expression_In_Await ']'
+    | memberExpression_Await '.' IdentifierName
+    | memberExpression_Await templateLiteral_Await_Tagged
+    | superProperty_Await
+    | metaProperty
+    | 'new' memberExpression_Await arguments_Await
+    ;
+
+memberExpression_Yield_Await
+    : primaryExpression_Yield_Await
+    | memberExpression_Yield_Await '[' expression_In_Yield_Await ']'
+    | memberExpression_Yield_Await '.' IdentifierName
+    | memberExpression_Yield_Await templateLiteral_Yield_Await_Tagged
+    | superProperty_Yield_Await
+    | metaProperty
+    | 'new' memberExpression_Yield_Await arguments_Yield_Await
+    ;
+
+superProperty
+    : 'super' '[' expression_In ']'
+    | 'super' '.' IdentifierName
+    ;
+
+superProperty_Yield
+    : 'super' '[' expression_In_Yield ']'
+    | 'super' '.' IdentifierName
+    ;
+
+superProperty_Await
+    : 'super' '[' expression_In_Await ']'
+    | 'super' '.' IdentifierName
+    ;
+
+superProperty_Yield_Await
+    : 'super' '[' expression_In_Yield_Await ']'
+    | 'super' '.' IdentifierName
+    ;
+
+metaProperty
+    : newTarget
+    ;
+
+newTarget
+    : 'new' '.' 'target'
+    ;
+
+newExpression
+    : memberExpression
+    | 'new' newExpression
+    ;
+
+newExpression_Yield
+    : memberExpression_Yield
+    | 'new' newExpression_Yield
+    ;
+
+newExpression_Await
+    : memberExpression_Await
+    | 'new' newExpression_Await
+    ;
+
+newExpression_Yield_Await
+    : memberExpression_Yield_Await
+    | 'new' newExpression_Yield_Await
+    ;
+
+callExpression
+    : coverCallExpressionAndAsyncArrowHead
+    | superCall
+    | callExpression arguments
+    | callExpression '[' expression_In ']'
+    | callExpression '.' IdentifierName
+    | callExpression templateLiteral_Tagged
+    ;
+
+callExpression_Yield
+    : coverCallExpressionAndAsyncArrowHead_Yield
+    | superCall_Yield
+    | callExpression_Yield arguments_Yield
+    | callExpression_Yield '[' expression_In_Yield ']'
+    | callExpression_Yield '.' IdentifierName
+    | callExpression_Yield templateLiteral_Tagged_Yield
+    ;
+
+callExpression_Await
+    : coverCallExpressionAndAsyncArrowHead_Await
+    | superCall_Await
+    | callExpression_Await arguments_Await
+    | callExpression_Await '[' expression_In_Await ']'
+    | callExpression_Await '.' IdentifierName
+    | callExpression_Await templateLiteral_Tagged_Await
+    ;
+
+callExpression_Yield_Await
+    : coverCallExpressionAndAsyncArrowHead_Yield_Await
+    | superCall_Yield_Await
+    | callExpression_Yield_Await arguments_Yield_Await
+    | callExpression_Yield_Await '[' expression_In_Yield_Await ']'
+    | callExpression_Yield_Await '.' IdentifierName
+    | callExpression_Yield_Await templateLiteral_Tagged_Yield_Await
+    ;
+
+superCall
+    : 'super' arguments
+    ;
+
+superCall_Yield
+    : 'super' arguments_Yield
+    ;
+
+superCall_Await
+    : 'super' arguments_Await
+    ;
+
+superCall_Yield_Await
+    : 'super' arguments_Yield_Await
+    ;
+
+arguments
+    : '(' ')'
+    | '(' argumentList? ',' ')'
+    ;
+
+arguments_Yield
+    : '(' ')'
+    | '(' argumentList_Yield? ',' ')'
+    ;
+
+arguments_Await
+    : '(' ')'
+    | '(' argumentList_Await? ',' ')'
+    ;
+
+arguments_Yield_Await
+    : '(' ')'
+    | '(' argumentList_Yield_Await? ',' ')'
+    ;
+
+argumentList
+    : '...'? assignmentExpression_In
+    | argumentList ',' '...'? assignmentExpression_In
+    ;
+
+argumentList_Yield
+    : '...'? assignmentExpression_In_Yield
+    | argumentList_Yield ',' '...'? assignmentExpression_In_Yield
+    ;
+
+argumentList_Await
+    : '...'? assignmentExpression_In_Await
+    | argumentList_Await ',' '...'? assignmentExpression_In_Await
+    ;
+
+argumentList_Yield_Await
+    : '...'? assignmentExpression_In_Yield_Await
+    | argumentList_Yield_Await ',' '...'? assignmentExpression_In_Yield_Await
+    ;
+
+leftHandSideExpression
+    : newExpression
+    | callExpression
+    ;
+
+leftHandSideExpression_Yield
+    : newExpression_Yield
+    | callExpression_Yield
+    ;
+
+leftHandSideExpression_Await
+    : newExpression_Await
+    | callExpression_Await
+    ;
+
+leftHandSideExpression_Yield_Await
+    : newExpression_Yield_Await
+    | callExpression_Yield_Await
+    ;
+
+// 12.4: Update Expressions
+
+updateExpression
+    : leftHandSideExpression
+    | leftHandSideExpression '++'
+    | leftHandSideExpression '--'
+    | '++' unaryExpression
+    | '--' unaryExpression
+    ;
+
+updateExpression_Yield
+    : leftHandSideExpression_Yield
+    | leftHandSideExpression_Yield '++'
+    | leftHandSideExpression_Yield '--'
+    | '++' unaryExpression_Yield
+    | '--' unaryExpression_Yield
+    ;
+
+updateExpression_Await
+    : leftHandSideExpression_Await
+    | leftHandSideExpression_Await '++'
+    | leftHandSideExpression_Await '--'
+    | '++' unaryExpression_Await
+    | '--' unaryExpression_Await
+    ;
+
+updateExpression_Yield_Await
+    : leftHandSideExpression_Yield_Await
+    | leftHandSideExpression_Yield_Await '++'
+    | leftHandSideExpression_Yield_Await '--'
+    | '++' unaryExpression_Yield_Await
+    | '--' unaryExpression_Yield_Await
+    ;
+
+// 12.5: Unary Operators
+
+unaryExpression
+    : updateExpression
+    | 'delete' unaryExpression
+    | 'void' unaryExpression
+    | 'typeof' unaryExpression
+    | '+' unaryExpression
+    | '-' unaryExpression
+    | '~' unaryExpression
+    | '!' unaryExpression
+    ;
+
+unaryExpression_Yield
+    : updateExpression_Yield
+    | 'delete' unaryExpression_Yield
+    | 'void' unaryExpression_Yield
+    | 'typeof' unaryExpression_Yield
+    | '+' unaryExpression_Yield
+    | '-' unaryExpression_Yield
+    | '~' unaryExpression_Yield
+    | '!' unaryExpression_Yield
+    ;
+
+unaryExpression_Await
+    : updateExpression_Await
+    | 'delete' unaryExpression_Await
+    | 'void' unaryExpression_Await
+    | 'typeof' unaryExpression_Await
+    | '+' unaryExpression_Await
+    | '-' unaryExpression_Await
+    | '~' unaryExpression_Await
+    | '!' unaryExpression_Await
+    | awaitExpression
+    ;
+
+unaryExpression_Yield_Await
+    : updateExpression_Yield_Await
+    | 'delete' unaryExpression_Yield_Await
+    | 'void' unaryExpression_Yield_Await
+    | 'typeof' unaryExpression_Yield_Await
+    | '+' unaryExpression_Yield_Await
+    | '-' unaryExpression_Yield_Await
+    | '~' unaryExpression_Yield_Await
+    | '!' unaryExpression_Yield_Await
+    | awaitExpression_Yield
+    ;
+
+// 12.6: Exponentiation Operator
+
+exponentationExpression
+    : unaryExpression
+    | updateExpression '**' exponentationExpression
+    ;
+
+exponentationExpression_Yield
+    : unaryExpression_Yield
+    | updateExpression_Yield '**' exponentationExpression_Yield
+    ;
+
+exponentationExpression_Await
+    : unaryExpression_Await
+    | updateExpression_Await '**' exponentationExpression_Await
+    ;
+
+exponentationExpression_Yield_Await
+    : unaryExpression_Yield_Await
+    | updateExpression_Yield_Await '**' exponentationExpression_Yield_Await
+    ;
+
+// 12.7: Multiplicative Operators
+
+multiplicativeExpression
+    : exponentationExpression
+    | multiplicativeExpression multiplicativeOperator exponentationExpression
+    ;
+
+multiplicativeExpression_Yield
+    : exponentationExpression_Yield
+    | multiplicativeExpression_Yield multiplicativeOperator exponentationExpression_Yield
+    ;
+
+multiplicativeExpression_Await
+    : exponentationExpression_Await
+    | multiplicativeExpression_Await multiplicativeOperator exponentationExpression_Await
+    ;
+
+multiplicativeExpression_Yield_Await
+    : exponentationExpression_Yield_Await
+    | multiplicativeExpression_Yield_Await multiplicativeOperator exponentationExpression_Yield_Await
+    ;
+
+MultiplicativeOperator
+    : [*/%]
+    ;
+
+// 12.8: Additive Operators
+
+additiveExpression
+    : multiplicativeExpression
+    | additiveExpression [+-] multiplicativeExpression
+    ;
+
+additiveExpression_Yield
+    : multiplicativeExpression_Yield
+    | additiveExpression_Yield [+-] multiplicativeExpression_Yield
+    ;
+
+additiveExpression_Await
+    : multiplicativeExpression_Await
+    | additiveExpression_Await [+-] multiplicativeExpression_Await
+    ;
+
+additiveExpression_Yield_Await
+    : multiplicativeExpression_Yield_Await
+    | additiveExpression_Yield_Await [+-] multiplicativeExpression_Yield_Await
+    ;
+
+// 12.9: Bitwise Shift Operators
+
+shiftExpression
+    : additiveExpression
+    | shiftExpression '<<' additiveExpression
+    | shiftExpression '>>' additiveExpression
+    | shiftExpression '>>>' additiveExpression
+    ;
+
+shiftExpression_Yield
+    : additiveExpression_Yield
+    | shiftExpression_Yield '<<' additiveExpression_Yield
+    | shiftExpression_Yield '>>' additiveExpression_Yield
+    | shiftExpression_Yield '>>>' additiveExpression_Yield
+    ;
+
+shiftExpression_Await
+    : additiveExpression_Await
+    | shiftExpression_Await '<<' additiveExpression_Await
+    | shiftExpression_Await '>>' additiveExpression_Await
+    | shiftExpression_Await '>>>' additiveExpression_Await
+    ;
+
+shiftExpression_Yield_Await
+    : additiveExpression_Yield_Await
+    | shiftExpression_Yield_Await '<<' additiveExpression_Yield_Await
+    | shiftExpression_Yield_Await '>>' additiveExpression_Yield_Await
+    | shiftExpression_Yield_Await '>>>' additiveExpression_Yield_Await
+    ;
+
+// 12.10: Relational Operators
+
+relationalExpression
+    : shiftExpression
+    | relationalExpression '<' shiftExpression
+    | relationalExpression '>' shiftExpression
+    | relationalExpression '<=' shiftExpression
+    | relationalExpression '>=' shiftExpression
+    | relationalExpression 'instanceof' shiftExpression
+    ;
+
+relationalExpression_In
+    : shiftExpression
+    | relationalExpression_In '<' shiftExpression
+    | relationalExpression_In '>' shiftExpression
+    | relationalExpression_In '<=' shiftExpression
+    | relationalExpression_In '>=' shiftExpression
+    | relationalExpression_In 'instanceof' shiftExpression
+    | relationalExpression 'in' shiftExpression
+    ;
+
+relationalExpression_Yield
+    : shiftExpression
+    | relationalExpression_Yield '<' shiftExpression
+    | relationalExpression_Yield '>' shiftExpression
+    | relationalExpression_Yield '<=' shiftExpression
+    | relationalExpression_Yield '>=' shiftExpression
+    | relationalExpression_Yield 'instanceof' shiftExpression
+    ;
+
+relationalExpression_In_Yield
+    : shiftExpression
+    | relationalExpression_In_Yield '<' shiftExpression
+    | relationalExpression_In_Yield '>' shiftExpression
+    | relationalExpression_In_Yield '<=' shiftExpression
+    | relationalExpression_In_Yield '>=' shiftExpression
+    | relationalExpression_In_Yield 'instanceof' shiftExpression
+    | relationalExpression_Yield 'in' shiftExpression_Yield
+    ;
+
+relationalExpression_Await
+    : shiftExpression
+    | relationalExpression_Await '<' shiftExpression
+    | relationalExpression_Await '>' shiftExpression
+    | relationalExpression_Await '<=' shiftExpression
+    | relationalExpression_Await '>=' shiftExpression
+    | relationalExpression_Await 'instanceof' shiftExpression
+    ;
+
+relationalExpression_In_Await
+    : shiftExpression
+    | relationalExpression_In_Await '<' shiftExpression
+    | relationalExpression_In_Await '>' shiftExpression
+    | relationalExpression_In_Await '<=' shiftExpression
+    | relationalExpression_In_Await '>=' shiftExpression
+    | relationalExpression_In_Await 'instanceof' shiftExpression
+    | relationalExpression_Await 'in' shiftExpression_Await
+    ;
+
+relationalExpression_Yield_Await
+    : shiftExpression
+    | relationalExpression_Yield_Await '<' shiftExpression
+    | relationalExpression_Yield_Await '>' shiftExpression
+    | relationalExpression_Yield_Await '<=' shiftExpression
+    | relationalExpression_Yield_Await '>=' shiftExpression
+    | relationalExpression_Yield_Await 'instanceof' shiftExpression
+    ;
+
+relationalExpression_In_Yield_Await
+    : shiftExpression
+    | relationalExpression_In_Yield_Await '<' shiftExpression
+    | relationalExpression_In_Yield_Await '>' shiftExpression
+    | relationalExpression_In_Yield_Await '<=' shiftExpression
+    | relationalExpression_In_Yield_Await '>=' shiftExpression
+    | relationalExpression_In_Yield_Await 'instanceof' shiftExpression
+    | relationalExpression_Yield_Await 'in' shiftExpression_Yield_Await
+    ;
+
+// 12.11: Equality Operators
+
+equalityExpression
+    : relationalExpression
+    | equalityExpression '==' relationalExpression
+    | equalityExpression '!=' relationalExpression
+    | equalityExpression '===' relationalExpression
+    | equalityExpression '!==' relationalExpression
+    ;
+
+equalityExpression_In
+    : relationalExpression_In
+    | equalityExpression_In '==' relationalExpression_In
+    | equalityExpression_In '!=' relationalExpression_In
+    | equalityExpression_In '===' relationalExpression_In
+    | equalityExpression_In '!==' relationalExpression_In
+    ;
+
+equalityExpression_Yield
+    : relationalExpression_Yield
+    | equalityExpression_Yield '==' relationalExpression_Yield
+    | equalityExpression_Yield '!=' relationalExpression_Yield
+    | equalityExpression_Yield '===' relationalExpression_Yield
+    | equalityExpression_Yield '!==' relationalExpression_Yield
+    ;
+
+equalityExpression_In_Yield
+    : relationalExpression_In_Yield
+    | equalityExpression_In_Yield '==' relationalExpression_In_Yield
+    | equalityExpression_In_Yield '!=' relationalExpression_In_Yield
+    | equalityExpression_In_Yield '===' relationalExpression_In_Yield
+    | equalityExpression_In_Yield '!==' relationalExpression_In_Yield
+    ;
+
+equalityExpression_Await
+    : relationalExpression_Await
+    | equalityExpression_Await '==' relationalExpression_Await
+    | equalityExpression_Await '!=' relationalExpression_Await
+    | equalityExpression_Await '===' relationalExpression_Await
+    | equalityExpression_Await '!==' relationalExpression_Await
+    ;
+
+equalityExpression_In_Await
+    : relationalExpression_In_Await
+    | equalityExpression_In_Await '==' relationalExpression_In_Await
+    | equalityExpression_In_Await '!=' relationalExpression_In_Await
+    | equalityExpression_In_Await '===' relationalExpression_In_Await
+    | equalityExpression_In_Await '!==' relationalExpression_In_Await
+    ;
+
+equalityExpression_Yield_Await
+    : relationalExpression_Yield_Await
+    | equalityExpression_Yield_Await '==' relationalExpression_Yield_Await
+    | equalityExpression_Yield_Await '!=' relationalExpression_Yield_Await
+    | equalityExpression_Yield_Await '===' relationalExpression_Yield_Await
+    | equalityExpression_Yield_Await '!==' relationalExpression_Yield_Await
+    ;
+
+equalityExpression_In_Yield_Await
+    : relationalExpression_In_Yield_Await
+    | equalityExpression_In_Yield_Await '==' relationalExpression_In_Yield_Await
+    | equalityExpression_In_Yield_Await '!=' relationalExpression_In_Yield_Await
+    | equalityExpression_In_Yield_Await '===' relationalExpression_In_Yield_Await
+    | equalityExpression_In_Yield_Await '!==' relationalExpression_In_Yield_Await
+    ;
+
+// 12.12: Binary Bitwise Operators
+
+bitwiseANDExpression
+    : equalityExpression
+    | bitwiseANDExpression '&' equalityExpression
+    ;
+bitwiseANDExpression_In
+    : equalityExpression_In
+    | bitwiseANDExpression_In '&' equalityExpression_In
+    ;
+bitwiseANDExpression_Yield
+    : equalityExpression_Yield
+    | bitwiseANDExpression_Yield '&' equalityExpression_Yield
+    ;
+bitwiseANDExpression_In_Yield
+    : equalityExpression_In_Yield
+    | bitwiseANDExpression_In_Yield '&' equalityExpression_In_Yield
+    ;
+bitwiseANDExpression_Await
+    : equalityExpression_Await
+    | bitwiseANDExpression_Await '&' equalityExpression_Await
+    ;
+bitwiseANDExpression_In_Await
+    : equalityExpression_In_Await
+    | bitwiseANDExpression_In_Await '&' equalityExpression_In_Await
+    ;
+bitwiseANDExpression_Yield_Await
+    : equalityExpression_Yield_Await
+    | bitwiseANDExpression_Yield_Await '&' equalityExpression_Yield_Await
+    ;
+bitwiseANDExpression_In_Yield_Await
+    : equalityExpression_In_Yield_Await
+    | bitwiseANDExpression_In_Yield_Await '&' equalityExpression_In_Yield_Await
+    ;
+
+bitwiseXORExpression
+    : equalityExpression
+    | bitwiseXORExpression '^' equalityExpression
+    ;
+bitwiseXORExpression_In
+    : equalityExpression_In
+    | bitwiseXORExpression_In '^' equalityExpression_In
+    ;
+bitwiseXORExpression_Yield
+    : equalityExpression_Yield
+    | bitwiseXORExpression_Yield '^' equalityExpression_Yield
+    ;
+bitwiseXORExpression_In_Yield
+    : equalityExpression_In_Yield
+    | bitwiseXORExpression_In_Yield '^' equalityExpression_In_Yield
+    ;
+bitwiseXORExpression_Await
+    : equalityExpression_Await
+    | bitwiseXORExpression_Await '^' equalityExpression_Await
+    ;
+bitwiseXORExpression_In_Await
+    : equalityExpression_In_Await
+    | bitwiseXORExpression_In_Await '^' equalityExpression_In_Await
+    ;
+bitwiseXORExpression_Yield_Await
+    : equalityExpression_Yield_Await
+    | bitwiseXORExpression_Yield_Await '^' equalityExpression_Yield_Await
+    ;
+bitwiseXORExpression_In_Yield_Await
+    : equalityExpression_In_Yield_Await
+    | bitwiseXORExpression_In_Yield_Await '^' equalityExpression_In_Yield_Await
+    ;
+
+bitwiseORExpression
+    : equalityExpression
+    | bitwiseORExpression '|' equalityExpression
+    ;
+bitwiseORExpression_In
+    : equalityExpression_In
+    | bitwiseORExpression_In '|' equalityExpression_In
+    ;
+bitwiseORExpression_Yield
+    : equalityExpression_Yield
+    | bitwiseORExpression_Yield '|' equalityExpression_Yield
+    ;
+bitwiseORExpression_In_Yield
+    : equalityExpression_In_Yield
+    | bitwiseORExpression_In_Yield '|' equalityExpression_In_Yield
+    ;
+bitwiseORExpression_Await
+    : equalityExpression_Await
+    | bitwiseORExpression_Await '|' equalityExpression_Await
+    ;
+bitwiseORExpression_In_Await
+    : equalityExpression_In_Await
+    | bitwiseORExpression_In_Await '|' equalityExpression_In_Await
+    ;
+bitwiseORExpression_Yield_Await
+    : equalityExpression_Yield_Await
+    | bitwiseORExpression_Yield_Await '|' equalityExpression_Yield_Await
+    ;
+bitwiseORExpression_In_Yield_Await
+    : equalityExpression_In_Yield_Await
+    | bitwiseORExpression_In_Yield_Await '|' equalityExpression_In_Yield_Await
+    ;
+
+// 12.13: Binary Logical Operators
+
+logicalANDExpression
+    : bitwiseORExpression
+    | logicalANDExpression '&&' bitwiseORExpression
+    ;
+
+logicalANDExpression_In
+    : bitwiseORExpression_In
+    | logicalANDExpression_In '&&' bitwiseORExpression_In
+    ;
+
+logicalANDExpression_Yield
+    : bitwiseORExpression_Yield
+    | logicalANDExpression_Yield '&&' bitwiseORExpression_Yield
+    ;
+
+logicalANDExpression_In_Yield
+    : bitwiseORExpression_In_Yield
+    | logicalANDExpression_In_Yield '&&' bitwiseORExpression_In_Yield
+    ;
+
+logicalANDExpression_Await
+    : bitwiseORExpression_Await
+    | logicalANDExpression_Await '&&' bitwiseORExpression_Await
+    ;
+
+logicalANDExpression_In_Await
+    : bitwiseORExpression_In_Await
+    | logicalANDExpression_In_Await '&&' bitwiseORExpression_In_Await
+    ;
+
+logicalANDExpression_Yield_Await
+    : bitwiseORExpression_Yield_Await
+    | logicalANDExpression_Yield_Await '&&' bitwiseORExpression_Yield_Await
+    ;
+
+logicalANDExpression_In_Yield_Await
+    : bitwiseORExpression_In_Yield_Await
+    | logicalANDExpression_In_Yield_Await '&&' bitwiseORExpression_In_Yield_Await
+    ;
+
+logicalORExpression
+    : bitwiseORExpression
+    | logicalORExpression '||' bitwiseORExpression
+    ;
+
+logicalORExpression_In
+    : bitwiseORExpression_In
+    | logicalORExpression_In '||' bitwiseORExpression_In
+    ;
+
+logicalORExpression_Yield
+    : bitwiseORExpression_Yield
+    | logicalORExpression_Yield '||' bitwiseORExpression_Yield
+    ;
+
+logicalORExpression_In_Yield
+    : bitwiseORExpression_In_Yield
+    | logicalORExpression_In_Yield '||' bitwiseORExpression_In_Yield
+    ;
+
+logicalORExpression_Await
+    : bitwiseORExpression_Await
+    | logicalORExpression_Await '||' bitwiseORExpression_Await
+    ;
+
+logicalORExpression_In_Await
+    : bitwiseORExpression_In_Await
+    | logicalORExpression_In_Await '||' bitwiseORExpression_In_Await
+    ;
+
+logicalORExpression_Yield_Await
+    : bitwiseORExpression_Yield_Await
+    | logicalORExpression_Yield_Await '||' bitwiseORExpression_Yield_Await
+    ;
+
+logicalORExpression_In_Yield_Await
+    : bitwiseORExpression_In_Yield_Await
+    | logicalORExpression_In_Yield_Await '||' bitwiseORExpression_In_Yield_Await
+    ;
+
+// 12.14: Conditional Operator ( ? : )
+
+conditionalExpression
+    : logicalORExpression
+    | logicalORExpression '?' assignmentExpression_In ':' assignmentExpression
+    ;
+
+conditionalExpression_In
+    : logicalORExpression_In
+    | logicalORExpression_In '?' assignmentExpression_In ':' assignmentExpression_In
+    ;
+
+conditionalExpression_Yield
+    : logicalORExpression_Yield
+    | logicalORExpression_Yield '?' assignmentExpression_In_Yield ':' assignmentExpression_Yield
+    ;
+
+conditionalExpression_In_Yield
+    : logicalORExpression_In_Yield
+    | logicalORExpression_In_Yield '?' assignmentExpression_In_Yield ':' assignmentExpression_In_Yield
+    ;
+
+conditionalExpression_Await
+    : logicalORExpression_Await
+    | logicalORExpression_Await '?' assignmentExpression_In_Await ':' assignmentExpression_Await
+    ;
+
+conditionalExpression_In_Await
+    : logicalORExpression_In_Await
+    | logicalORExpression_In_Await '?' assignmentExpression_In_Await ':' assignmentExpression_In_Await
+    ;
+
+conditionalExpression_Yield_Await
+    : logicalORExpression_Yield_Await
+    | logicalORExpression_Yield_Await '?' assignmentExpression_In_Yield_Await ':' assignmentExpression_Yield_Await
+    ;
+
+conditionalExpression_In_Yield_Await
+    : logicalORExpression_In_Yield_Await
+    | logicalORExpression_In_Yield_Await '?' assignmentExpression_In_Yield_Await ':' assignmentExpression_In_Yield_Await
+    ;
+
+// 12.15: Assignment Operators
+
+assignmentOperator
+    : '*='
+    | '/='
+    | '%='
+    | '+='
+    | '-='
+    | '<<='
+    | '>>='
+    | '>>>='
+    | '&='
+    | '^='
+    | '|='
+    | '**='
+    ;
+
+assignmentExpression
+    : conditionalExpression
+    | arrowFunction
+    | asyncArrowFunction
+    | leftHandSideExpression '=' assignmentExpression
+    | leftHandSideExpression assignmentOperator assignmentExpression
+    ;
+
+assignmentExpression_In
+    : conditionalExpression_In
+    | arrowFunction_In
+    | asyncArrowFunction_In
+    | leftHandSideExpression '=' assignmentExpression_In
+    | leftHandSideExpression assignmentOperator assignmentExpression_In
+    ;
+
+assignmentExpression_Yield
+    : conditionalExpression_Yield
+    | yieldExpression
+    | arrowFunction_Yield
+    | asyncArrowFunction_Yield
+    | leftHandSideExpression '=' assignmentExpression_Yield
+    | leftHandSideExpression assignmentOperator assignmentExpression_Yield
+    ;
+
+assignmentExpression_In_Yield
+    : conditionalExpression_In_Yield
+    | yieldExpression_In
+    | arrowFunction_In_Yield
+    | asyncArrowFunction_In_Yield
+    | leftHandSideExpression '=' assignmentExpression_In_Yield
+    | leftHandSideExpression assignmentOperator assignmentExpression_In_Yield
+    ;
+
+assignmentExpression_Await
+    : conditionalExpression_Await
+    | arrowFunction_Await
+    | asyncArrowFunction_Await
+    | leftHandSideExpression '=' assignmentExpression_Await
+    | leftHandSideExpression assignmentOperator assignmentExpression_Await
+    ;
+
+assignmentExpression_In_Await
+    : conditionalExpression_In_Await
+    | arrowFunction_In_Await
+    | asyncArrowFunction_In_Await
+    | leftHandSideExpression '=' assignmentExpression_In_Await
+    | leftHandSideExpression assignmentOperator assignmentExpression_In_Await
+    ;
+
+assignmentExpression_Yield_Await
+    : conditionalExpression_Yield_Await
+    | yieldExpression_Await
+    | arrowFunction_Yield_Await
+    | asyncArrowFunction_Yield_Await
+    | leftHandSideExpression '=' assignmentExpression_Yield_Await
+    | leftHandSideExpression assignmentOperator assignmentExpression_Yield_Await
+    ;
+
+assignmentExpression_In_Yield_Await
+    : conditionalExpression_In_Yield_Await
+    | yieldExpression_In_Await
+    | arrowFunction_In_Yield_Await
+    | asyncArrowFunction_In_Yield_Await
+    | leftHandSideExpression '=' assignmentExpression_In_Yield_Await
+    | leftHandSideExpression assignmentOperator assignmentExpression_In_Yield_Await
+    ;
+
+// 12.16: Comma Operator ( , )
+
+expression
+    : assignmentExpression
+    | expression ',' assignmentExpression
+    ;
+
+expression_In
+    : assignmentExpression_In
+    | expression_In ',' assignmentExpression_In
+    ;
+
+expression_Yield
+    : assignmentExpression_Yield
+    | expression_Yield ',' assignmentExpression_Yield
+    ;
+
+expression_In_Yield
+    : assignmentExpression_In_Yield
+    | expression_In_Yield ',' assignmentExpression_In_Yield
+    ;
+
+expression_Await
+    : assignmentExpression_Await
+    | expression_Await ',' assignmentExpression_Await
+    ;
+
+expression_In_Await
+    : assignmentExpression_In_Await
+    | expression_In_Await ',' assignmentExpression_In_Await
+    ;
+
+expression_Yield_Await
+    : assignmentExpression_Yield_Await
+    | expression_Yield_Await ',' assignmentExpression_Yield_Await
+    ;
+
+expression_In_Yield_Await
+    : assignmentExpression_In_Yield_Await
+    | expression_In_Yield_Await ',' assignmentExpression_In_Yield_Await
+    ;
+
+// ************************************************************
+// *** 13: ECMAScript Language: Statements and Declarations ***
+// ************************************************************
+
+statement
+    : blockStatement
+    | variableStatement
+    | emptyStatement
+    | expressionStatement
+    | ifStatement
+    | breakableStatement
+    | continueStatement
+    | breakStatement
+    // | returnStatement
+    | withStatement
+    | labelledStatement
+    | throwStatement
+    | tryStatement
+    | debuggerStatement
+    ;
+
+statement_Yield
+    : blockStatement_Yield
+    | variableStatement_Yield
+    | emptyStatement
+    | expressionStatement_Yield
+    | ifStatement_Yield
+    | breakableStatement_Yield
+    | continueStatement_Yield
+    | breakStatement_Yield
+    // | returnStatement_Yield
+    | withStatement_Yield
+    | labelledStatement_Yield
+    | throwStatement_Yield
+    | tryStatement_Yield
+    | debuggerStatement
+    ;
+
+statement_Await
+    : blockStatement_Await
+    | variableStatement_Await
+    | emptyStatement
+    | expressionStatement_Await
+    | ifStatement_Await
+    | breakableStatement_Await
+    | continueStatement_Await
+    | breakStatement_Await
+    // | returnStatement_Await
+    | withStatement_Await
+    | labelledStatement_Await
+    | throwStatement_Await
+    | tryStatement_Await
+    | debuggerStatement
+    ;
+
+statement_Yield_Await
+    : blockStatement_Yield_Await
+    | variableStatement_Yield_Await
+    | emptyStatement
+    | expressionStatement_Yield_Await
+    | ifStatement_Yield_Await
+    | breakableStatement_Yield_Await
+    | continueStatement_Yield_Await
+    | breakStatement_Yield_Await
+    // | returnStatement_Yield_Await
+    | withStatement_Yield_Await
+    | labelledStatement_Yield_Await
+    | throwStatement_Yield_Await
+    | tryStatement_Yield_Await
+    | debuggerStatement
+    ;
+
+statement_Return
+    : blockStatement_Return
+    | variableStatement
+    | emptyStatement
+    | expressionStatement
+    | ifStatement_Return
+    | breakableStatement_Return
+    | continueStatement
+    | breakStatement
+    | returnStatement
+    | withStatement_Return
+    | labelledStatement_Return
+    | throwStatement
+    | tryStatement_Return
+    | debuggerStatement
+    ;
+
+statement_Yield_Return
+    : blockStatement_Yield_Return
+    | variableStatement_Yield
+    | emptyStatement
+    | expressionStatement_Yield
+    | ifStatement_Yield_Return
+    | breakableStatement_Yield_Return
+    | continueStatement_Yield
+    | breakStatement_Yield
+    | returnStatement_Yield
+    | withStatement_Yield_Return
+    | labelledStatement_Yield_Return
+    | throwStatement_Yield
+    | tryStatement_Yield_Return
+    | debuggerStatement
+    ;
+
+statement_Await_Return
+    : blockStatement_Await_Return
+    | variableStatement_Await
+    | emptyStatement
+    | expressionStatement_Await
+    | ifStatement_Await_Return
+    | breakableStatement_Await_Return
+    | continueStatement_Await
+    | breakStatement_Await
+    | returnStatement_Await
+    | withStatement_Await_Return
+    | labelledStatement_Await_Return
+    | throwStatement_Await
+    | tryStatement_Await_Return
+    | debuggerStatement
+    ;
+
+statement_Yield_Await_Return
+    : blockStatement_Yield_Await_Return
+    | variableStatement_Yield_Await
+    | emptyStatement
+    | expressionStatement_Yield_Await
+    | ifStatement_Yield_Await_Return
+    | breakableStatement_Yield_Await_Return
+    | continueStatement_Yield_Await
+    | breakStatement_Yield_Await
+    | returnStatement_Yield_Await
+    | withStatement_Yield_Await_Return
+    | labelledStatement_Yield_Await_Return
+    | throwStatement_Yield_Await
+    | tryStatement_Yield_Await_Return
+    | debuggerStatement
+    ;
+
+declaration
+    : hoistableDeclaration
+    | classDeclaration
+    | lexicalDeclaration_In
+    ;
+
+declaration_Yield
+    : hoistableDeclaration_Yield
+    | classDeclaration_Yield
+    | lexicalDeclaration_In_Yield
+    ;
+
+declaration_Await
+    : hoistableDeclaration_Await
+    | classDeclaration_Await
+    | lexicalDeclaration_In_Await
+    ;
+
+declaration_Yield_Await
+    : hoistableDeclaration_Yield_Await
+    | classDeclaration_Yield_Await
+    | lexicalDeclaration_In_Yield_Await
+    ;
+
+hoistableDeclaration
+    : functionDeclaration
+    | generatorDeclaration
+    | asyncFunctionDeclaration
+    | asyncGeneratorDeclaration
+    ;
+
+hoistableDeclaration_Yield
+    : functionDeclaration_Yield
+    | generatorDeclaration_Yield
+    | asyncFunctionDeclaration_Yield
+    | asyncGeneratorDeclaration_Yield
+    ;
+
+hoistableDeclaration_Await
+    : functionDeclaration_Await
+    | generatorDeclaration_Await
+    | asyncFunctionDeclaration_Await
+    | asyncGeneratorDeclaration_Await
+    ;
+
+hoistableDeclaration_Yield_Await
+    : functionDeclaration_Yield_Await
+    | generatorDeclaration_Yield_Await
+    | asyncFunctionDeclaration_Yield_Await
+    | asyncGeneratorDeclaration_Yield_Await
+    ;
+
+hoistableDeclaration_Default
+    : functionDeclaration_Default
+    | generatorDeclaration_Default
+    | asyncFunctionDeclaration_Default
+    | asyncGeneratorDeclaration_Default
+    ;
+
+hoistableDeclaration_Yield_Default
+    : functionDeclaration_Yield_Default
+    | generatorDeclaration_Yield_Default
+    | asyncFunctionDeclaration_Yield_Default
+    | asyncGeneratorDeclaration_Yield_Default
+    ;
+
+hoistableDeclaration_Await_Default
+    : functionDeclaration_Await_Default
+    | generatorDeclaration_Await_Default
+    | asyncFunctionDeclaration_Await_Default
+    | asyncGeneratorDeclaration_Await_Default
+    ;
+
+hoistableDeclaration_Yield_Await_Default
+    : functionDeclaration_Yield_Await_Default
+    | generatorDeclaration_Yield_Await_Default
+    | asyncFunctionDeclaration_Yield_Await_Default
+    | asyncGeneratorDeclaration_Yield_Await_Default
+    ;
+
+breakableStatement
+    : iterationStatement
+    | switchStatement
+    ;
+
+breakableStatement_Yield
+    : iterationStatement_Yield
+    | switchStatement_Yield
+    ;
+
+breakableStatement_Await
+    : iterationStatement_Await
+    | switchStatement_Await
+    ;
+
+breakableStatement_Yield_Await
+    : iterationStatement_Yield_Await
+    | switchStatement_Yield_Await
+    ;
+
+breakableStatement_Return
+    : iterationStatement_Return
+    | switchStatement_Return
+    ;
+
+breakableStatement_Yield_Return
+    : iterationStatement_Yield_Return
+    | switchStatement_Yield_Return
+    ;
+
+breakableStatement_Await_Return
+    : iterationStatement_Await_Return
+    | switchStatement_Await_Return
+    ;
+
+breakableStatement_Yield_Await_Return
+    : iterationStatement_Yield_Await_Return
+    | switchStatement_Yield_Await_Return
+    ;
+
+// 13.2: Block
+
+blockStatement
+    : block
+    ;
+
+blockStatement_Yield
+    : block_Yield
+    ;
+
+blockStatement_Await
+    : block_Await
+    ;
+
+blockStatement_Yield_Await
+    : block_Yield_Await
+    ;
+
+blockStatement_Return
+    : block_Return
+    ;
+
+blockStatement_Yield_Return
+    : block_Yield_Return
+    ;
+
+blockStatement_Await_Return
+    : block_Await_Return
+    ;
+
+blockStatement_Yield_Await_Return
+    : block_Yield_Await_Return
+    ;
+
+block
+    : '{' statementList? '}'
+    ;
+
+block_Yield
+    : '{' statementList_Yield? '}'
+    ;
+
+block_Await
+    : '{' statementList_Await? '}'
+    ;
+
+block_Yield_Await
+    : '{' statementList_Yield_Await? '}'
+    ;
+
+block_Return
+    : '{' statementList_Return? '}'
+    ;
+
+block_Yield_Return
+    : '{' statementList_Yield_Return? '}'
+    ;
+
+block_Await_Return
+    : '{' statementList_Await_Return? '}'
+    ;
+
+block_Yield_Await_Return
+    : '{' statementList_Yield_Await_Return? '}'
+    ;
+
+statementList
+    : statementListItem+
+    ;
+
+statementListItem
+    : statement
+    | declaration
+    ;
+
+statementListItem_Yield
+    : statement_Yield
+    | declaration_Yield
+    ;
+
+statementListItem_Await
+    : statement_Await
+    | declaration_Await
+    ;
+
+statementListItem_Yield_Await
+    : statement_Yield_Await
+    | declaration_Yield_Await
+    ;
+
+statementListItem_Return
+    : statement_Return
+    | declaration
+    ;
+
+statementListItem_Yield_Return
+    : statement_Yield_Return
+    | declaration_Yield
+    ;
+
+statementListItem_Await_Return
+    : statement_Await_Return
+    | declaration_Await
+    ;
+
+statementListItem_Yield_Await_Return
+    : statement_Yield_Await_Return
+    | declaration_Yield_Await
+    ;
+
+// 13.3: Declarations and the Variable Statement
+
+lexicalDeclaration
+    : letOrConst bindingList ';'
+    ;
+
+lexicalDeclaration_In
+    : letOrConst bindingList_In ';'
+    ;
+
+lexicalDeclaration_Yield
+    : letOrConst bindingList_Yield ';'
+    ;
+
+lexicalDeclaration_In_Yield
+    : letOrConst bindingList_In_Yield ';'
+    ;
+
+lexicalDeclaration_Await
+    : letOrConst bindingList_Await ';'
+    ;
+
+lexicalDeclaration_In_Await
+    : letOrConst bindingList_In_Await ';'
+    ;
+
+lexicalDeclaration_Yield_Await
+    : letOrConst bindingList_Yield_Await ';'
+    ;
+
+lexicalDeclaration_In_Yield_Await
+    : letOrConst bindingList_In_Yield_Await ';'
+    ;
+
+letOrConst
+    : 'let'
+    | 'const'
+    ;
+
+bindingList
+    : lexicalBinding
+    | bindingList ',' lexicalBinding
+    ;
+
+bindingList_In
+    : lexicalBinding_In
+    | bindingList_In ',' lexicalBinding_In
+    ;
+
+bindingList_Yield
+    : lexicalBinding_Yield
+    | bindingList_Yield ',' lexicalBinding_Yield
+    ;
+
+bindingList_In_Yield
+    : lexicalBinding_In_Yield
+    | bindingList_In_Yield ',' lexicalBinding_In_Yield
+    ;
+
+bindingList_Await
+    : lexicalBinding_Await
+    | bindingList_Await ',' lexicalBinding_Await
+    ;
+
+bindingList_In_Await
+    : lexicalBinding_In_Await
+    | bindingList_In_Await ',' lexicalBinding_In_Await
+    ;
+
+bindingList_Yield_Await
+    : lexicalBinding_Yield_Await
+    | bindingList_Yield_Await ',' lexicalBinding_Yield_Await
+    ;
+
+bindingList_In_Yield_Await
+    : lexicalBinding_In_Yield_Await
+    | bindingList_In_Yield_Await ',' lexicalBinding_In_Yield_Await
+    ;
+
+lexicalBinding
+    : bindingIdentifier initializer?
+    | bindingPattern initializer
+    ;
+
+lexicalBinding_In
+    : bindingIdentifier initializer_In?
+    | bindingPattern initializer_In
+    ;
+
+lexicalBinding_Yield
+    : bindingIdentifier_Yield initializer_Yield?
+    | bindingPattern_Yield initializer_Yield
+    ;
+
+lexicalBinding_In_Yield
+    : bindingIdentifier_Yield initializer_In_Yield?
+    | bindingPattern_Yield initializer_In_Yield
+    ;
+
+lexicalBinding_Await
+    : bindingIdentifier_Await initializer_Await?
+    | bindingPattern_Await initializer_Await
+    ;
+
+lexicalBinding_In_Await
+    : bindingIdentifier_Await initializer_In_Await?
+    | bindingPattern_Await initializer_In_Await
+    ;
+
+lexicalBinding_Yield_Await
+    : bindingIdentifier_Yield_Await initializer_Yield_Await?
+    | bindingPattern_Yield_Await initializer_Yield_Await
+    ;
+
+lexicalBinding_In_Yield_Await
+    : bindingIdentifier_Yield_Await initializer_In_Yield_Await?
+    | bindingPattern_Yield_Await initializer_In_Yield_Await
+    ;
+
+// 13.3.2: Variable Statement
+
+variableStatement
+    : 'var' variableDeclarationList_In ';'
+    ;
+
+variableStatement_Yield
+    : 'var' variableDeclarationList_In_Yield ';'
+    ;
+
+variableStatement_Await
+    : 'var' variableDeclarationList_In_Await ';'
+    ;
+
+variableStatement_Yield_Await
+    : 'var' variableDeclarationList_In_Yield_Await ';'
+    ;
+
+variableDeclarationList
+    : variableDeclaration
+    | variableDeclarationList ',' variableDeclaration
+    ;
+
+variableDeclarationList_In
+    : variableDeclaration_In
+    | variableDeclarationList_In ',' variableDeclaration_In
+    ;
+
+variableDeclarationList_Yield
+    : variableDeclaration_Yield
+    | variableDeclarationList_Yield ',' variableDeclaration_Yield
+    ;
+
+variableDeclarationList_In_Yield
+    : variableDeclaration_In_Yield
+    | variableDeclarationList_In_Yield ',' variableDeclaration_In_Yield
+    ;
+
+variableDeclarationList_Await
+    : variableDeclaration_Await
+    | variableDeclarationList_Await ',' variableDeclaration_Await
+    ;
+
+variableDeclarationList_In_Await
+    : variableDeclaration_In_Await
+    | variableDeclarationList_In_Await ',' variableDeclaration_In_Await
+    ;
+
+variableDeclarationList_Yield_Await
+    : variableDeclaration_Yield_Await
+    | variableDeclarationList_Yield_Await ',' variableDeclaration_Yield_Await
+    ;
+
+variableDeclarationList_In_Yield_Await
+    : variableDeclaration_In_Yield_Await
+    | variableDeclarationList_In_Yield_Await ',' variableDeclaration_In_Yield_Await
+    ;
+
+variableDeclaration
+    : bindingIdentifier initializer?
+    | bindingPattern initializer
+    ;
+
+variableDeclaration_In
+    : bindingIdentifier initializer_In?
+    | bindingPattern initializer_In
+    ;
+
+variableDeclaration_Yield
+    : bindingIdentifier_Yield initializer_Yield?
+    | bindingPattern_Yield initializer_Yield
+    ;
+
+variableDeclaration_In_Yield
+    : bindingIdentifier_Yield initializer_In_Yield?
+    | bindingPattern_Yield initializer_In_Yield
+    ;
+
+variableDeclaration_Await
+    : bindingIdentifier_Await initializer_Await?
+    | bindingPattern_Await initializer_Await
+    ;
+
+variableDeclaration_In_Await
+    : bindingIdentifier_Await initializer_In_Await?
+    | bindingPattern_Await initializer_In_Await
+    ;
+
+variableDeclaration_Yield_Await
+    : bindingIdentifier_Yield_Await initializer_Yield_Await?
+    | bindingPattern_Yield_Await initializer_Yield_Await
+    ;
+
+variableDeclaration_In_Yield_Await
+    : bindingIdentifier_Yield_Await initializer_In_Yield_Await?
+    | bindingPattern_Yield_Await initializer_In_Yield_Await
+    ;
+
+// 13.3.3: Destructuring Binding Patterns
+
+bindingPattern
+    : objectBindingPattern
+    | arrayBindingPattern
+    ;
+
+bindingPattern_Yield
+    : objectBindingPattern_Yield
+    | arrayBindingPattern_Yield
+    ;
+
+bindingPattern_Await
+    : objectBindingPattern_Await
+    | arrayBindingPattern_Await
+    ;
+
+bindingPattern_Yield_Await
+    : objectBindingPattern_Yield_Await
+    | arrayBindingPattern_Yield_Await
+    ;
+
+objectBindingPattern
+    : '{' '}'
+    | '{' bindingRestProperty '}'
+    | '{' bindingPropertyList '}'
+    | '{' bindingPropertyList ',' bindingRestProperty? '}'
+    ;
+
+objectBindingPattern_Yield
+    : '{' '}'
+    | '{' bindingRestProperty_Yield '}'
+    | '{' bindingPropertyList_Yield '}'
+    | '{' bindingPropertyList_Yield ',' bindingRestProperty_Yield? '}'
+    ;
+
+objectBindingPattern_Await
+    : '{' '}'
+    | '{' bindingRestProperty_Await '}'
+    | '{' bindingPropertyList_Await '}'
+    | '{' bindingPropertyList_Await ',' bindingRestProperty_Await? '}'
+    ;
+
+objectBindingPattern_Yield_Await
+    : '{' '}'
+    | '{' bindingRestProperty_Yield_Await '}'
+    | '{' bindingPropertyList_Yield_Await '}'
+    | '{' bindingPropertyList_Yield_Await ',' bindingRestProperty_Yield_Await? '}'
+    ;
+
+arrayBindingPattern
+    : '[' elision? bindingRestElement? ']'
+    | '[' bindingElementList ']'
+    | '[' bindingElementList ',' elision? bindingRestElement? ']'
+    ;
+
+arrayBindingPattern_Yield
+    : '[' elision? bindingRestElement_Yield? ']'
+    | '[' bindingElementList_Yield ']'
+    | '[' bindingElementList_Yield ',' elision? bindingRestElement_Yield? ']'
+    ;
+
+arrayBindingPattern_Await
+    : '[' elision? bindingRestElement_Await? ']'
+    | '[' bindingElementList_Await ']'
+    | '[' bindingElementList_Await ',' elision? bindingRestElement_Await? ']'
+    ;
+
+arrayBindingPattern_Yield_Await
+    : '[' elision? bindingRestElement_Yield_Await? ']'
+    | '[' bindingElementList_Yield_Await ']'
+    | '[' bindingElementList_Yield_Await ',' elision? bindingRestElement_Yield_Await? ']'
+    ;
+
+bindingRestProperty
+    : '...' bindingIdentifier
+    ;
+
+bindingRestProperty_Yield
+    : '...' bindingIdentifier_Yield
+    ;
+
+bindingRestProperty_Await
+    : '...' bindingIdentifier_Await
+    ;
+
+bindingRestProperty_Yield_Await
+    : '...' bindingIdentifier_Yield_Await
+    ;
+
+bindingPropertyList
+    : bindingProperty
+    | bindingPropertyList ',' bindingProperty
+    ;
+
+bindingPropertyList_Yield
+    : bindingProperty_Yield
+    | bindingPropertyList_Yield ',' bindingProperty_Yield
+    ;
+
+bindingPropertyList_Await
+    : bindingProperty_Await
+    | bindingPropertyList_Await ',' bindingProperty_Await
+    ;
+
+bindingPropertyList_Yield_Await
+    : bindingProperty_Yield_Await
+    | bindingPropertyList_Yield_Await ',' bindingProperty_Yield_Await
+    ;
+
+bindingElementList
+    : bindingElisionElement
+    | bindingElementList ',' bindingElisionElement
+    ;
+
+bindingElementList_Yield
+    : bindingElisionElement_Yield
+    | bindingElementList_Yield ',' bindingElisionElement_Yield
+    ;
+
+bindingElementList_Await
+    : bindingElisionElement_Await
+    | bindingElementList_Await ',' bindingElisionElement_Await
+    ;
+
+bindingElementList_Yield_Await
+    : bindingElisionElement_Yield_Await
+    | bindingElementList_Yield_Await ',' bindingElisionElement_Yield_Await
+    ;
+
+bindingElisionElement
+    : elision? bindingElement
+    ;
+
+bindingElisionElement_Yield
+    : elision? bindingElement_Yield
+    ;
+
+bindingElisionElement_Await
+    : elision? bindingElement_Await
+    ;
+
+bindingElisionElement_Yield_Await
+    : elision? bindingElement_Yield_Await
+    ;
+
+bindingProperty
+    : singleNameBinding
+    | propertyName ':' bindingElement
+    ;
+
+bindingProperty_Yield
+    : singleNameBinding_Yield
+    | propertyName_Yield ':' bindingElement_Yield
+    ;
+
+bindingProperty_Await
+    : singleNameBinding_Await
+    | propertyName_Await ':' bindingElement_Await
+    ;
+
+bindingProperty_Yield_Await
+    : singleNameBinding_Yield_Await
+    | propertyName_Yield_Await ':' bindingElement_Yield_Await
+    ;
+
+bindingElement
+    : singleNameBinding
+    | bindingPattern initializer_In?
+    ;
+
+bindingElement_Yield
+    : singleNameBinding_Yield
+    | bindingPattern_Yield initializer_In_Yield?
+    ;
+
+bindingElement_Await
+    : singleNameBinding_Await
+    | bindingPattern_Await initializer_In_Await?
+    ;
+
+bindingElement_Yield_Await
+    : singleNameBinding_Yield_Await
+    | bindingPattern_Yield_Await initializer_In_Yield_Await?
+    ;
+
+singleNameBinding
+    : bindingIdentifier initializer_In?
+    ;
+
+singleNameBinding_Yield
+    : bindingIdentifier_Yield initializer_In_Yield?
+    ;
+
+singleNameBinding_Await
+    : bindingIdentifier_Await initializer_In_Await?
+    ;
+
+singleNameBinding_Yield_Await
+    : bindingIdentifier_Yield_Await initializer_In_Yield_Await?
+    ;
+
+bindingRestElement
+    : '...' bindingIdentifier
+    | '...' bindingPattern
+    ;
+
+bindingRestElement_Yield
+    : '...' bindingIdentifier_Yield
+    | '...' bindingPattern_Yield
+    ;
+
+bindingRestElement_Await
+    : '...' bindingIdentifier_Await
+    | '...' bindingPattern_Await
+    ;
+
+bindingRestElement_Yield_Await
+    : '...' bindingIdentifier_Yield_Await
+    | '...' bindingPattern_Yield_Await
+    ;
+
+// 13.4: Empty Statement
+
+emptyStatement
+    : ';'
+    ;
+
+// 13.5: Expression Statement
+
+expressionStatement
+    : expression_In { negativeLookahead('{', 'function', 'async function', 'class', 'let [') }? ';'
+    ;
+
+expressionStatement_Yield
+    : expression_In_Yield { negativeLookahead('{', 'function', 'async function', 'class', 'let [') }? ';'
+    ;
+
+expressionStatement_Await
+    : expression_In_Await { negativeLookahead('{', 'function', 'async function', 'class', 'let [') }? ';'
+    ;
+
+expressionStatement_Yield_Await
+    : expression_In_Yield_Await { negativeLookahead('{', 'function', 'async function', 'class', 'let [') }? ';'
+    ;
+
+// 13.6: The if Statement
+
+ifStatement
+    : 'if' '(' expression_In ')' statement 'else' statement
+    | 'if' '(' expression_In ')' statement
+    ;
+
+ifStatement_Yield
+    : 'if' '(' expression_In_Yield ')' statement_Yield 'else' statement_Yield
+    | 'if' '(' expression_In_Yield ')' statement_Yield
+    ;
+
+ifStatement_Await
+    : 'if' '(' expression_In_Await ')' statement_Await 'else' statement_Await
+    | 'if' '(' expression_In_Await ')' statement_Await
+    ;
+
+ifStatement_Yield_Await
+    : 'if' '(' expression_In_Yield_Await ')' statement_Yield_Await 'else' statement_Yield_Await
+    | 'if' '(' expression_In_Yield_Await ')' statement_Yield_Await
+    ;
+
+ifStatement_Return
+    : 'if' '(' expression_In ')' statement_Return 'else' statement_Return
+    | 'if' '(' expression_In ')' statement_Return
+    ;
+
+ifStatement_Yield_Return
+    : 'if' '(' expression_In_Yield ')' statement_Yield_Return 'else' statement_Yield_Return
+    | 'if' '(' expression_In_Yield ')' statement_Yield_Return
+    ;
+
+ifStatement_Await_Return
+    : 'if' '(' expression_In_Await ')' statement_Await_Return 'else' statement_Await_Return
+    | 'if' '(' expression_In_Await ')' statement_Await_Return
+    ;
+
+ifStatement_Yield_Await_Return
+    : 'if' '(' expression_In_Yield_Await ')' statement_Yield_Await_Return 'else' statement_Yield_Await_Return
+    | 'if' '(' expression_In_Yield_Await ')' statement_Yield_Await_Return
+    ;
+
+// 13.7: Iteration Statements
+
+iterationStatement
+    : 'do' statement 'while' '(' expression_In ')' ';'
+    | 'while' '(' expression_In ')' statement
+    | 'for' '(' { negativeLookahead('let [') }? expression? ';' expression_In? ';' expression_In? ')' statement
+    | 'for' '(' 'var' variableDeclarationList ';' expression_In? ';' expression_In? ')' statement
+    | 'for' '(' lexicalDeclaration expression_In? ';' expression_In? ')' statement
+    | 'for' '(' { negativeLookahead('let [') }? leftHandSideExpression 'in' expression_In ')' statement
+    | 'for' '(' 'var' forBinding 'in' expression_In ')' statement
+    | 'for' '(' forDeclaration 'in' expression_In ')' statement
+    | 'for' '(' { negativeLookahead('let') }? leftHandSideExpression 'of' assignmentExpression_In ')' statement
+    | 'for' '(' 'var' forBinding 'of' assignmentExpression_In ')' statement
+    | 'for' '(' forDeclaration 'of' assignmentExpression_In ')' statement
+    // | 'for' 'await' '(' { negativeLookahead('let') }? leftHandSideExpression 'of' assignmentExpression_In ')' statement
+    // | 'for' 'await' '(' 'var' forBinding 'of' assignmentExpression_In ')' statement
+    // | 'for' 'await' '(' forDeclaration 'of' assignmentExpression_In ')' statement
+    ;
+
+forDeclaration
+    : letOrConst forBinding
+    ;
+
+forDeclaration_Yield
+    : letOrConst forBinding_Yield
+    ;
+
+forDeclaration_Await
+    : letOrConst forBinding_Await
+    ;
+
+forDeclaration_Yield_Await
+    : letOrConst forBinding_Yield_Await
+    ;
+
+forBinding
+    : bindingIdentifier
+    | bindingPattern
+    ;
+
+forBinding_Yield
+    : bindingIdentifier_Yield
+    | bindingPattern_Yield
+    ;
+
+forBinding_Await
+    : bindingIdentifier_Await
+    | bindingPattern_Await
+    ;
+
+forBinding_Yield_Await
+    : bindingIdentifier_Yield_Await
+    | bindingPattern_Yield_Await
     ;
