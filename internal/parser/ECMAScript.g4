@@ -4201,3 +4201,235 @@ defaultClause_Await_Return
 defaultClause_Yield_Await_Return
     : 'default' ':' statementList_Yield_Await_Return?
     ;
+
+// 13.13: Labelled Statements
+
+labelledStatement
+    : labelIdentifier ':' labelledItem
+    ;
+
+labelledStatement_Yield
+    : labelIdentifier_Yield ':' labelledItem_Yield
+    ;
+
+labelledStatement_Await
+    : labelIdentifier_Await ':' labelledItem_Await
+    ;
+
+labelledStatement_Yield_Await
+    : labelIdentifier_Yield_Await ':' labelledItem_Yield_Await
+    ;
+
+labelledStatement_Return
+    : labelIdentifier ':' labelledItem_Return
+    ;
+
+labelledStatement_Yield_Return
+    : labelIdentifier_Yield ':' labelledItem_Yield_Return
+    ;
+
+labelledStatement_Await_Return
+    : labelIdentifier_Await ':' labelledItem_Await_Return
+    ;
+
+labelledStatement_Yield_Await_Return
+    : labelIdentifier_Yield_Await ':' labelledItem_Yield_Await_Return
+    ;
+
+labelledItem
+    : statement
+    | functionDeclaration
+    ;
+
+labelledItem_Yield
+    : statement_Yield
+    | functionDeclaration_Yield
+    ;
+
+labelledItem_Await
+    : statement_Await
+    | functionDeclaration_Await
+    ;
+
+labelledItem_Yield_Await
+    : statement_Yield_Await
+    | functionDeclaration_Yield_Await
+    ;
+
+labelledItem_Return
+    : statement_Return
+    | functionDeclaration
+    ;
+
+labelledItem_Yield_Return
+    : statement_Yield_Return
+    | functionDeclaration_Yield
+    ;
+
+labelledItem_Await_Return
+    : statement_Await_Return
+    | functionDeclaration_Await
+    ;
+
+labelledItem_Yield_Await_Return
+    : statement_Yield_Await_Return
+    | functionDeclaration_Yield_Await
+    ;
+
+// 13.14: The throw Statement
+
+throwStatement
+    : 'throw' expression_In ';'
+    ;
+
+throwStatement_Yield
+    : 'throw' expression_In_Yield ';'
+    ;
+
+throwStatement_Await
+    : 'throw' expression_In_Await ';'
+    ;
+
+throwStatement_Yield_Await
+    : 'throw' expression_In_Yield_Await ';'
+    ;
+
+// 13.15: The try Statement
+
+tryStatement
+    : 'try' block catch_
+    | 'try' block finally_
+    | 'try' block catch_ finally_
+    ;
+
+tryStatement_Yield
+    : 'try' block_Yield catch_Yield
+    | 'try' block_Yield finally_Yield
+    | 'try' block_Yield catch_Yield finally_Yield
+    ;
+
+tryStatement_Await
+    : 'try' block_Await catch_Await
+    | 'try' block_Await finally_Await
+    | 'try' block_Await catch_Await finally_Await
+    ;
+
+tryStatement_Yield_Await
+    : 'try' block_Yield_Await catch_Yield_Await
+    | 'try' block_Yield_Await finally_Yield_Await
+    | 'try' block_Yield_Await catch_Yield_Await finally_Yield_Await
+    ;
+
+tryStatement_Return
+    : 'try' block_Return catch_Return
+    | 'try' block_Return finally_Return
+    | 'try' block_Return catch_Return finally_Return
+    ;
+
+tryStatement_Yield_Return
+    : 'try' block_Yield_Return catch_Yield_Return
+    | 'try' block_Yield_Return finally_Yield_Return
+    | 'try' block_Yield_Return catch_Yield_Return finally_Yield_Return
+    ;
+
+tryStatement_Await_Return
+    : 'try' block_Await_Return catch_Await_Return
+    | 'try' block_Await_Return finally_Await_Return
+    | 'try' block_Await_Return catch_Await_Return finally_Await_Return
+    ;
+
+tryStatement_Yield_Await_Return
+    : 'try' block_Yield_Await_Return catch_Yield_Await_Return
+    | 'try' block_Yield_Await_Return finally_Yield_Await_Return
+    | 'try' block_Yield_Await_Return catch_Yield_Await_Return finally_Yield_Await_Return
+    ;
+
+catch_
+    : 'catch' '(' catchParameter ')' block
+    ;
+
+catch_Yield
+    : 'catch' '(' catchParameter_Yield ')' block_Yield
+    ;
+
+catch_Await
+    : 'catch' '(' catchParameter_Await ')' block_Await
+    ;
+
+catch_Yield_Await
+    : 'catch' '(' catchParameter_Yield_Await ')' block_Yield_Await
+    ;
+
+catch_Return
+    : 'catch' '(' catchParameter ')' block_Return
+    ;
+
+catch_Yield_Return
+    : 'catch' '(' catchParameter_Yield ')' block_Yield_Return
+    ;
+
+catch_Await_Return
+    : 'catch' '(' catchParameter_Await ')' block_Await_Return
+    ;
+
+catch_Yield_Await_Return
+    : 'catch' '(' catchParameter_Yield_Await ')' block_Yield_Await_Return
+    ;
+
+finally_
+    : 'finally' block
+    ;
+
+finally_Yield
+    : 'finally' block_Yield
+    ;
+
+finally_Await
+    : 'finally' block_Await
+    ;
+
+finally_Yield_Await
+    : 'finally' block_Yield_Await
+    ;
+
+finally_Return
+    : 'finally' block_Return
+    ;
+
+finally_Yield_Return
+    : 'finally' block_Yield_Return
+    ;
+
+finally_Await_Return
+    : 'finally' block_Await_Return
+    ;
+
+finally_Yield_Await_Return
+    : 'finally' block_Yield_Await_Return
+    ;
+
+catchParameter
+    : bindingIdentifier
+    | bindingPattern
+    ;
+
+catchParameter_Yield
+    : bindingIdentifier_Yield
+    | bindingPattern_Yield
+    ;
+
+catchParameter_Await
+    : bindingIdentifier_Await
+    | bindingPattern_Await
+    ;
+
+catchParameter_Yield_Await
+    : bindingIdentifier_Yield_Await
+    | bindingPattern_Yield_Await
+    ;
+
+// 13.16: The debugger Statement
+
+debuggerStatement
+    : 'debugger' ';'
+    ;
