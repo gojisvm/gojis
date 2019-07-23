@@ -79,7 +79,7 @@ fragment WhiteSpace
     | SP
     | NBSP
     | ZWNBSP
-//  | USP
+    | USP
     ;
 
 // 11.3: Line Terminators
