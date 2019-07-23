@@ -4433,3 +4433,248 @@ catchParameter_Yield_Await
 debuggerStatement
     : 'debugger' ';'
     ;
+
+// ******************************************************
+// *** 14: ECMAScript Language: Functions and Classes ***
+// ******************************************************
+
+// 14.1: Function Definitions
+
+functionDeclaration
+    : 'function' bindingIdentifier '(' formalParameters ')' '{' functionBody '}'
+    ;
+
+functionDeclaration_Yield
+    : 'function' bindingIdentifier_Yield '(' formalParameters ')' '{' functionBody '}'
+    ;
+
+functionDeclaration_Await
+    : 'function' bindingIdentifier_Await '(' formalParameters ')' '{' functionBody '}'
+    ;
+
+functionDeclaration_Yield_Await
+    : 'function' bindingIdentifier_Yield_Await '(' formalParameters ')' '{' functionBody '}'
+    ;
+
+functionDeclaration_Default
+    : 'function' bindingIdentifier '(' formalParameters ')' '{' functionBody '}'
+    | 'function' '(' formalParameters ')' '{' functionBody '}'
+    ;
+
+functionDeclaration_Yield_Default
+    : 'function' bindingIdentifier_Yield '(' formalParameters ')' '{' functionBody '}'
+    | 'function' '(' formalParameters ')' '{' functionBody '}'
+    ;
+
+functionDeclaration_Await_Default
+    : 'function' bindingIdentifier_Await '(' formalParameters ')' '{' functionBody '}'
+    | 'function' '(' formalParameters ')' '{' functionBody '}'
+    ;
+
+functionDeclaration_Yield_Await_Default
+    : 'function' bindingIdentifier_Yield_Await '(' formalParameters ')' '{' functionBody '}'
+    | 'function' '(' formalParameters ')' '{' functionBody '}'
+    ;
+
+functionExpression
+    : 'function' bindingIdentifier? '(' formalParameters ')' '{' functionBody '}'
+    ;
+
+uniqueFormalParameters
+    : formalParameters
+    ;
+
+uniqueFormalParameters_Yield
+    : formalParameters_Yield
+    ;
+
+uniqueFormalParameters_Await
+    : formalParameters_Await
+    ;
+
+uniqueFormalParameters_Yield_Await
+    : formalParameters_Yield_Await
+    ;
+
+formalParameters
+    : 
+    | functionRestParameter
+    | formalParameterList
+    | formalParameterList ','
+    | formalParameterList ',' functionRestParameter
+    ;
+
+formalParameters_Yield
+    : 
+    | functionRestParameter_Yield
+    | formalParameterList_Yield
+    | formalParameterList_Yield ','
+    | formalParameterList_Yield ',' functionRestParameter_Yield
+    ;
+
+formalParameters_Await
+    : 
+    | functionRestParameter_Await
+    | formalParameterList_Await
+    | formalParameterList_Await ','
+    | formalParameterList_Await ',' functionRestParameter_Await
+    ;
+
+formalParameters_Yield_Await
+    : 
+    | functionRestParameter_Yield_Await
+    | formalParameterList_Yield_Await
+    | formalParameterList_Yield_Await ','
+    | formalParameterList_Yield_Await ',' functionRestParameter_Yield_Await
+    ;
+
+formalParameterList
+    : formalParameter
+    | formalParameterList ',' formalParameter
+    ;
+
+formalParameterList_Yield
+    : formalParameter_Yield
+    | formalParameterList_Yield ',' formalParameter_Yield
+    ;
+
+formalParameterList_Await
+    : formalParameter_Await
+    | formalParameterList_Await ',' formalParameter_Await
+    ;
+
+formalParameterList_Yield_Await
+    : formalParameter_Yield_Await
+    | formalParameterList_Yield_Await ',' formalParameter_Yield_Await
+    ;
+
+functionRestParameter
+    : bindingRestElement
+    ;
+
+functionRestParameter_Yield
+    : bindingRestElement_Yield
+    ;
+
+functionRestParameter_Await
+    : bindingRestElement_Await
+    ;
+
+functionRestParameter_Yield_Await
+    : bindingRestElement_Yield_Await
+    ;
+
+formalParameter
+    : bindingElement
+    ;
+
+formalParameter_Yield
+    : bindingElement_Yield
+    ;
+
+formalParameter_Await
+    : bindingElement_Await
+    ;
+
+formalParameter_Yield_Await
+    : bindingElement_Yield_Await
+    ;
+
+functionBody
+    : functionStatementList
+    ;
+
+functionBody_Yield
+    : functionStatementList_Yield
+    ;
+
+functionBody_Await
+    : functionStatementList_Await
+    ;
+
+functionBody_Yield_Await
+    : functionStatementList_Yield_Await
+    ;
+
+functionStatementList
+    : statementList_Return?
+    ;
+
+functionStatementList_Yield
+    : statementList_Return_Yield?
+    ;
+
+functionStatementList_Await
+    : statementList_Return_Await?
+    ;
+
+functionStatementList_Yield_Await
+    : statementList_Return_Yield_Await?
+    ;
+
+// 14.2: Arrow Function Definitions
+
+arrowFunction
+    : arrowParameters '=>' conciseBody
+    ;
+
+arrowFunction_In
+    : arrowParameters '=>' conciseBody_In
+    ;
+
+arrowFunction_Yield
+    : arrowParameters_Yield '=>' conciseBody
+    ;
+
+arrowFunction_In_Yield
+    : arrowParameters_Yield '=>' conciseBody_In
+    ;
+
+arrowFunction_Await
+    : arrowParameters_Await '=>' conciseBody
+    ;
+
+arrowFunction_In_Await
+    : arrowParameters_Await '=>' conciseBody_In
+    ;
+
+arrowFunction_Yield_Await
+    : arrowParameters_Yield_Await '=>' conciseBody
+    ;
+
+arrowFunction_In_Yield_Await
+    : arrowParameters_Yield_Await '=>' conciseBody_In
+    ;
+
+arrowParameters
+    : bindingIdentifier
+    | coverParenthesizedExpressionAndArrowParameterList
+    ;
+
+arrowParameters_Yield
+    : bindingIdentifier_Yield
+    | coverParenthesizedExpressionAndArrowParameterList_Yield
+    ;
+
+arrowParameters_Await
+    : bindingIdentifier_Await
+    | coverParenthesizedExpressionAndArrowParameterList_Await
+    ;
+
+arrowParameters_Yield_Await
+    : bindingIdentifier_Yield_Await
+    | coverParenthesizedExpressionAndArrowParameterList_Yield_Await
+    ;
+
+conciseBody
+    : { negativeLookahead('{') }? assignmentExpression
+    | '{' functionBody '}'
+    ;
+
+conciseBody_In
+    : { negativeLookahead('{') }? assignmentExpression_In
+    | '{' functionBody '}'
+    ;
+
+// 14.3: Method Definitions
+
