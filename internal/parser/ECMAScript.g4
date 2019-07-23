@@ -3975,3 +3975,229 @@ forBinding_Yield_Await
     : bindingIdentifier_Yield_Await
     | bindingPattern_Yield_Await
     ;
+
+// 13.8: The continue Statement
+
+continueStatement
+    : 'continue' labelIdentifier? ';'
+    ;
+
+continueStatement_Yield
+    : 'continue' labelIdentifier_Yield? ';'
+    ;
+
+continueStatement_Await
+    : 'continue' labelIdentifier_Await? ';'
+    ;
+
+continueStatement_Yield_Await
+    : 'continue' labelIdentifier_Yield_Await? ';'
+    ;
+
+// 13.9: The break Statement
+
+breakStatement
+    : 'break' labelIdentifier? ';'
+    ;
+
+breakStatement_Yield
+    : 'break' labelIdentifier_Yield? ';'
+    ;
+
+breakStatement_Await
+    : 'break' labelIdentifier_Await? ';'
+    ;
+
+breakStatement_Yield_Await
+    : 'break' labelIdentifier_Yield_Await? ';'
+    ;
+
+// 13.10: The return Statement
+
+returnStatement
+    : 'return' expression_In? ';'
+    ;
+
+returnStatement_Yield
+    : 'return' expression_In_Yield? ';'
+    ;
+
+returnStatement_Await
+    : 'return' expression_In_Await? ';'
+    ;
+
+returnStatement_Yield_Await
+    : 'return' expression_In_Yield_Await? ';'
+    ;
+
+// 13.11 The with Statement
+
+withStatement
+    : 'with' '(' expression_In ')' statement
+    ;
+
+withStatement_Yield
+    : 'with' '(' expression_In_Yield ')' statement_Yield
+    ;
+
+withStatement_Await
+    : 'with' '(' expression_In_Await ')' statement_Await
+    ;
+
+withStatement_Yield_Await
+    : 'with' '(' expression_In_Yield_Await ')' statement_Yield_Await
+    ;
+
+withStatement_Return
+    : 'with' '(' expression_In ')' statement_Return
+    ;
+
+withStatement_Yield_Return
+    : 'with' '(' expression_In_Yield ')' statement_Yield_Return
+    ;
+
+withStatement_Await_Return
+    : 'with' '(' expression_In_Await ')' statement_Await_Return
+    ;
+
+withStatement_Yield_Await_Return
+    : 'with' '(' expression_In_Yield_Await ')' statement_Yield_Await_Return
+    ;
+
+// 13.12: The switch Statement
+
+switchStatement
+    : 'switch' '(' expression_In ')' caseBlock
+    ;
+
+switchStatement_Yield
+    : 'switch' '(' expression_In_Yield ')' caseBlock_Yield
+    ;
+
+switchStatement_Await
+    : 'switch' '(' expression_In_Await ')' caseBlock_Await
+    ;
+
+switchStatement_Yield_Await
+    : 'switch' '(' expression_In_Yield_Await ')' caseBlock_Yield_Await
+    ;
+
+switchStatement_Return
+    : 'switch' '(' expression_In ')' caseBlock_Return
+    ;
+
+switchStatement_Yield_Return
+    : 'switch' '(' expression_In_Yield ')' caseBlock_Yield_Return
+    ;
+
+switchStatement_Await_Return
+    : 'switch' '(' expression_In_Await ')' caseBlock_Await_Return
+    ;
+
+switchStatement_Yield_Await_Return
+    : 'switch' '(' expression_In_Yield_Await ')' caseBlock_Yield_Await_Return
+    ;
+
+caseBlock
+    : '{' caseClause* '}'
+    | '{' caseClause* defaultClause caseClause* '}'
+    ;
+
+caseBlock_Yield
+    : '{' caseClause_Yield* '}'
+    | '{' caseClause_Yield* defaultClause_Yield caseClause_Yield* '}'
+    ;
+
+caseBlock_Await
+    : '{' caseClause_Await* '}'
+    | '{' caseClause_Await* defaultClause_Await caseClause_Await* '}'
+    ;
+
+caseBlock_Yield_Await
+    : '{' caseClause_Yield_Await* '}'
+    | '{' caseClause_Yield_Await* defaultClause_Yield_Await caseClause_Yield_Await* '}'
+    ;
+
+caseBlock_Return
+    : '{' caseClause_Return* '}'
+    | '{' caseClause_Return* defaultClause_Return caseClause_Return* '}'
+    ;
+
+caseBlock_Yield_Return
+    : '{' caseClause_Yield_Return* '}'
+    | '{' caseClause_Yield_Return* defaultClause_Yield_Return caseClause_Yield_Return* '}'
+    ;
+
+caseBlock_Await_Return
+    : '{' caseClause_Await_Return* '}'
+    | '{' caseClause_Await_Return* defaultClause_Await_Return caseClause_Await_Return* '}'
+    ;
+
+caseBlock_Yield_Await_Return
+    : '{' caseClause_Yield_Await_Return* '}'
+    | '{' caseClause_Yield_Await_Return* defaultClause_Yield_Await_Return caseClause_Yield_Await_Return* '}'
+    ;
+
+caseClause
+    : 'case' expression_In ':' statementList?
+    ;
+
+caseClause_Yield
+    : 'case' expression_In_Yield ':' statementList_Yield?
+    ;
+
+caseClause_Await
+    : 'case' expression_In_Await ':' statementList_Await?
+    ;
+
+caseClause_Yield_Await
+    : 'case' expression_In_Yield_Await ':' statementList_Yield_Await?
+    ;
+
+caseClause_Return
+    : 'case' expression_In ':' statementList_Return?
+    ;
+
+caseClause_Yield_Return
+    : 'case' expression_In_Yield ':' statementList_Yield_Return?
+    ;
+
+caseClause_Await_Return
+    : 'case' expression_In_Await ':' statementList_Await_Return?
+    ;
+
+caseClause_Yield_Await_Return
+    : 'case' expression_In_Yield_Await ':' statementList_Yield_Await_Return?
+    ;
+
+defaultClause
+    : 'default' ':' statementList?
+    ;
+
+defaultClause_Yield
+    : 'default' ':' statementList_Yield?
+    ;
+
+defaultClause_Await
+    : 'default' ':' statementList_Await?
+    ;
+
+defaultClause_Yield_Await
+    : 'default' ':' statementList_Yield_Await?
+    ;
+
+defaultClause_Return
+    : 'default' ':' statementList_Return?
+    ;
+
+defaultClause_Yield_Return
+    : 'default' ':' statementList_Yield_Return?
+    ;
+
+defaultClause_Await_Return
+    : 'default' ':' statementList_Await_Return?
+    ;
+
+defaultClause_Yield_Await_Return
+    : 'default' ':' statementList_Yield_Await_Return?
+    ;
