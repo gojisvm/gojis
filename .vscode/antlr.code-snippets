@@ -30,7 +30,7 @@
 		"scope": "antlr",
 		"prefix": "la",
 		"body": [
-			"{ _input.LA(${1:1}) == ${2:lookahead} }?$0"
+			"{ lookahead(${1:lookahead}) }?$0"
 		],
 		"description": "lookahead"
 	},
@@ -38,7 +38,7 @@
 		"scope": "antlr",
 		"prefix": "nla",
 		"body": [
-			"{ _input.LA(${1:1}) != ${2:lookahead} }?$0"
+			"{ negativeLookahead(${1:lookahead}) }?$0"
 		],
 		"description": "negative lookahead"
 	},
