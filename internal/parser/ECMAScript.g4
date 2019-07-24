@@ -4678,3 +4678,171 @@ conciseBody_In
 
 // 14.3: Method Definitions
 
+methodDefinition
+    : propertyName '(' uniqueFormalParameters ')' '{' functionBody '}'
+    | generatorMethod
+    | asyncMethod
+    | asyncGeneratorMethod
+    | 'get' propertyName '(' ')' '{' functionBody '}'
+    | 'set' propertyName '{' propertySetParameterList ')' '{' functionBody '}'
+    ;
+
+methodDefinition_Yield
+    : propertyName_Yield '(' uniqueFormalParameters ')' '{' functionBody '}'
+    | generatorMethod_Yield
+    | asyncMethod_Yield
+    | asyncGeneratorMethod_Yield
+    | 'get' propertyName_Yield '(' ')' '{' functionBody '}'
+    | 'set' propertyName_Yield '{' propertySetParameterList ')' '{' functionBody '}'
+    ;
+
+methodDefinition_Await
+    : propertyName_Await '(' uniqueFormalParameters ')' '{' functionBody '}'
+    | generatorMethod_Await
+    | asyncMethod_Await
+    | asyncGeneratorMethod_Await
+    | 'get' propertyName_Await '(' ')' '{' functionBody '}'
+    | 'set' propertyName_Await '{' propertySetParameterList ')' '{' functionBody '}'
+    ;
+
+methodDefinition_Yield_Await
+    : propertyName_Yield_Await '(' uniqueFormalParameters ')' '{' functionBody '}'
+    | generatorMethod_Yield_Await
+    | asyncMethod_Yield_Await
+    | asyncGeneratorMethod_Yield_Await
+    | 'get' propertyName_Yield_Await '(' ')' '{' functionBody '}'
+    | 'set' propertyName_Yield_Await '{' propertySetParameterList ')' '{' functionBody '}'
+    ;
+
+propertySetParameterList
+    : formalParameter
+    ;
+
+// 14.4: Generator Function Definitions
+
+generatorMethod
+    : '*' propertyName '(' uniqueFormalParameters_Yield ')' '{' generatorBody '}'
+    ;
+
+generatorMethod_Yield
+    : '*' propertyName_Yield '(' uniqueFormalParameters_Yield ')' '{' generatorBody '}'
+    ;
+
+generatorMethod_Await
+    : '*' propertyName_Await '(' uniqueFormalParameters_Yield ')' '{' generatorBody '}'
+    ;
+
+generatorMethod_Yield_Await
+    : '*' propertyName_Yield_Await '(' uniqueFormalParameters_Yield ')' '{' generatorBody '}'
+    ;
+
+generatorDeclaration
+    : 'function' '*' bindingIdentifier '(' formalParameters_Yield ')' '{' generatorBody '}'
+    ;
+
+generatorDeclaration_Yield
+    : 'function' '*' bindingIdentifier_Yield '(' formalParameters_Yield ')' '{' generatorBody '}'
+    ;
+
+generatorDeclaration_Await
+    : 'function' '*' bindingIdentifier_Await '(' formalParameters_Yield ')' '{' generatorBody '}'
+    ;
+
+generatorDeclaration_Yield_Await
+    : 'function' '*' bindingIdentifier_Yield_Await '(' formalParameters_Yield ')' '{' generatorBody '}'
+    ;
+
+generatorDeclaration_Default
+    : 'function' '*' bindingIdentifier '(' formalParameters_Yield ')' '{' generatorBody '}'
+    | 'function' '*' '(' formalParameters_Yield ')' '{' generatorBody '}'
+    ;
+
+generatorDeclaration_Yield_Default
+    : 'function' '*' bindingIdentifier_Yield '(' formalParameters_Yield ')' '{' generatorBody '}'
+    | 'function' '*' '(' formalParameters_Yield ')' '{' generatorBody '}'
+    ;
+
+generatorDeclaration_Await_Default
+    : 'function' '*' bindingIdentifier_Await '(' formalParameters_Yield ')' '{' generatorBody '}'
+    | 'function' '*' '(' formalParameters_Yield ')' '{' generatorBody '}'
+    ;
+
+generatorDeclaration_Yield_Await_Default
+    : 'function' '*' bindingIdentifier_Yield_Await '(' formalParameters_Yield ')' '{' generatorBody '}'
+    | 'function' '*' '(' formalParameters_Yield ')' '{' generatorBody '}'
+    ;
+
+generatorExpression
+    : 'function' '*' bindingIdentifier_Yield? '(' formalParameters_Yield ')' '{' generatorBody '}'
+    ;
+
+generatorBody
+    : functionBody_Yield
+    ;
+
+yieldExpression
+    : 'yield'
+    | 'yield' '*'? assignmentExpression_Yield
+    ;
+
+// 14.5 Async Generator Function Definitions
+
+asyncGeneratorMethod
+    : 'async' '*' propertyName '(' uniqueFormalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
+    ;
+
+asyncGeneratorMethod_Yield
+    : 'async' '*' propertyName_Yield '(' uniqueFormalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
+    ;
+
+asyncGeneratorMethod_Await
+    : 'async' '*' propertyName_Await '(' uniqueFormalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
+    ;
+
+asyncGeneratorMethod_Yield_Await
+    : 'async' '*' propertyName_Yield_Await '(' uniqueFormalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
+    ;
+
+asyncGeneratorDeclaration
+    : 'async' 'function' '*' bindingIdentifier '(' formalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
+    ;
+
+asyncGeneratorDeclaration_Yield
+    : 'async' 'function' '*' bindingIdentifier_Yield '(' formalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
+    ;
+
+asyncGeneratorDeclaration_Await
+    : 'async' 'function' '*' bindingIdentifier_Await '(' formalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
+    ;
+
+asyncGeneratorDeclaration_Yield_Await
+    : 'async' 'function' '*' bindingIdentifier_Yield_Await '(' formalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
+    ;
+
+asyncGeneratorDeclaration_Default
+    : 'async' 'function' '*' bindingIdentifier '(' formalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
+    | 'async' 'function' '*' '(' formalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
+    ;
+
+asyncGeneratorDeclaration_Yield_Default
+    : 'async' 'function' '*' bindingIdentifier_Yield '(' formalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
+    | 'async' 'function' '*' '(' formalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
+    ;
+
+asyncGeneratorDeclaration_Await_Default
+    : 'async' 'function' '*' bindingIdentifier_Await '(' formalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
+    | 'async' 'function' '*' '(' formalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
+    ;
+
+asyncGeneratorDeclaration_Yield_Await_Default
+    : 'async' 'function' '*' bindingIdentifier_Yield_Await '(' formalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
+    | 'async' 'function' '*' '(' formalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
+    ;
+
+asyncGeneratorExpression
+    : 'async' 'function' '*' bindingIdentifier_Yield_Await? '(' formalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
+    ;
+
+asyncGeneratorBody
+    : functionBody_Yield_Await
+    ;
