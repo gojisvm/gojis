@@ -4785,7 +4785,7 @@ yieldExpression
     | 'yield' '*'? assignmentExpression_Yield
     ;
 
-// 14.5 Async Generator Function Definitions
+// 14.5: Async Generator Function Definitions
 
 asyncGeneratorMethod
     : 'async' '*' propertyName '(' uniqueFormalParameters_Yield_Await ')' '{' asyncGeneratorBody '}'
@@ -4845,4 +4845,126 @@ asyncGeneratorExpression
 
 asyncGeneratorBody
     : functionBody_Yield_Await
+    ;
+
+// 14.6: Class Definitions
+
+classDeclaration
+    : 'class' bindingIdentifier classTail
+    ;
+
+classDeclaration_Yield
+    : 'class' bindingIdentifier_Yield classTail_Yield
+    ;
+
+classDeclaration_Await
+    : 'class' bindingIdentifier_Await classTail_Await
+    ;
+
+classDeclaration_Yield_Await
+    : 'class' bindingIdentifier_Yield_Await classTail_Yield_Await
+    ;
+
+classDeclaration_Default
+    : 'class' bindingIdentifier classTail
+    | 'class' classTail
+    ;
+
+classDeclaration_Yield_Default
+    : 'class' bindingIdentifier_Yield classTail_Yield
+    | 'class' classTail_Yield
+    ;
+
+classDeclaration_Await_Default
+    : 'class' bindingIdentifier_Await classTail_Await
+    | 'class' classTail_Await
+    ;
+
+classDeclaration_Yield_Await_Default
+    : 'class' bindingIdentifier_Yield_Await classTail_Yield_Await
+    | 'class' classTail_Yield_Await
+    ;
+
+classExpression
+    : 'class' bindingIdentifier? classTail
+    ;
+
+classExpression_Yield
+    : 'class' bindingIdentifier_Yield? classTail_Yield
+    ;
+
+classExpression_Await
+    : 'class' bindingIdentifier_Await? classTail_Await
+    ;
+
+classExpression_Yield_Await
+    : 'class' bindingIdentifier_Yield_Await? classTail_Yield_Await
+    ;
+
+classTail
+    : classHeritage? '{' classBody? '}'
+    ;
+
+classTail_Yield
+    : classHeritage_Yield? '{' classBody_Yield? '}'
+    ;
+
+classTail_Await
+    : classHeritage_Await? '{' classBody_Await? '}'
+    ;
+
+classTail_Yield_Await
+    : classHeritage_Yield_Await? '{' classBody_Yield_Await? '}'
+    ;
+
+classHeritage
+    : 'extends' leftHandSideExpression
+    ;
+
+classHeritage_Yield
+    : 'extends' leftHandSideExpression_Yield
+    ;
+
+classHeritage_Await
+    : 'extends' leftHandSideExpression_Await
+    ;
+
+classHeritage_Yield_Await
+    : 'extends' leftHandSideExpression_Yield_Await
+    ;
+
+classBody
+    : classElement+
+    ;
+
+classBody_Yield
+    : classElement_Yield+
+    ;
+
+classBody_Await
+    : classElement_Await+
+    ;
+
+classBody_Yield_Await
+    : classElement_Yield_Await+
+    ;
+
+classElement
+    : 'static'? methodDefinition
+    | ';'
+    ;
+
+classElement_Yield
+    : 'static'? methodDefinition_Yield
+    | ';'
+    ;
+
+classElement_Await
+    : 'static'? methodDefinition_Await
+    | ';'
+    ;
+
+classElement_Yield_Await
+    : 'static'? methodDefinition_Yield_Await
+    | ';'
     ;
