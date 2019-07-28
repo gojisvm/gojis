@@ -1451,7 +1451,7 @@ TemplateCharacters
     ;
 
 TemplateCharacter
-    : '$' { negativeLookahead('{') }?
+    : '$' { negativeLookahead("{") }?
     | '\\' EscapeSequence
     | '\\' NotEscapeSequence
     | LineContinuation
@@ -1464,13 +1464,13 @@ NotEscapeSequence
     | [1-9]
     | 'x' { negativeLookahead(HexDigit) }?
     | 'x' HexDigit { negativeLookahead(HexDigit) }?
-    | 'u' { negativeLookahead(HexDigit && _input.LA(1) != '{') }?
+    | 'u' { negativeLookahead(HexDigit) && negativeLookahead("{") }?
     | 'u' HexDigit { negativeLookahead(HexDigit) }?
     | 'u' HexDigit HexDigit { negativeLookahead(HexDigit) }?
     | 'u' HexDigit HexDigit HexDigit { negativeLookahead(HexDigit) }?
     | 'u' '{' { negativeLookahead(HexDigit) }?
     | 'u' '{' NotCodePoint { negativeLookahead(HexDigit) }?
-    | 'u' '{' CodePoint { negativeLookahead(HexDigit && _input.LA(1) != '{') }?
+    | 'u' '{' CodePoint { negativeLookahead(HexDigit) && negativeLookahead("{") }?
     ;
 
 NotCodePoint
@@ -2118,24 +2118,24 @@ newTarget
     : 'new' '.' 'target'
     ;
 
-newExpression
+theNewExpression
     : memberExpression
-    | 'new' newExpression
+    | 'new' theNewExpression
     ;
 
-newExpression_Yield
+theNewExpression_Yield
     : memberExpression_Yield
-    | 'new' newExpression_Yield
+    | 'new' theNewExpression_Yield
     ;
 
-newExpression_Await
+theNewExpression_Await
     : memberExpression_Await
-    | 'new' newExpression_Await
+    | 'new' theNewExpression_Await
     ;
 
-newExpression_Yield_Await
+theNewExpression_Yield_Await
     : memberExpression_Yield_Await
-    | 'new' newExpression_Yield_Await
+    | 'new' theNewExpression_Yield_Await
     ;
 
 callExpression
@@ -2231,22 +2231,22 @@ argumentList_Yield_Await
     ;
 
 leftHandSideExpression
-    : newExpression
+    : theNewExpression
     | callExpression
     ;
 
 leftHandSideExpression_Yield
-    : newExpression_Yield
+    : theNewExpression_Yield
     | callExpression_Yield
     ;
 
 leftHandSideExpression_Await
-    : newExpression_Await
+    : theNewExpression_Await
     | callExpression_Await
     ;
 
 leftHandSideExpression_Yield_Await
-    : newExpression_Yield_Await
+    : theNewExpression_Yield_Await
     | callExpression_Yield_Await
     ;
 
@@ -2939,7 +2939,7 @@ expression_In_Yield_Await
 statement
     : blockStatement
     | variableStatement
-    | emptyStatement
+    | theEmptyStatement
     | expressionStatement
     | ifStatement
     | breakableStatement
@@ -2956,7 +2956,7 @@ statement
 statement_Yield
     : blockStatement_Yield
     | variableStatement_Yield
-    | emptyStatement
+    | theEmptyStatement
     | expressionStatement_Yield
     | ifStatement_Yield
     | breakableStatement_Yield
@@ -2973,7 +2973,7 @@ statement_Yield
 statement_Await
     : blockStatement_Await
     | variableStatement_Await
-    | emptyStatement
+    | theEmptyStatement
     | expressionStatement_Await
     | ifStatement_Await
     | breakableStatement_Await
@@ -2990,7 +2990,7 @@ statement_Await
 statement_Yield_Await
     : blockStatement_Yield_Await
     | variableStatement_Yield_Await
-    | emptyStatement
+    | theEmptyStatement
     | expressionStatement_Yield_Await
     | ifStatement_Yield_Await
     | breakableStatement_Yield_Await
@@ -3007,7 +3007,7 @@ statement_Yield_Await
 statement_Return
     : blockStatement_Return
     | variableStatement
-    | emptyStatement
+    | theEmptyStatement
     | expressionStatement
     | ifStatement_Return
     | breakableStatement_Return
@@ -3024,7 +3024,7 @@ statement_Return
 statement_Yield_Return
     : blockStatement_Yield_Return
     | variableStatement_Yield
-    | emptyStatement
+    | theEmptyStatement
     | expressionStatement_Yield
     | ifStatement_Yield_Return
     | breakableStatement_Yield_Return
@@ -3041,7 +3041,7 @@ statement_Yield_Return
 statement_Await_Return
     : blockStatement_Await_Return
     | variableStatement_Await
-    | emptyStatement
+    | theEmptyStatement
     | expressionStatement_Await
     | ifStatement_Await_Return
     | breakableStatement_Await_Return
@@ -3058,7 +3058,7 @@ statement_Await_Return
 statement_Yield_Await_Return
     : blockStatement_Yield_Await_Return
     | variableStatement_Yield_Await
-    | emptyStatement
+    | theEmptyStatement
     | expressionStatement_Yield_Await
     | ifStatement_Yield_Await_Return
     | breakableStatement_Yield_Await_Return
@@ -3771,26 +3771,26 @@ bindingRestElement_Yield_Await
 
 // 13.4: Empty Statement
 
-emptyStatement
+theEmptyStatement
     : ';'
     ;
 
 // 13.5: Expression Statement
 
 expressionStatement
-    : expression_In { negativeLookahead('{', 'function', 'async function', 'class', 'let [') }? ';'
+    : expression_In { negativeLookahead("{", "function", "async function", "class", "let [") }? ';'
     ;
 
 expressionStatement_Yield
-    : expression_In_Yield { negativeLookahead('{', 'function', 'async function', 'class', 'let [') }? ';'
+    : expression_In_Yield { negativeLookahead("{", "function", "async function", "class", "let [") }? ';'
     ;
 
 expressionStatement_Await
-    : expression_In_Await { negativeLookahead('{', 'function', 'async function', 'class', 'let [') }? ';'
+    : expression_In_Await { negativeLookahead("{", "function", "async function", "class", "let [") }? ';'
     ;
 
 expressionStatement_Yield_Await
-    : expression_In_Yield_Await { negativeLookahead('{', 'function', 'async function', 'class', 'let [') }? ';'
+    : expression_In_Yield_Await { negativeLookahead("{", "function", "async function", "class", "let [") }? ';'
     ;
 
 // 13.6: The if Statement
@@ -3840,16 +3840,16 @@ ifStatement_Yield_Await_Return
 iterationStatement
     : 'do' statement 'while' '(' expression_In ')' ';'
     | 'while' '(' expression_In ')' statement
-    | 'for' '(' { negativeLookahead('let [') }? expression? ';' expression_In? ';' expression_In? ')' statement
+    | 'for' '(' { negativeLookahead("let [") }? expression? ';' expression_In? ';' expression_In? ')' statement
     | 'for' '(' 'var' variableDeclarationList ';' expression_In? ';' expression_In? ')' statement
     | 'for' '(' lexicalDeclaration expression_In? ';' expression_In? ')' statement
-    | 'for' '(' { negativeLookahead('let [') }? leftHandSideExpression 'in' expression_In ')' statement
+    | 'for' '(' { negativeLookahead("let [") }? leftHandSideExpression 'in' expression_In ')' statement
     | 'for' '(' 'var' forBinding 'in' expression_In ')' statement
     | 'for' '(' forDeclaration 'in' expression_In ')' statement
-    | 'for' '(' { negativeLookahead('let') }? leftHandSideExpression 'of' assignmentExpression_In ')' statement
+    | 'for' '(' { negativeLookahead("let") }? leftHandSideExpression 'of' assignmentExpression_In ')' statement
     | 'for' '(' 'var' forBinding 'of' assignmentExpression_In ')' statement
     | 'for' '(' forDeclaration 'of' assignmentExpression_In ')' statement
-    // | 'for' 'await' '(' { negativeLookahead('let') }? leftHandSideExpression 'of' assignmentExpression_In ')' statement
+    // | 'for' 'await' '(' { negativeLookahead("let") }? leftHandSideExpression 'of' assignmentExpression_In ')' statement
     // | 'for' 'await' '(' 'var' forBinding 'of' assignmentExpression_In ')' statement
     // | 'for' 'await' '(' forDeclaration 'of' assignmentExpression_In ')' statement
     ;
@@ -3857,16 +3857,16 @@ iterationStatement
 iterationStatement_Yield
     : 'do' statement_Yield 'while' '(' expression_In_Yield ')' ';'
     | 'while' '(' expression_In_Yield ')' statement_Yield
-    | 'for' '(' { negativeLookahead('let [') }? expression_Yield? ';' expression_In_Yield? ';' expression_In_Yield? ')' statement_Yield
+    | 'for' '(' { negativeLookahead("let [") }? expression_Yield? ';' expression_In_Yield? ';' expression_In_Yield? ')' statement_Yield
     | 'for' '(' 'var' variableDeclarationList_Yield ';' expression_In_Yield? ';' expression_In_Yield? ')' statement_Yield
     | 'for' '(' lexicalDeclaration_Yield expression_In_Yield? ';' expression_In_Yield? ')' statement_Yield
-    | 'for' '(' { negativeLookahead('let [') }? leftHandSideExpression_Yield 'in' expression_In_Yield ')' statement_Yield
+    | 'for' '(' { negativeLookahead("let [") }? leftHandSideExpression_Yield 'in' expression_In_Yield ')' statement_Yield
     | 'for' '(' 'var' forBinding_Yield 'in' expression_In_Yield ')' statement_Yield
     | 'for' '(' forDeclaration_Yield 'in' expression_In_Yield ')' statement_Yield
-    | 'for' '(' { negativeLookahead('let') }? leftHandSideExpression_Yield 'of' assignmentExpression_In_Yield ')' statement_Yield
+    | 'for' '(' { negativeLookahead("let") }? leftHandSideExpression_Yield 'of' assignmentExpression_In_Yield ')' statement_Yield
     | 'for' '(' 'var' forBinding_Yield 'of' assignmentExpression_In_Yield ')' statement_Yield
     | 'for' '(' forDeclaration_Yield 'of' assignmentExpression_In_Yield ')' statement_Yield
-    // | 'for' 'await' '(' { negativeLookahead('let') }? leftHandSideExpression_Yield 'of' assignmentExpression_In_Yield ')' statement_Yield
+    // | 'for' 'await' '(' { negativeLookahead("let") }? leftHandSideExpression_Yield 'of' assignmentExpression_In_Yield ')' statement_Yield
     // | 'for' 'await' '(' 'var' forBinding_Yield 'of' assignmentExpression_In_Yield ')' statement_Yield
     // | 'for' 'await' '(' forDeclaration_Yield 'of' assignmentExpression_In_Yield ')' statement_Yield
     ;
@@ -3874,16 +3874,16 @@ iterationStatement_Yield
 iterationStatement_Await
     : 'do' statement_Await 'while' '(' expression_In_Await ')' ';'
     | 'while' '(' expression_In_Await ')' statement_Await
-    | 'for' '(' { negativeLookahead('let [') }? expression_Await? ';' expression_In_Await? ';' expression_In_Await? ')' statement_Await
+    | 'for' '(' { negativeLookahead("let [") }? expression_Await? ';' expression_In_Await? ';' expression_In_Await? ')' statement_Await
     | 'for' '(' 'var' variableDeclarationList_Await ';' expression_In_Await? ';' expression_In_Await? ')' statement_Await
     | 'for' '(' lexicalDeclaration_Await expression_In_Await? ';' expression_In_Await? ')' statement_Await
-    | 'for' '(' { negativeLookahead('let [') }? leftHandSideExpression_Await 'in' expression_In_Await ')' statement_Await
+    | 'for' '(' { negativeLookahead("let [") }? leftHandSideExpression_Await 'in' expression_In_Await ')' statement_Await
     | 'for' '(' 'var' forBinding_Await 'in' expression_In_Await ')' statement_Await
     | 'for' '(' forDeclaration_Await 'in' expression_In_Await ')' statement_Await
-    | 'for' '(' { negativeLookahead('let') }? leftHandSideExpression_Await 'of' assignmentExpression_In_Await ')' statement_Await
+    | 'for' '(' { negativeLookahead("let") }? leftHandSideExpression_Await 'of' assignmentExpression_In_Await ')' statement_Await
     | 'for' '(' 'var' forBinding_Await 'of' assignmentExpression_In_Await ')' statement_Await
     | 'for' '(' forDeclaration_Await 'of' assignmentExpression_In_Await ')' statement_Await
-    // | 'for' 'await' '(' { negativeLookahead('let') }? leftHandSideExpression_Await 'of' assignmentExpression_In_Await ')' statement_Await
+    // | 'for' 'await' '(' { negativeLookahead("let") }? leftHandSideExpression_Await 'of' assignmentExpression_In_Await ')' statement_Await
     // | 'for' 'await' '(' 'var' forBinding_Await 'of' assignmentExpression_In_Await ')' statement_Await
     // | 'for' 'await' '(' forDeclaration_Await 'of' assignmentExpression_In_Await ')' statement_Await
     ;
@@ -3891,16 +3891,16 @@ iterationStatement_Await
 iterationStatement_Yield_Await
     : 'do' statement_Yield_Await 'while' '(' expression_In_Yield_Await ')' ';'
     | 'while' '(' expression_In_Yield_Await ')' statement_Yield_Await
-    | 'for' '(' { negativeLookahead('let [') }? expression_Yield_Await? ';' expression_In_Yield_Await? ';' expression_In_Yield_Await? ')' statement_Yield_Await
+    | 'for' '(' { negativeLookahead("let [") }? expression_Yield_Await? ';' expression_In_Yield_Await? ';' expression_In_Yield_Await? ')' statement_Yield_Await
     | 'for' '(' 'var' variableDeclarationList_Yield_Await ';' expression_In_Yield_Await? ';' expression_In_Yield_Await? ')' statement_Yield_Await
     | 'for' '(' lexicalDeclaration_Yield_Await expression_In_Yield_Await? ';' expression_In_Yield_Await? ')' statement_Yield_Await
-    | 'for' '(' { negativeLookahead('let [') }? leftHandSideExpression_Yield_Await 'in' expression_In_Yield_Await ')' statement_Yield_Await
+    | 'for' '(' { negativeLookahead("let [") }? leftHandSideExpression_Yield_Await 'in' expression_In_Yield_Await ')' statement_Yield_Await
     | 'for' '(' 'var' forBinding_Yield_Await 'in' expression_In_Yield_Await ')' statement_Yield_Await
     | 'for' '(' forDeclaration_Yield_Await 'in' expression_In_Yield_Await ')' statement_Yield_Await
-    | 'for' '(' { negativeLookahead('let') }? leftHandSideExpression_Yield_Await 'of' assignmentExpression_In_Yield_Await ')' statement_Yield_Await
+    | 'for' '(' { negativeLookahead("let") }? leftHandSideExpression_Yield_Await 'of' assignmentExpression_In_Yield_Await ')' statement_Yield_Await
     | 'for' '(' 'var' forBinding_Yield_Await 'of' assignmentExpression_In_Yield_Await ')' statement_Yield_Await
     | 'for' '(' forDeclaration_Yield_Await 'of' assignmentExpression_In_Yield_Await ')' statement_Yield_Await
-    // | 'for' 'await' '(' { negativeLookahead('let') }? leftHandSideExpression_Yield_Await 'of' assignmentExpression_In_Yield_Await ')' statement_Yield_Await
+    // | 'for' 'await' '(' { negativeLookahead("let") }? leftHandSideExpression_Yield_Await 'of' assignmentExpression_In_Yield_Await ')' statement_Yield_Await
     // | 'for' 'await' '(' 'var' forBinding_Yield_Await 'of' assignmentExpression_In_Yield_Await ')' statement_Yield_Await
     // | 'for' 'await' '(' forDeclaration_Yield_Await 'of' assignmentExpression_In_Yield_Await ')' statement_Yield_Await
     ;
@@ -3908,16 +3908,16 @@ iterationStatement_Yield_Await
 iterationStatement_Return
     : 'do' statement_Return 'while' '(' expression_In ')' ';'
     | 'while' '(' expression_In ')' statement_Return
-    | 'for' '(' { negativeLookahead('let [') }? expression? ';' expression_In? ';' expression_In? ')' statement_Return
+    | 'for' '(' { negativeLookahead("let [") }? expression? ';' expression_In? ';' expression_In? ')' statement_Return
     | 'for' '(' 'var' variableDeclarationList ';' expression_In? ';' expression_In? ')' statement_Return
     | 'for' '(' lexicalDeclaration expression_In? ';' expression_In? ')' statement_Return
-    | 'for' '(' { negativeLookahead('let [') }? leftHandSideExpression 'in' expression_In ')' statement_Return
+    | 'for' '(' { negativeLookahead("let [") }? leftHandSideExpression 'in' expression_In ')' statement_Return
     | 'for' '(' 'var' forBinding 'in' expression_In ')' statement_Return
     | 'for' '(' forDeclaration 'in' expression_In ')' statement_Return
-    | 'for' '(' { negativeLookahead('let') }? leftHandSideExpression 'of' assignmentExpression_In ')' statement_Return
+    | 'for' '(' { negativeLookahead("let") }? leftHandSideExpression 'of' assignmentExpression_In ')' statement_Return
     | 'for' '(' 'var' forBinding 'of' assignmentExpression_In ')' statement_Return
     | 'for' '(' forDeclaration 'of' assignmentExpression_In ')' statement_Return
-    // | 'for' 'await' '(' { negativeLookahead('let') }? leftHandSideExpression 'of' assignmentExpression_In ')' statement_Return
+    // | 'for' 'await' '(' { negativeLookahead("let") }? leftHandSideExpression 'of' assignmentExpression_In ')' statement_Return
     // | 'for' 'await' '(' 'var' forBinding 'of' assignmentExpression_In ')' statement_Return
     // | 'for' 'await' '(' forDeclaration 'of' assignmentExpression_In ')' statement_Return
     ;
@@ -3925,16 +3925,16 @@ iterationStatement_Return
 iterationStatement_Yield_Return
     : 'do' statement_Yield_Return 'while' '(' expression_In_Yield ')' ';'
     | 'while' '(' expression_In_Yield ')' statement_Yield_Return
-    | 'for' '(' { negativeLookahead('let [') }? expression_Yield? ';' expression_In_Yield? ';' expression_In_Yield? ')' statement_Yield_Return
+    | 'for' '(' { negativeLookahead("let [") }? expression_Yield? ';' expression_In_Yield? ';' expression_In_Yield? ')' statement_Yield_Return
     | 'for' '(' 'var' variableDeclarationList_Yield ';' expression_In_Yield? ';' expression_In_Yield? ')' statement_Yield_Return
     | 'for' '(' lexicalDeclaration_Yield expression_In_Yield? ';' expression_In_Yield? ')' statement_Yield_Return
-    | 'for' '(' { negativeLookahead('let [') }? leftHandSideExpression_Yield 'in' expression_In_Yield ')' statement_Yield_Return
+    | 'for' '(' { negativeLookahead("let [") }? leftHandSideExpression_Yield 'in' expression_In_Yield ')' statement_Yield_Return
     | 'for' '(' 'var' forBinding_Yield 'in' expression_In_Yield ')' statement_Yield_Return
     | 'for' '(' forDeclaration_Yield 'in' expression_In_Yield ')' statement_Yield_Return
-    | 'for' '(' { negativeLookahead('let') }? leftHandSideExpression_Yield 'of' assignmentExpression_In_Yield ')' statement_Yield_Return
+    | 'for' '(' { negativeLookahead("let") }? leftHandSideExpression_Yield 'of' assignmentExpression_In_Yield ')' statement_Yield_Return
     | 'for' '(' 'var' forBinding_Yield 'of' assignmentExpression_In_Yield ')' statement_Yield_Return
     | 'for' '(' forDeclaration_Yield 'of' assignmentExpression_In_Yield ')' statement_Yield_Return
-    // | 'for' 'await' '(' { negativeLookahead('let') }? leftHandSideExpression_Yield 'of' assignmentExpression_In_Yield ')' statement_Yield_Return
+    // | 'for' 'await' '(' { negativeLookahead("let") }? leftHandSideExpression_Yield 'of' assignmentExpression_In_Yield ')' statement_Yield_Return
     // | 'for' 'await' '(' 'var' forBinding_Yield 'of' assignmentExpression_In_Yield ')' statement_Yield_Return
     // | 'for' 'await' '(' forDeclaration_Yield 'of' assignmentExpression_In_Yield ')' statement_Yield_Return
     ;
@@ -3942,16 +3942,16 @@ iterationStatement_Yield_Return
 iterationStatement_Await_Return
     : 'do' statement_Await_Return 'while' '(' expression_In_Await ')' ';'
     | 'while' '(' expression_In_Await ')' statement_Await_Return
-    | 'for' '(' { negativeLookahead('let [') }? expression_Await? ';' expression_In_Await? ';' expression_In_Await? ')' statement_Await_Return
+    | 'for' '(' { negativeLookahead("let [") }? expression_Await? ';' expression_In_Await? ';' expression_In_Await? ')' statement_Await_Return
     | 'for' '(' 'var' variableDeclarationList_Await ';' expression_In_Await? ';' expression_In_Await? ')' statement_Await_Return
     | 'for' '(' lexicalDeclaration_Await expression_In_Await? ';' expression_In_Await? ')' statement_Await_Return
-    | 'for' '(' { negativeLookahead('let [') }? leftHandSideExpression_Await 'in' expression_In_Await ')' statement_Await_Return
+    | 'for' '(' { negativeLookahead("let [") }? leftHandSideExpression_Await 'in' expression_In_Await ')' statement_Await_Return
     | 'for' '(' 'var' forBinding_Await 'in' expression_In_Await ')' statement_Await_Return
     | 'for' '(' forDeclaration_Await 'in' expression_In_Await ')' statement_Await_Return
-    | 'for' '(' { negativeLookahead('let') }? leftHandSideExpression_Await 'of' assignmentExpression_In_Await ')' statement_Await_Return
+    | 'for' '(' { negativeLookahead("let") }? leftHandSideExpression_Await 'of' assignmentExpression_In_Await ')' statement_Await_Return
     | 'for' '(' 'var' forBinding_Await 'of' assignmentExpression_In_Await ')' statement_Await_Return
     | 'for' '(' forDeclaration_Await 'of' assignmentExpression_In_Await ')' statement_Await_Return
-    // | 'for' 'await' '(' { negativeLookahead('let') }? leftHandSideExpression_Await 'of' assignmentExpression_In_Await ')' statement_Await_Return
+    // | 'for' 'await' '(' { negativeLookahead("let") }? leftHandSideExpression_Await 'of' assignmentExpression_In_Await ')' statement_Await_Return
     // | 'for' 'await' '(' 'var' forBinding_Await 'of' assignmentExpression_In_Await ')' statement_Await_Return
     // | 'for' 'await' '(' forDeclaration_Await 'of' assignmentExpression_In_Await ')' statement_Await_Return
     ;
@@ -3959,16 +3959,16 @@ iterationStatement_Await_Return
 iterationStatement_Yield_Await_Return
     : 'do' statement_Yield_Await_Return 'while' '(' expression_In_Yield_Await ')' ';'
     | 'while' '(' expression_In_Yield_Await ')' statement_Yield_Await_Return
-    | 'for' '(' { negativeLookahead('let [') }? expression_Yield_Await? ';' expression_In_Yield_Await? ';' expression_In_Yield_Await? ')' statement_Yield_Await_Return
+    | 'for' '(' { negativeLookahead("let [") }? expression_Yield_Await? ';' expression_In_Yield_Await? ';' expression_In_Yield_Await? ')' statement_Yield_Await_Return
     | 'for' '(' 'var' variableDeclarationList_Yield_Await ';' expression_In_Yield_Await? ';' expression_In_Yield_Await? ')' statement_Yield_Await_Return
     | 'for' '(' lexicalDeclaration_Yield_Await expression_In_Yield_Await? ';' expression_In_Yield_Await? ')' statement_Yield_Await_Return
-    | 'for' '(' { negativeLookahead('let [') }? leftHandSideExpression_Yield_Await 'in' expression_In_Yield_Await ')' statement_Yield_Await_Return
+    | 'for' '(' { negativeLookahead("let [") }? leftHandSideExpression_Yield_Await 'in' expression_In_Yield_Await ')' statement_Yield_Await_Return
     | 'for' '(' 'var' forBinding_Yield_Await 'in' expression_In_Yield_Await ')' statement_Yield_Await_Return
     | 'for' '(' forDeclaration_Yield_Await 'in' expression_In_Yield_Await ')' statement_Yield_Await_Return
-    | 'for' '(' { negativeLookahead('let') }? leftHandSideExpression_Yield_Await 'of' assignmentExpression_In_Yield_Await ')' statement_Yield_Await_Return
+    | 'for' '(' { negativeLookahead("let") }? leftHandSideExpression_Yield_Await 'of' assignmentExpression_In_Yield_Await ')' statement_Yield_Await_Return
     | 'for' '(' 'var' forBinding_Yield_Await 'of' assignmentExpression_In_Yield_Await ')' statement_Yield_Await_Return
     | 'for' '(' forDeclaration_Yield_Await 'of' assignmentExpression_In_Yield_Await ')' statement_Yield_Await_Return
-    // | 'for' 'await' '(' { negativeLookahead('let') }? leftHandSideExpression_Yield_Await 'of' assignmentExpression_In_Yield_Await ')' statement_Yield_Await_Return
+    // | 'for' 'await' '(' { negativeLookahead("let") }? leftHandSideExpression_Yield_Await 'of' assignmentExpression_In_Yield_Await ')' statement_Yield_Await_Return
     // | 'for' 'await' '(' 'var' forBinding_Yield_Await 'of' assignmentExpression_In_Yield_Await ')' statement_Yield_Await_Return
     // | 'for' 'await' '(' forDeclaration_Yield_Await 'of' assignmentExpression_In_Yield_Await ')' statement_Yield_Await_Return
     ;
@@ -4700,12 +4700,12 @@ arrowParameters_Yield_Await
     ;
 
 conciseBody
-    : { negativeLookahead('{') }? assignmentExpression
+    : { negativeLookahead("{") }? assignmentExpression
     | '{' functionBody '}'
     ;
 
 conciseBody_In
-    : { negativeLookahead('{') }? assignmentExpression_In
+    : { negativeLookahead("{") }? assignmentExpression_In
     | '{' functionBody '}'
     ;
 
@@ -5242,7 +5242,7 @@ exportDeclaration
     | 'export' declaration
     | 'export' 'default' hoistableDeclaration_Default
     | 'export' 'default' classDeclaration_Default
-    | 'export' 'default' { negativeLookahead('function', 'async function', 'class') }? assignmentExpression_In ';'
+    | 'export' 'default' { negativeLookahead("function", "async function", "class") }? assignmentExpression_In ';'
     ;
 
 exportClause
@@ -5263,9 +5263,9 @@ exportSpecifier
 // A.4: Functions and Classes
 
 asyncConciseBody
-    : { negativeLookahead('{') }? assignmentExpression_Await '{' asyncFunctionBody '}'
+    : { negativeLookahead("{") }? assignmentExpression_Await '{' asyncFunctionBody '}'
     ;
 
 asyncConciseBody_In
-    : { negativeLookahead('{') }? assignmentExpression_In_Await '{' asyncFunctionBody '}'
+    : { negativeLookahead("{") }? assignmentExpression_In_Await '{' asyncFunctionBody '}'
     ;
