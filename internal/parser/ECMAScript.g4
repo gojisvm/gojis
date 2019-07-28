@@ -72,7 +72,7 @@ fragment USP
     | '\u3000'
     ;
 
-fragment WhiteSpace
+WhiteSpace
     : TAB
     | VT
     | FF
@@ -1726,7 +1726,8 @@ elementList_Yield_Await
     ;
 
 elision
-    : elision? ','
+    : ','
+    | elision ','
     ;
 
 spreadElement
@@ -1772,19 +1773,19 @@ objectLiteral_Yield_Await
     ;
 
 propertyDefinitionList
-    : propertyDefinitionList* propertyDefinition
+    : propertyDefinition*
     ;
 
 propertyDefinitionList_Yield
-    : propertyDefinitionList_Yield* propertyDefinition_Yield
+    : propertyDefinition_Yield*
     ;
 
 propertyDefinitionList_Await
-    : propertyDefinitionList_Await* propertyDefinition_Await
+    : propertyDefinition_Await*
     ;
 
 propertyDefinitionList_Yield_Await
-    : propertyDefinitionList_Yield_Await* propertyDefinition_Yield_Await
+    : propertyDefinition_Yield_Await*
     ;
 
 propertyDefinition
@@ -2016,35 +2017,35 @@ templateSpans_Yield_Await_Tagged
     ;
 
 templateMiddleList
-    : templateMiddleList* TemplateTail expression_In
+    : (TemplateTail expression_In)+
     ;
 
 templateMiddleList_Yield
-    : templateMiddleList_Yield* TemplateTail expression_In_Yield
+    : (TemplateTail expression_In_Yield)+
     ;
 
 templateMiddleList_Await
-    : templateMiddleList_Await* TemplateTail expression_In_Await
+    : (TemplateTail expression_In_Await)+
     ;
 
 templateMiddleList_Yield_Await
-    : templateMiddleList_Yield_Await* TemplateTail expression_In_Yield_Await
+    : (TemplateTail expression_In_Yield_Await)+
     ;
 
 templateMiddleList_Tagged
-    : templateMiddleList_Tagged* TemplateTail expression_In
+    : (TemplateTail expression_In)+
     ;
 
 templateMiddleList_Yield_Tagged
-    : templateMiddleList_Yield_Tagged* TemplateTail expression_In_Yield
+    : (TemplateTail expression_In_Yield)+
     ;
 
 templateMiddleList_Await_Tagged
-    : templateMiddleList_Await_Tagged* TemplateTail expression_In_Await
+    : (TemplateTail expression_In_Await)+
     ;
 
 templateMiddleList_Yield_Await_Tagged
-    : templateMiddleList_Yield_Await_Tagged* TemplateTail expression_In_Yield_Await
+    : (TemplateTail expression_In_Yield_Await)+
     ;
 
 // 12.3: Left-Hand-Side Expressions
@@ -2152,7 +2153,7 @@ callExpression_Yield
     | callExpression_Yield arguments_Yield
     | callExpression_Yield '[' expression_In_Yield ']'
     | callExpression_Yield '.' IdentifierName
-    | callExpression_Yield templateLiteral_Tagged_Yield
+    | callExpression_Yield templateLiteral_Yield_Tagged
     ;
 
 callExpression_Await
@@ -2161,7 +2162,7 @@ callExpression_Await
     | callExpression_Await arguments_Await
     | callExpression_Await '[' expression_In_Await ']'
     | callExpression_Await '.' IdentifierName
-    | callExpression_Await templateLiteral_Tagged_Await
+    | callExpression_Await templateLiteral_Await_Tagged
     ;
 
 callExpression_Yield_Await
@@ -2170,7 +2171,7 @@ callExpression_Yield_Await
     | callExpression_Yield_Await arguments_Yield_Await
     | callExpression_Yield_Await '[' expression_In_Yield_Await ']'
     | callExpression_Yield_Await '.' IdentifierName
-    | callExpression_Yield_Await templateLiteral_Tagged_Yield_Await
+    | callExpression_Yield_Await templateLiteral_Yield_Await_Tagged
     ;
 
 superCall
@@ -2357,22 +2358,22 @@ exponentationExpression_Yield_Await
 
 multiplicativeExpression
     : exponentationExpression
-    | multiplicativeExpression multiplicativeOperator exponentationExpression
+    | multiplicativeExpression MultiplicativeOperator exponentationExpression
     ;
 
 multiplicativeExpression_Yield
     : exponentationExpression_Yield
-    | multiplicativeExpression_Yield multiplicativeOperator exponentationExpression_Yield
+    | multiplicativeExpression_Yield MultiplicativeOperator exponentationExpression_Yield
     ;
 
 multiplicativeExpression_Await
     : exponentationExpression_Await
-    | multiplicativeExpression_Await multiplicativeOperator exponentationExpression_Await
+    | multiplicativeExpression_Await MultiplicativeOperator exponentationExpression_Await
     ;
 
 multiplicativeExpression_Yield_Await
     : exponentationExpression_Yield_Await
-    | multiplicativeExpression_Yield_Await multiplicativeOperator exponentationExpression_Yield_Await
+    | multiplicativeExpression_Yield_Await MultiplicativeOperator exponentationExpression_Yield_Await
     ;
 
 MultiplicativeOperator
@@ -2383,22 +2384,26 @@ MultiplicativeOperator
 
 additiveExpression
     : multiplicativeExpression
-    | additiveExpression [+-] multiplicativeExpression
+    | additiveExpression '+' multiplicativeExpression
+    | additiveExpression '-' multiplicativeExpression
     ;
 
 additiveExpression_Yield
     : multiplicativeExpression_Yield
-    | additiveExpression_Yield [+-] multiplicativeExpression_Yield
+    | additiveExpression_Yield '+' multiplicativeExpression_Yield
+    | additiveExpression_Yield '-' multiplicativeExpression_Yield
     ;
 
 additiveExpression_Await
     : multiplicativeExpression_Await
-    | additiveExpression_Await [+-] multiplicativeExpression_Await
+    | additiveExpression_Await '+' multiplicativeExpression_Await
+    | additiveExpression_Await '-' multiplicativeExpression_Await
     ;
 
 additiveExpression_Yield_Await
     : multiplicativeExpression_Yield_Await
-    | additiveExpression_Yield_Await [+-] multiplicativeExpression_Yield_Await
+    | additiveExpression_Yield_Await '+' multiplicativeExpression_Yield_Await
+    | additiveExpression_Yield_Await '-' multiplicativeExpression_Yield_Await
     ;
 
 // 12.9: Bitwise Shift Operators
@@ -3255,6 +3260,34 @@ block_Yield_Await_Return
 
 statementList
     : statementListItem+
+    ;
+
+statementList_Yield
+    : statementListItem_Yield+
+    ;
+
+statementList_Await
+    : statementListItem_Await+
+    ;
+
+statementList_Yield_Await
+    : statementListItem_Yield_Await+
+    ;
+
+statementList_Return
+    : statementListItem_Return+
+    ;
+
+statementList_Yield_Return
+    : statementListItem_Yield_Return+
+    ;
+
+statementList_Await_Return
+    : statementListItem_Await_Return+
+    ;
+
+statementList_Yield_Await_Return
+    : statementListItem_Yield_Await_Return+
     ;
 
 statementListItem
@@ -4601,15 +4634,15 @@ functionStatementList
     ;
 
 functionStatementList_Yield
-    : statementList_Return_Yield?
+    : statementList_Yield_Return?
     ;
 
 functionStatementList_Await
-    : statementList_Return_Await?
+    : statementList_Await_Return?
     ;
 
 functionStatementList_Yield_Await
-    : statementList_Return_Yield_Await?
+    : statementList_Yield_Await_Return?
     ;
 
 // 14.2: Arrow Function Definitions
@@ -4783,6 +4816,21 @@ generatorBody
 yieldExpression
     : 'yield'
     | 'yield' '*'? assignmentExpression_Yield
+    ;
+
+yieldExpression_In
+    : 'yield'
+    | 'yield' '*'? assignmentExpression_In_Yield
+    ;
+
+yieldExpression_Await
+    : 'yield'
+    | 'yield' '*'? assignmentExpression_Yield_Await
+    ;
+
+yieldExpression_In_Await
+    : 'yield'
+    | 'yield' '*'? assignmentExpression_In_Yield_Await
     ;
 
 // 14.5: Async Generator Function Definitions
@@ -4967,4 +5015,257 @@ classElement_Await
 classElement_Yield_Await
     : 'static'? methodDefinition_Yield_Await
     | ';'
+    ;
+
+// 14.7: Async Function Definitions
+
+asyncFunctionDeclaration
+    : 'async' 'function' bindingIdentifier '(' formalParameters_Await ')' '{' asyncFunctionBody '}'
+    ;
+
+asyncFunctionDeclaration_Yield
+    : 'async' 'function' bindingIdentifier_Yield '(' formalParameters_Await ')' '{' asyncFunctionBody '}'
+    ;
+
+asyncFunctionDeclaration_Await
+    : 'async' 'function' bindingIdentifier_Await '(' formalParameters_Await ')' '{' asyncFunctionBody '}'
+    ;
+
+asyncFunctionDeclaration_Yield_Await
+    : 'async' 'function' bindingIdentifier_Yield_Await '(' formalParameters_Await ')' '{' asyncFunctionBody '}'
+    ;
+
+asyncFunctionDeclaration_Default
+    : 'async' 'function' bindingIdentifier '(' formalParameters_Await ')' '{' asyncFunctionBody '}'
+    | 'async' 'function' '(' formalParameters_Await ')' '{' asyncFunctionBody '}'
+    ;
+
+asyncFunctionDeclaration_Yield_Default
+    : 'async' 'function' bindingIdentifier_Yield '(' formalParameters_Await ')' '{' asyncFunctionBody '}'
+    | 'async' 'function' '(' formalParameters_Await ')' '{' asyncFunctionBody '}'
+    ;
+
+asyncFunctionDeclaration_Await_Default
+    : 'async' 'function' bindingIdentifier_Await '(' formalParameters_Await ')' '{' asyncFunctionBody '}'
+    | 'async' 'function' '(' formalParameters_Await ')' '{' asyncFunctionBody '}'
+    ;
+
+asyncFunctionDeclaration_Yield_Await_Default
+    : 'async' 'function' bindingIdentifier_Yield_Await '(' formalParameters_Await ')' '{' asyncFunctionBody '}'
+    | 'async' 'function' '(' formalParameters_Await ')' '{' asyncFunctionBody '}'
+    ;
+
+asyncFunctionExpression
+    : 'async' 'function' bindingIdentifier_Await? '(' formalParameters_Await ')' '{' asyncFunctionBody '}'
+    ;
+
+asyncMethod
+    : 'async' propertyName '(' uniqueFormalParameters_Await ')' '{' asyncFunctionBody '}'
+    ;
+
+asyncMethod_Yield
+    : 'async' propertyName_Yield '(' uniqueFormalParameters_Await ')' '{' asyncFunctionBody '}'
+    ;
+
+asyncMethod_Await
+    : 'async' propertyName_Await '(' uniqueFormalParameters_Await ')' '{' asyncFunctionBody '}'
+    ;
+
+asyncMethod_Yield_Await
+    : 'async' propertyName_Yield_Await '(' uniqueFormalParameters_Await ')' '{' asyncFunctionBody '}'
+    ;
+
+asyncFunctionBody
+    : functionBody_Await
+    ;
+
+awaitExpression
+    : 'await' unaryExpression_Await
+    ;
+
+awaitExpression_Yield
+    : 'await' unaryExpression_Yield_Await
+    ;
+
+// 14.8: Async Arrow Function Definitions
+
+asyncArrowFunction
+    : 'async' asyncArrowBindingIdentifier '=>' asyncConciseBody
+    | coverCallExpressionAndAsyncArrowHead '=>' asyncConciseBody
+    ;
+
+asyncArrowFunction_In
+    : 'async' asyncArrowBindingIdentifier '=>' asyncConciseBody_In
+    | coverCallExpressionAndAsyncArrowHead '=>' asyncConciseBody_In
+    ;
+
+asyncArrowFunction_Yield
+    : 'async' asyncArrowBindingIdentifier_Yield '=>' asyncConciseBody
+    | coverCallExpressionAndAsyncArrowHead_Yield '=>' asyncConciseBody
+    ;
+
+asyncArrowFunction_In_Yield
+    : 'async' asyncArrowBindingIdentifier_Yield '=>' asyncConciseBody_In
+    | coverCallExpressionAndAsyncArrowHead_Yield '=>' asyncConciseBody_In
+    ;
+
+asyncArrowFunction_Await
+    : 'async' asyncArrowBindingIdentifier '=>' asyncConciseBody
+    | coverCallExpressionAndAsyncArrowHead_Await '=>' asyncConciseBody
+    ;
+
+asyncArrowFunction_In_Await
+    : 'async' asyncArrowBindingIdentifier '=>' asyncConciseBody_In
+    | coverCallExpressionAndAsyncArrowHead_Await '=>' asyncConciseBody_In
+    ;
+
+asyncArrowFunction_Yield_Await
+    : 'async' asyncArrowBindingIdentifier_Yield '=>' asyncConciseBody
+    | coverCallExpressionAndAsyncArrowHead_Yield_Await '=>' asyncConciseBody
+    ;
+
+asyncArrowFunction_In_Yield_Await
+    : 'async' asyncArrowBindingIdentifier_Yield '=>' asyncConciseBody_In
+    | coverCallExpressionAndAsyncArrowHead_Yield_Await '=>' asyncConciseBody_In
+    ;
+
+asyncArrowBindingIdentifier
+    : bindingIdentifier_Await
+    ;
+
+asyncArrowBindingIdentifier_Yield
+    : bindingIdentifier_Yield_Await
+    ;
+
+coverCallExpressionAndAsyncArrowHead
+    : memberExpression arguments
+    ;
+
+coverCallExpressionAndAsyncArrowHead_Yield
+    : memberExpression_Yield arguments_Yield
+    ;
+
+coverCallExpressionAndAsyncArrowHead_Await
+    : memberExpression_Await arguments_Await
+    ;
+
+coverCallExpressionAndAsyncArrowHead_Yield_Await
+    : memberExpression_Yield_Await arguments_Yield_Await
+    ;
+
+// ***************************************************
+// *** 15: ECMAScriptLanguage: Scripts and Modules ***
+// ***************************************************
+
+// 15.1: Scripts
+
+script
+    : scriptBody?
+    ;
+
+scriptBody
+    : statementList
+    ;
+
+// 15.2: Modules
+
+module
+    : moduleBody?
+    ;
+
+moduleBody
+    : moduleItem+
+    ;
+
+moduleItem
+    : importDeclaration
+    | exportDeclaration
+    | statementListItem
+    ;
+
+// 15.2.2: Imports
+
+importDeclaration
+    : 'import' importClause fromClause ';'
+    | 'import' moduleSpecifier ';'
+    ;
+
+importClause
+    : importedDefaultBinding
+    | nameSpaceImport
+    | namedImports
+    | importedDefaultBinding ',' nameSpaceImport
+    | importedDefaultBinding ',' namedImports
+    ;
+
+importedDefaultBinding
+    : importedBinding
+    ;
+
+nameSpaceImport
+    : '*' 'as' importedBinding
+    ;
+
+namedImports
+    : '{' '}'
+    | '{' importsList ','? '}'
+    ;
+
+fromClause
+    : 'from' moduleSpecifier
+    ;
+
+importsList
+    : importSpecifier
+    | importsList ',' importSpecifier
+    ;
+
+importSpecifier
+    : importedBinding
+    | IdentifierName 'as' importedBinding
+    ;
+
+moduleSpecifier
+    : StringLiteral
+    ;
+
+importedBinding
+    : bindingIdentifier
+    ;
+
+// 15.2.3: Exports
+
+exportDeclaration
+    : 'export' '*' fromClause ';'
+    | 'export' exportClause fromClause? ';'
+    | 'export' variableStatement
+    | 'export' declaration
+    | 'export' 'default' hoistableDeclaration_Default
+    | 'export' 'default' classDeclaration_Default
+    | 'export' 'default' { negativeLookahead('function', 'async function', 'class') }? assignmentExpression_In ';'
+    ;
+
+exportClause
+    : '{' '}'
+    | '{' exportsList ','? '}'
+    ;
+
+exportsList
+    : exportSpecifier
+    | exportsList ',' exportSpecifier
+    ;
+
+exportSpecifier
+    : IdentifierName
+    | IdentifierName 'as' IdentifierName
+    ;
+
+// A.4: Functions and Classes
+
+asyncConciseBody
+    : { negativeLookahead('{') }? assignmentExpression_Await '{' asyncFunctionBody '}'
+    ;
+
+asyncConciseBody_In
+    : { negativeLookahead('{') }? assignmentExpression_In_Await '{' asyncFunctionBody '}'
     ;
