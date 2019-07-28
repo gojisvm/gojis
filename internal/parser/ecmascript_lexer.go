@@ -1175,6 +1175,8 @@ const (
 	ECMAScriptLexerMultiplicativeOperator             = 138
 )
 
+var strict bool
+
 func (l *ECMAScriptLexer) Sempred(localctx antlr.RuleContext, ruleIndex, predIndex int) bool {
 	switch ruleIndex {
 	case 127:
@@ -1257,7 +1259,7 @@ func (p *ECMAScriptLexer) EscapeSequence_Sempred(localctx antlr.RuleContext, pre
 func (p *ECMAScriptLexer) TemplateCharacter_Sempred(localctx antlr.RuleContext, predIndex int) bool {
 	switch predIndex {
 	case 9:
-		return negativeLookahead('{')
+		return negativeLookahead("{")
 
 	default:
 		panic("No predicate with index: " + fmt.Sprint(predIndex))
@@ -1273,7 +1275,7 @@ func (p *ECMAScriptLexer) NotEscapeSequence_Sempred(localctx antlr.RuleContext, 
 		return negativeLookahead(HexDigit)
 
 	case 12:
-		return negativeLookahead(HexDigit && _input.LA(1) != '{')
+		return negativeLookahead(HexDigit) && negativeLookahead("{")
 
 	case 13:
 		return negativeLookahead(HexDigit)
@@ -1291,7 +1293,7 @@ func (p *ECMAScriptLexer) NotEscapeSequence_Sempred(localctx antlr.RuleContext, 
 		return negativeLookahead(HexDigit)
 
 	case 18:
-		return negativeLookahead(HexDigit && _input.LA(1) != '{')
+		return negativeLookahead(HexDigit) && negativeLookahead("{")
 
 	default:
 		panic("No predicate with index: " + fmt.Sprint(predIndex))

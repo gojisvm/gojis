@@ -797,30 +797,30 @@ func (s *BaseECMAScriptListener) EnterNewTarget(ctx *NewTargetContext) {}
 // ExitNewTarget is called when production newTarget is exited.
 func (s *BaseECMAScriptListener) ExitNewTarget(ctx *NewTargetContext) {}
 
-// EnterNewExpression is called when production newExpression is entered.
-func (s *BaseECMAScriptListener) EnterNewExpression(ctx *NewExpressionContext) {}
+// EnterTheNewExpression is called when production theNewExpression is entered.
+func (s *BaseECMAScriptListener) EnterTheNewExpression(ctx *TheNewExpressionContext) {}
 
-// ExitNewExpression is called when production newExpression is exited.
-func (s *BaseECMAScriptListener) ExitNewExpression(ctx *NewExpressionContext) {}
+// ExitTheNewExpression is called when production theNewExpression is exited.
+func (s *BaseECMAScriptListener) ExitTheNewExpression(ctx *TheNewExpressionContext) {}
 
-// EnterNewExpression_Yield is called when production newExpression_Yield is entered.
-func (s *BaseECMAScriptListener) EnterNewExpression_Yield(ctx *NewExpression_YieldContext) {}
+// EnterTheNewExpression_Yield is called when production theNewExpression_Yield is entered.
+func (s *BaseECMAScriptListener) EnterTheNewExpression_Yield(ctx *TheNewExpression_YieldContext) {}
 
-// ExitNewExpression_Yield is called when production newExpression_Yield is exited.
-func (s *BaseECMAScriptListener) ExitNewExpression_Yield(ctx *NewExpression_YieldContext) {}
+// ExitTheNewExpression_Yield is called when production theNewExpression_Yield is exited.
+func (s *BaseECMAScriptListener) ExitTheNewExpression_Yield(ctx *TheNewExpression_YieldContext) {}
 
-// EnterNewExpression_Await is called when production newExpression_Await is entered.
-func (s *BaseECMAScriptListener) EnterNewExpression_Await(ctx *NewExpression_AwaitContext) {}
+// EnterTheNewExpression_Await is called when production theNewExpression_Await is entered.
+func (s *BaseECMAScriptListener) EnterTheNewExpression_Await(ctx *TheNewExpression_AwaitContext) {}
 
-// ExitNewExpression_Await is called when production newExpression_Await is exited.
-func (s *BaseECMAScriptListener) ExitNewExpression_Await(ctx *NewExpression_AwaitContext) {}
+// ExitTheNewExpression_Await is called when production theNewExpression_Await is exited.
+func (s *BaseECMAScriptListener) ExitTheNewExpression_Await(ctx *TheNewExpression_AwaitContext) {}
 
-// EnterNewExpression_Yield_Await is called when production newExpression_Yield_Await is entered.
-func (s *BaseECMAScriptListener) EnterNewExpression_Yield_Await(ctx *NewExpression_Yield_AwaitContext) {
+// EnterTheNewExpression_Yield_Await is called when production theNewExpression_Yield_Await is entered.
+func (s *BaseECMAScriptListener) EnterTheNewExpression_Yield_Await(ctx *TheNewExpression_Yield_AwaitContext) {
 }
 
-// ExitNewExpression_Yield_Await is called when production newExpression_Yield_Await is exited.
-func (s *BaseECMAScriptListener) ExitNewExpression_Yield_Await(ctx *NewExpression_Yield_AwaitContext) {
+// ExitTheNewExpression_Yield_Await is called when production theNewExpression_Yield_Await is exited.
+func (s *BaseECMAScriptListener) ExitTheNewExpression_Yield_Await(ctx *TheNewExpression_Yield_AwaitContext) {
 }
 
 // EnterCallExpression is called when production callExpression is entered.
@@ -2735,11 +2735,11 @@ func (s *BaseECMAScriptListener) EnterBindingRestElement_Yield_Await(ctx *Bindin
 func (s *BaseECMAScriptListener) ExitBindingRestElement_Yield_Await(ctx *BindingRestElement_Yield_AwaitContext) {
 }
 
-// EnterEmptyStatement is called when production emptyStatement is entered.
-func (s *BaseECMAScriptListener) EnterEmptyStatement(ctx *EmptyStatementContext) {}
+// EnterTheEmptyStatement is called when production theEmptyStatement is entered.
+func (s *BaseECMAScriptListener) EnterTheEmptyStatement(ctx *TheEmptyStatementContext) {}
 
-// ExitEmptyStatement is called when production emptyStatement is exited.
-func (s *BaseECMAScriptListener) ExitEmptyStatement(ctx *EmptyStatementContext) {}
+// ExitTheEmptyStatement is called when production theEmptyStatement is exited.
+func (s *BaseECMAScriptListener) ExitTheEmptyStatement(ctx *TheEmptyStatementContext) {}
 
 // EnterExpressionStatement is called when production expressionStatement is entered.
 func (s *BaseECMAScriptListener) EnterExpressionStatement(ctx *ExpressionStatementContext) {}

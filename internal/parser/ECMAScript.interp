@@ -395,10 +395,10 @@ superProperty_Await
 superProperty_Yield_Await
 metaProperty
 newTarget
-newExpression
-newExpression_Yield
-newExpression_Await
-newExpression_Yield_Await
+theNewExpression
+theNewExpression_Yield
+theNewExpression_Await
+theNewExpression_Yield_Await
 callExpression
 callExpression_Yield
 callExpression_Await
@@ -673,7 +673,7 @@ bindingRestElement
 bindingRestElement_Yield
 bindingRestElement_Await
 bindingRestElement_Yield_Await
-emptyStatement
+theEmptyStatement
 expressionStatement
 expressionStatement_Yield
 expressionStatement_Await

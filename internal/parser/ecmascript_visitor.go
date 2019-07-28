@@ -350,17 +350,17 @@ type ECMAScriptVisitor interface {
 	// Visit a parse tree produced by ECMAScriptParser#newTarget.
 	VisitNewTarget(ctx *NewTargetContext) interface{}
 
-	// Visit a parse tree produced by ECMAScriptParser#newExpression.
-	VisitNewExpression(ctx *NewExpressionContext) interface{}
+	// Visit a parse tree produced by ECMAScriptParser#theNewExpression.
+	VisitTheNewExpression(ctx *TheNewExpressionContext) interface{}
 
-	// Visit a parse tree produced by ECMAScriptParser#newExpression_Yield.
-	VisitNewExpression_Yield(ctx *NewExpression_YieldContext) interface{}
+	// Visit a parse tree produced by ECMAScriptParser#theNewExpression_Yield.
+	VisitTheNewExpression_Yield(ctx *TheNewExpression_YieldContext) interface{}
 
-	// Visit a parse tree produced by ECMAScriptParser#newExpression_Await.
-	VisitNewExpression_Await(ctx *NewExpression_AwaitContext) interface{}
+	// Visit a parse tree produced by ECMAScriptParser#theNewExpression_Await.
+	VisitTheNewExpression_Await(ctx *TheNewExpression_AwaitContext) interface{}
 
-	// Visit a parse tree produced by ECMAScriptParser#newExpression_Yield_Await.
-	VisitNewExpression_Yield_Await(ctx *NewExpression_Yield_AwaitContext) interface{}
+	// Visit a parse tree produced by ECMAScriptParser#theNewExpression_Yield_Await.
+	VisitTheNewExpression_Yield_Await(ctx *TheNewExpression_Yield_AwaitContext) interface{}
 
 	// Visit a parse tree produced by ECMAScriptParser#callExpression.
 	VisitCallExpression(ctx *CallExpressionContext) interface{}
@@ -1184,8 +1184,8 @@ type ECMAScriptVisitor interface {
 	// Visit a parse tree produced by ECMAScriptParser#bindingRestElement_Yield_Await.
 	VisitBindingRestElement_Yield_Await(ctx *BindingRestElement_Yield_AwaitContext) interface{}
 
-	// Visit a parse tree produced by ECMAScriptParser#emptyStatement.
-	VisitEmptyStatement(ctx *EmptyStatementContext) interface{}
+	// Visit a parse tree produced by ECMAScriptParser#theEmptyStatement.
+	VisitTheEmptyStatement(ctx *TheEmptyStatementContext) interface{}
 
 	// Visit a parse tree produced by ECMAScriptParser#expressionStatement.
 	VisitExpressionStatement(ctx *ExpressionStatementContext) interface{}

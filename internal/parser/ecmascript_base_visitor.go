@@ -464,19 +464,19 @@ func (v *BaseECMAScriptVisitor) VisitNewTarget(ctx *NewTargetContext) interface{
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseECMAScriptVisitor) VisitNewExpression(ctx *NewExpressionContext) interface{} {
+func (v *BaseECMAScriptVisitor) VisitTheNewExpression(ctx *TheNewExpressionContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseECMAScriptVisitor) VisitNewExpression_Yield(ctx *NewExpression_YieldContext) interface{} {
+func (v *BaseECMAScriptVisitor) VisitTheNewExpression_Yield(ctx *TheNewExpression_YieldContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseECMAScriptVisitor) VisitNewExpression_Await(ctx *NewExpression_AwaitContext) interface{} {
+func (v *BaseECMAScriptVisitor) VisitTheNewExpression_Await(ctx *TheNewExpression_AwaitContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseECMAScriptVisitor) VisitNewExpression_Yield_Await(ctx *NewExpression_Yield_AwaitContext) interface{} {
+func (v *BaseECMAScriptVisitor) VisitTheNewExpression_Yield_Await(ctx *TheNewExpression_Yield_AwaitContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -1576,7 +1576,7 @@ func (v *BaseECMAScriptVisitor) VisitBindingRestElement_Yield_Await(ctx *Binding
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseECMAScriptVisitor) VisitEmptyStatement(ctx *EmptyStatementContext) interface{} {
+func (v *BaseECMAScriptVisitor) VisitTheEmptyStatement(ctx *TheEmptyStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

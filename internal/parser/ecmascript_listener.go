@@ -350,17 +350,17 @@ type ECMAScriptListener interface {
 	// EnterNewTarget is called when entering the newTarget production.
 	EnterNewTarget(c *NewTargetContext)
 
-	// EnterNewExpression is called when entering the newExpression production.
-	EnterNewExpression(c *NewExpressionContext)
+	// EnterTheNewExpression is called when entering the theNewExpression production.
+	EnterTheNewExpression(c *TheNewExpressionContext)
 
-	// EnterNewExpression_Yield is called when entering the newExpression_Yield production.
-	EnterNewExpression_Yield(c *NewExpression_YieldContext)
+	// EnterTheNewExpression_Yield is called when entering the theNewExpression_Yield production.
+	EnterTheNewExpression_Yield(c *TheNewExpression_YieldContext)
 
-	// EnterNewExpression_Await is called when entering the newExpression_Await production.
-	EnterNewExpression_Await(c *NewExpression_AwaitContext)
+	// EnterTheNewExpression_Await is called when entering the theNewExpression_Await production.
+	EnterTheNewExpression_Await(c *TheNewExpression_AwaitContext)
 
-	// EnterNewExpression_Yield_Await is called when entering the newExpression_Yield_Await production.
-	EnterNewExpression_Yield_Await(c *NewExpression_Yield_AwaitContext)
+	// EnterTheNewExpression_Yield_Await is called when entering the theNewExpression_Yield_Await production.
+	EnterTheNewExpression_Yield_Await(c *TheNewExpression_Yield_AwaitContext)
 
 	// EnterCallExpression is called when entering the callExpression production.
 	EnterCallExpression(c *CallExpressionContext)
@@ -1184,8 +1184,8 @@ type ECMAScriptListener interface {
 	// EnterBindingRestElement_Yield_Await is called when entering the bindingRestElement_Yield_Await production.
 	EnterBindingRestElement_Yield_Await(c *BindingRestElement_Yield_AwaitContext)
 
-	// EnterEmptyStatement is called when entering the emptyStatement production.
-	EnterEmptyStatement(c *EmptyStatementContext)
+	// EnterTheEmptyStatement is called when entering the theEmptyStatement production.
+	EnterTheEmptyStatement(c *TheEmptyStatementContext)
 
 	// EnterExpressionStatement is called when entering the expressionStatement production.
 	EnterExpressionStatement(c *ExpressionStatementContext)
@@ -2417,17 +2417,17 @@ type ECMAScriptListener interface {
 	// ExitNewTarget is called when exiting the newTarget production.
 	ExitNewTarget(c *NewTargetContext)
 
-	// ExitNewExpression is called when exiting the newExpression production.
-	ExitNewExpression(c *NewExpressionContext)
+	// ExitTheNewExpression is called when exiting the theNewExpression production.
+	ExitTheNewExpression(c *TheNewExpressionContext)
 
-	// ExitNewExpression_Yield is called when exiting the newExpression_Yield production.
-	ExitNewExpression_Yield(c *NewExpression_YieldContext)
+	// ExitTheNewExpression_Yield is called when exiting the theNewExpression_Yield production.
+	ExitTheNewExpression_Yield(c *TheNewExpression_YieldContext)
 
-	// ExitNewExpression_Await is called when exiting the newExpression_Await production.
-	ExitNewExpression_Await(c *NewExpression_AwaitContext)
+	// ExitTheNewExpression_Await is called when exiting the theNewExpression_Await production.
+	ExitTheNewExpression_Await(c *TheNewExpression_AwaitContext)
 
-	// ExitNewExpression_Yield_Await is called when exiting the newExpression_Yield_Await production.
-	ExitNewExpression_Yield_Await(c *NewExpression_Yield_AwaitContext)
+	// ExitTheNewExpression_Yield_Await is called when exiting the theNewExpression_Yield_Await production.
+	ExitTheNewExpression_Yield_Await(c *TheNewExpression_Yield_AwaitContext)
 
 	// ExitCallExpression is called when exiting the callExpression production.
 	ExitCallExpression(c *CallExpressionContext)
@@ -3251,8 +3251,8 @@ type ECMAScriptListener interface {
 	// ExitBindingRestElement_Yield_Await is called when exiting the bindingRestElement_Yield_Await production.
 	ExitBindingRestElement_Yield_Await(c *BindingRestElement_Yield_AwaitContext)
 
-	// ExitEmptyStatement is called when exiting the emptyStatement production.
-	ExitEmptyStatement(c *EmptyStatementContext)
+	// ExitTheEmptyStatement is called when exiting the theEmptyStatement production.
+	ExitTheEmptyStatement(c *TheEmptyStatementContext)
 
 	// ExitExpressionStatement is called when exiting the expressionStatement production.
 	ExitExpressionStatement(c *ExpressionStatementContext)

@@ -1,5 +1,9 @@
 grammar ECMAScript;
 
+@lexer::members {
+    var strict bool
+}
+
 // 11: Lexical Grammar
 
 fragment SourceCharacter
