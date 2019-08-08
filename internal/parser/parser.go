@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/davecgh/go-spew/spew"
 )
 
 //go:generate antlr -Dlanguage=Go -visitor ECMAScript.g4
@@ -38,26 +39,25 @@ func (p *Parser) ParseFile(path string) error {
 
 	_ = input
 
-	// lexer := NewECMAScriptLexer(input)
-	// lexer.RemoveErrorListeners()
+	lexer := NewECMAScriptLexer(input)
+	lexer.RemoveErrorListeners()
 
-	// stream := antlr.NewCommonTokenStream(lexer, 0)
-	// par := NewECMAScriptParser(stream)
-	// par.RemoveErrorListeners()
+	stream := antlr.NewCommonTokenStream(lexer, 0)
+	par := NewECMAScriptParser(stream)
+	par.RemoveErrorListeners()
 
-	// errorCollector := NewCollectingErrorListener()
-	// par.AddErrorListener(errorCollector)
-	// par.BuildParseTrees = true
+	errorCollector := NewCollectingErrorListener()
+	par.AddErrorListener(errorCollector)
+	par.BuildParseTrees = true
 
-	// tree := par.Program()
-	// if errs, hasErrors := errorCollector.Errors(); hasErrors {
-	// 	return NewParserError(path, errs...)
-	// }
+	tree := par.Script()
+	if errs, hasErrors := errorCollector.Errors(); hasErrors {
+		return NewParserError(path, errs...)
+	}
 
-	// // only append root if no errors occurred while parsing
-	// p.ast.AddRoot(path, tree)
+	spew.Dump(tree)
 
-	panic("TODO")
+	return nil
 }
 
 func (p *Parser) Ast() interface{} {
