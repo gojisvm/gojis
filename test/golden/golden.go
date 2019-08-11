@@ -1,7 +1,6 @@
 package golden
 
 import (
-	"flag"
 	"io/ioutil"
 	"path/filepath"
 	"testing"
@@ -14,15 +13,15 @@ const (
 	suffix = ".golden"
 )
 
-var (
-	update = flag.Bool("update", false, "Update golden test files.")
-)
+// var (
+// 	update = flag.Bool("update", false, "Update golden test files.")
+// )
 
-func init() {
-	if !flag.Parsed() {
-		flag.Parse()
-	}
-}
+// func init() {
+// 	if !flag.Parsed() {
+// 		flag.Parse()
+// 	}
+// }
 
 // Equal asserts that the actual bytes are exactly the same as the bytes in the golden
 // file with the given name.
@@ -31,7 +30,8 @@ func init() {
 func Equal(t *testing.T, name string, actual []byte) {
 	goldenName := filepath.Join(folder, name+suffix)
 
-	if *update {
+	// if *update {
+	if false {
 		goldenUpdate(t, goldenName, actual)
 	} else {
 		goldenEqual(t, goldenName, actual)

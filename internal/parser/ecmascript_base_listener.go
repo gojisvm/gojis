@@ -2,7 +2,11 @@
 
 package parser // ECMAScript
 
-import "github.com/antlr/antlr4/runtime/Go/antlr"
+import (
+	"fmt"
+
+	"github.com/antlr/antlr4/runtime/Go/antlr"
+)
 
 // BaseECMAScriptListener is a complete listener for a parse tree produced by ECMAScriptParser.
 type BaseECMAScriptListener struct{}
@@ -16,7 +20,9 @@ func (s *BaseECMAScriptListener) VisitTerminal(node antlr.TerminalNode) {}
 func (s *BaseECMAScriptListener) VisitErrorNode(node antlr.ErrorNode) {}
 
 // EnterEveryRule is called when any rule is entered.
-func (s *BaseECMAScriptListener) EnterEveryRule(ctx antlr.ParserRuleContext) {}
+func (s *BaseECMAScriptListener) EnterEveryRule(ctx antlr.ParserRuleContext) {
+	fmt.Printf("enter: %T (text: '%v', #children: %v)\n", ctx, ctx.GetText(), len(ctx.GetChildren()))
+}
 
 // ExitEveryRule is called when any rule is exited.
 func (s *BaseECMAScriptListener) ExitEveryRule(ctx antlr.ParserRuleContext) {}

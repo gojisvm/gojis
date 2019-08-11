@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/davecgh/go-spew/spew"
 )
 
 //go:generate antlr -Dlanguage=Go -visitor ECMAScript.g4
@@ -37,8 +36,6 @@ func (p *Parser) ParseFile(path string) error {
 		return fmt.Errorf("Error while loading file: %v", err)
 	}
 
-	_ = input
-
 	lexer := NewECMAScriptLexer(input)
 	lexer.RemoveErrorListeners()
 
@@ -50,12 +47,8 @@ func (p *Parser) ParseFile(path string) error {
 	par.AddErrorListener(errorCollector)
 	par.BuildParseTrees = true
 
-	tree := par.Script()
-	if errs, hasErrors := errorCollector.Errors(); hasErrors {
-		return NewParserError(path, errs...)
-	}
-
-	spew.Dump(tree)
+	var listener customListener
+	antlr.ParseTreeWalkerDefault.Walk(&listener, par.Script())
 
 	return nil
 }
