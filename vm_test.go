@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/gojisvm/gojis"
-	"github.com/gojisvm/gojis/test/golden"
+	"github.com/gojisvm/gojis/tools/golden"
 )
 
 func TestHelloWorld(t *testing.T) {

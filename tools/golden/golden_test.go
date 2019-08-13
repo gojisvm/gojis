@@ -3,7 +3,7 @@ package golden_test
 import (
 	"testing"
 
-	"github.com/gojisvm/gojis/test/golden"
+	"github.com/gojisvm/gojis/tools/golden"
 )
 
 func TestEqual(t *testing.T) {

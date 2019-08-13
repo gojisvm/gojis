@@ -3,6 +3,7 @@ package golden
 import (
 	"flag"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"sync"
 	"testing"
@@ -47,7 +48,10 @@ func Equal(t *testing.T, name string, actual []byte) {
 func goldenUpdate(t *testing.T, goldenName string, actual []byte) {
 	require := require.New(t)
 
-	err := ioutil.WriteFile(goldenName, actual, 0666)
+	err := os.MkdirAll(folder, 0766)
+	require.NoError(err, "Unable to create testdata directory %v: %v", folder, err)
+
+	err = ioutil.WriteFile(goldenName, actual, 0666)
 	require.NoError(err, "Unable to update golden test file %v: %v", goldenName, err)
 }
 
