@@ -9,9 +9,7 @@ import (
 )
 
 func TestHelloWorld(t *testing.T) {
-	if testing.Short() {
-		t.SkipNow() // skipped until API is implemented
-	}
+	t.SkipNow() // skipped until API is implemented
 
 	vm := gojis.NewVM()
 
@@ -24,9 +22,7 @@ func TestHelloWorld(t *testing.T) {
 }
 
 func TestInlineObject(t *testing.T) {
-	if testing.Short() {
-		t.SkipNow()
-	}
+	t.SkipNow()
 
 	vm := gojis.NewVM()
 
