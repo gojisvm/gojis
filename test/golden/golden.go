@@ -4,6 +4,7 @@ import (
 	"flag"
 	"io/ioutil"
 	"path/filepath"
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -15,13 +16,16 @@ const (
 )
 
 var (
-	update = flag.Bool("update", false, "Update golden test files.")
+	flagOnce sync.Once
+	update   = flag.Bool("update", false, "Update golden test files.")
 )
 
-func init() {
-	if !flag.Parsed() {
-		flag.Parse()
-	}
+func ensureFlagsParsed() {
+	flagOnce.Do(func() {
+		if !flag.Parsed() {
+			flag.Parse()
+		}
+	})
 }
 
 // Equal asserts that the actual bytes are exactly the same as the bytes in the golden
@@ -29,6 +33,8 @@ func init() {
 //
 // The golden file is located under 'testdata/' + name + '.golden'
 func Equal(t *testing.T, name string, actual []byte) {
+	ensureFlagsParsed()
+
 	goldenName := filepath.Join(folder, name+suffix)
 
 	if *update {
