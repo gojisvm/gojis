@@ -63,7 +63,7 @@ func Equal(t *testing.T, name string, actual []byte) {
 func goldenUpdate(t *testing.T, goldenName string, actual []byte) {
 	require := require.New(t)
 
-	err := os.MkdirAll(folder, 0766)
+	err := os.MkdirAll(folder, 0750)
 	require.NoError(err, "Unable to create testdata directory %v: %v", folder, err)
 
 	err = ioutil.WriteFile(goldenName, actual, 0666)
