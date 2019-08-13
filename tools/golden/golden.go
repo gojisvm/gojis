@@ -8,6 +8,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/require"
 )
 
@@ -19,6 +20,14 @@ const (
 var (
 	flagOnce sync.Once
 	update   = flag.Bool("update", false, "Update golden test files.")
+
+	log = zerolog.New(
+		zerolog.ConsoleWriter{Out: os.Stdout},
+	).
+		Level(zerolog.DebugLevel).
+		With().
+		Timestamp().
+		Logger()
 )
 
 func ensureFlagsParsed() {
@@ -37,6 +46,12 @@ func Equal(t *testing.T, name string, actual []byte) {
 	ensureFlagsParsed()
 
 	goldenName := filepath.Join(folder, name+suffix)
+
+	log.Debug().
+		Str("testcase", t.Name()).
+		Bool("update", *update).
+		Str("golden_file", goldenName).
+		Msg("Checking equality")
 
 	if *update {
 		goldenUpdate(t, goldenName, actual)
