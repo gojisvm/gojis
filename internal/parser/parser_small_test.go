@@ -11,5 +11,5 @@ func TestSmallDevFile(t *testing.T) {
 
 	p := New()
 	err := p.ParseFile("testdata/small.js")
-	require.NoError(err)
+	require.Error(err)
 }
