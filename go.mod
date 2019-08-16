@@ -7,5 +7,5 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/google/uuid v1.1.1
 	github.com/rs/zerolog v1.15.0
-	github.com/stretchr/testify v1.3.0
+	github.com/stretchr/testify v1.4.0
 )
