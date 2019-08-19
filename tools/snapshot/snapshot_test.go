@@ -131,5 +131,5 @@ func TestPointer(t *testing.T) {
 	require.NoError(err)
 
 	require.EqualValues(obj, result)
-	require.NotEqual(unsafe.Pointer(obj.object), unsafe.Pointer(result.object), ".object of the loaded object must not point to the .object of the stored object, since a pointer should transitively be copied")
+	require.NotEqual(unsafe.Pointer(obj.object), unsafe.Pointer(result.object), ".object of the loaded object must not point to the .object of the original object, since a pointer should transitively be copied")
 }
