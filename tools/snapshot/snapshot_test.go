@@ -63,6 +63,33 @@ func TestDifficult(t *testing.T) {
 	require.EqualValues(obj, result)
 }
 
+func TestEmbedded(t *testing.T) {
+	require := require.New(t)
+
+	type T1 struct {
+		content string
+	}
+	type T struct {
+		T1
+		content string
+		another int
+	}
+	obj := T{
+		T1{"World"},
+		"Hello",
+		24,
+	}
+
+	var buf bytes.Buffer
+	snapshot.Store(&buf, &obj)
+
+	var result T
+	err := snapshot.Load(buf.Bytes(), &result, unsafe.Sizeof(result))
+	require.NoError(err)
+
+	require.EqualValues(obj, result)
+}
+
 func TestComplex(t *testing.T) {
 	require := require.New(t)
 
