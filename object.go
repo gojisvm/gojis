@@ -17,7 +17,7 @@ type Object interface {
 	// this object does not have a 'Call' property that is callable, an error will
 	// be returned.
 	CallWithArgs(...interface{}) (Object, error)
-	// SetObbject adds a property with the given name to this object. The property's
+	// SetObject adds a property with the given name to this object. The property's
 	// value will be the given object.
 	SetObject(string, Object)
 
