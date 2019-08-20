@@ -28,8 +28,8 @@ func toBytes(v interface{}) []byte {
 	val := reflect.ValueOf(v)
 	size := val.Elem().Type().Size()
 	log.Printf("size: %v\n", size)
-	ptr := unsafe.Pointer(val.Pointer())
-	data := (*(*[1<<31 - 1]byte)(ptr))[:size] // #nosec
+	ptr := unsafe.Pointer(val.Pointer()) // #nosec
+	data := (*(*[1<<31 - 1]byte)(ptr))[:size]
 
 	// pointers are not yet supported
 
