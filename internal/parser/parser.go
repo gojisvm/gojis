@@ -10,16 +10,22 @@ import (
 
 //go:generate antlr -Dlanguage=Go -visitor ECMAScript.g4
 
+// Parser parses ECMAScript code and generates an AST
+// that can be evaluated by the runtime.
 type Parser struct {
 	ast interface{}
 }
 
+// New creates a new ready-to-use parser.
 func New() *Parser {
 	p := new(Parser)
 	// p.ast = NewEmptyAst()
 	return p
 }
 
+// ParseFiles parses all given files and merges the produced ASTs.
+// ParseFiles can produce one error per file, but these errors
+// may be collections of multiple parse errors in a file.
 func (p *Parser) ParseFiles(paths ...string) (errs []error) {
 	for _, path := range paths {
 		err := p.ParseFile(path)
@@ -30,6 +36,9 @@ func (p *Parser) ParseFiles(paths ...string) (errs []error) {
 	return
 }
 
+// ParseFile parses the file at the given path.
+// If parse errors occurred, they are collected and returned
+// as a single error.
 func (p *Parser) ParseFile(path string) error {
 	input, err := antlr.NewFileStream(path)
 	if err != nil {
@@ -51,7 +60,7 @@ func (p *Parser) ParseFile(path string) error {
 
 	// tree := par.Program()
 	// if errs, hasErrors := errorCollector.Errors(); hasErrors {
-	// 	return NewParserError(path, errs...)
+	// 	return NewError(path, errs...)
 	// }
 
 	// // only append root if no errors occurred while parsing
@@ -60,23 +69,27 @@ func (p *Parser) ParseFile(path string) error {
 	panic("TODO")
 }
 
-func (p *Parser) Ast() interface{} {
+// AST returns the AST of all files that the parser has parsed.
+func (p *Parser) AST() interface{} {
 	return p.ast
 }
 
-type ParserError struct {
+// Error summarizes all parse errors of a single file
+// and associates these errors with the parsed file.
+type Error struct {
 	file string
 	errs []error
 }
 
-func NewParserError(file string, errs ...error) ParserError {
-	return ParserError{
+// NewError creates a new parser error with the given file and errors.
+func NewError(file string, errs ...error) Error {
+	return Error{
 		file: file,
 		errs: errs,
 	}
 }
 
-func (e ParserError) Error() string {
+func (e Error) Error() string {
 	if len(e.errs) == 0 {
 		return ""
 	}
