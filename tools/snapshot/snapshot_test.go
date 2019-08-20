@@ -16,10 +16,11 @@ func TestEmpty(t *testing.T) {
 	obj := T{}
 
 	var buf bytes.Buffer
-	snapshot.Store(&buf, &obj)
+	err := snapshot.Store(&buf, &obj)
+	require.NoError(err)
 
 	var result T
-	err := snapshot.Load(buf.Bytes(), &result, unsafe.Sizeof(result))
+	err = snapshot.Load(buf.Bytes(), &result, unsafe.Sizeof(result))
 	require.NoError(err)
 
 	require.EqualValues(obj, result)
@@ -34,10 +35,11 @@ func TestSimple(t *testing.T) {
 	obj := T{"Hello"}
 
 	var buf bytes.Buffer
-	snapshot.Store(&buf, &obj)
+	err := snapshot.Store(&buf, &obj)
+	require.NoError(err)
 
 	var result T
-	err := snapshot.Load(buf.Bytes(), &result, unsafe.Sizeof(result))
+	err = snapshot.Load(buf.Bytes(), &result, unsafe.Sizeof(result))
 	require.NoError(err)
 
 	require.EqualValues(obj, result)
@@ -54,10 +56,11 @@ func TestDifficult(t *testing.T) {
 	obj := T{"Hello", 2.47e25, 12}
 
 	var buf bytes.Buffer
-	snapshot.Store(&buf, &obj)
+	err := snapshot.Store(&buf, &obj)
+	require.NoError(err)
 
 	var result T
-	err := snapshot.Load(buf.Bytes(), &result, unsafe.Sizeof(result))
+	err = snapshot.Load(buf.Bytes(), &result, unsafe.Sizeof(result))
 	require.NoError(err)
 
 	require.EqualValues(obj, result)
@@ -81,10 +84,11 @@ func TestEmbedded(t *testing.T) {
 	}
 
 	var buf bytes.Buffer
-	snapshot.Store(&buf, &obj)
+	err := snapshot.Store(&buf, &obj)
+	require.NoError(err)
 
 	var result T
-	err := snapshot.Load(buf.Bytes(), &result, unsafe.Sizeof(result))
+	err = snapshot.Load(buf.Bytes(), &result, unsafe.Sizeof(result))
 	require.NoError(err)
 
 	require.EqualValues(obj, result)
@@ -108,10 +112,11 @@ func TestComplex(t *testing.T) {
 	}
 
 	var buf bytes.Buffer
-	snapshot.Store(&buf, &obj)
+	err := snapshot.Store(&buf, &obj)
+	require.NoError(err)
 
 	var result T
-	err := snapshot.Load(buf.Bytes(), &result, unsafe.Sizeof(result))
+	err = snapshot.Load(buf.Bytes(), &result, unsafe.Sizeof(result))
 	require.NoError(err)
 
 	require.EqualValues(obj, result)
@@ -124,10 +129,11 @@ func TestAlias(t *testing.T) {
 	obj := T("Hello")
 
 	var buf bytes.Buffer
-	snapshot.Store(&buf, &obj)
+	err := snapshot.Store(&buf, &obj)
+	require.NoError(err)
 
 	var result T
-	err := snapshot.Load(buf.Bytes(), &result, unsafe.Sizeof(result))
+	err = snapshot.Load(buf.Bytes(), &result, unsafe.Sizeof(result))
 	require.NoError(err)
 
 	require.EqualValues(obj, result)
@@ -151,10 +157,11 @@ func TestPointer(t *testing.T) {
 	}
 
 	var buf bytes.Buffer
-	snapshot.Store(&buf, &obj)
+	err := snapshot.Store(&buf, &obj)
+	require.NoError(err)
 
 	var result T
-	err := snapshot.Load(buf.Bytes(), &result, unsafe.Sizeof(result))
+	err = snapshot.Load(buf.Bytes(), &result, unsafe.Sizeof(result))
 	require.NoError(err)
 
 	require.EqualValues(obj, result)

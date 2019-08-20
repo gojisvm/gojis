@@ -1,8 +1,8 @@
 package snapshot
 
 import (
+	"fmt"
 	"io"
-	"log"
 	"reflect"
 	"unsafe"
 )
@@ -16,9 +16,13 @@ func Load(bytes []byte, v interface{}, size uintptr) error {
 	return nil
 }
 
-func Store(w io.Writer, v interface{}) {
+func Store(w io.Writer, v interface{}) error {
 	data := toBytes(v)
-	w.Write(data)
+	_, err := w.Write(data)
+	if err != nil {
+		return fmt.Errorf("Store: %v", err)
+	}
+	return nil
 }
 
 // toBytes returns a byte slice pointing to the memory segment
@@ -27,7 +31,6 @@ func toBytes(v interface{}) []byte {
 	// convert the value to a byte slice
 	val := reflect.ValueOf(v)
 	size := val.Elem().Type().Size()
-	log.Printf("size: %v\n", size)
 	ptr := unsafe.Pointer(val.Pointer()) // #nosec
 	data := (*(*[1<<31 - 1]byte)(ptr))[:size]
 
