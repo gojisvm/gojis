@@ -14,6 +14,10 @@ import (
 
 const uintptrsize = unsafe.Sizeof(uintptr(0))
 
+// Load unsafely loads the given bytes into the memory location
+// of v. size must be equal to the result of
+//
+//	unsafe.Sizeof(v)
 func Load(b []byte, v interface{}, size uintptr) error {
 	ptr := unsafe.Pointer(reflect.ValueOf(v).Pointer()) // #nosec
 	data := bytesAt(ptr, size)
@@ -63,6 +67,8 @@ func loadTo(dst *[]byte, nst Nested) error {
 	return nil
 }
 
+// Store stores the given interface to a writer in a proprietary, GOARCH and GOOS
+// dependent format, that will not be documented further.
 func Store(w io.Writer, v interface{}) error {
 	msg, seg, err := capnp.NewMessage(capnp.SingleSegment(nil))
 	if err != nil {
