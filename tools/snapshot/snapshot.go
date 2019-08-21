@@ -12,7 +12,7 @@ import (
 	capnp "zombiezen.com/go/capnproto2"
 )
 
-const uintptrsize = unsafe.Sizeof(uintptr(0))
+const uintptrsize = unsafe.Sizeof(uintptr(0)) // #nosec
 
 // Load unsafely loads the given bytes into the memory location
 // of v. size must be equal to the result of
@@ -60,8 +60,11 @@ func loadTo(dst *[]byte, nst Nested) error {
 		}
 
 		nextData := make([]byte, target.Len())
-		copy((*dst)[offset:offset+uintptrsize], (*[uintptrsize]byte)(unsafe.Pointer(&((*reflect.StringHeader)(unsafe.Pointer(&nextData)).Data)))[:])
-		loadTo(&nextData, target)
+		copy((*dst)[offset:offset+uintptrsize], (*[uintptrsize]byte)(unsafe.Pointer(&((*reflect.StringHeader)(unsafe.Pointer(&nextData)).Data)))[:]) // #nosec
+		err = loadTo(&nextData, target)
+		if err != nil {
+			return fmt.Errorf("loadTo(loadTo): %v", err)
+		}
 	}
 
 	return nil
@@ -76,7 +79,7 @@ func Store(w io.Writer, v interface{}) error {
 	}
 
 	sn, err := storeToCapnp(v, seg)
-	msg.SetRoot(sn)
+	_ = msg.SetRoot(sn)
 
 	err = encodeCapnp(w, msg)
 	if err != nil {
@@ -113,7 +116,7 @@ func storeToCapnp(v interface{}, s *capnp.Segment) (Snapshot, error) {
 		return snapshot, fmt.Errorf("storeToCapnp: %v", err)
 	}
 
-	snapshot.SetNested(nested)
+	_ = snapshot.SetNested(nested)
 
 	return snapshot, err
 }
@@ -138,14 +141,14 @@ func storeNestedInSegment(internalNested *internalNested, s *capnp.Segment) (Nes
 		next, err := storeNestedInSegment(targets.target, s)
 
 		pointer.SetOffset(targets.offset)
-		pointer.SetTarget(next)
+		_ = pointer.SetTarget(next)
 
-		pointers.Set(i, pointer)
+		_ = pointers.Set(i, pointer)
 	}
 
-	nested.SetData(internalNested.data)
+	_ = nested.SetData(internalNested.data)
 	nested.SetLen(int64(len(internalNested.data)))
-	nested.SetPointers(pointers)
+	_ = nested.SetPointers(pointers)
 
 	return nested, nil
 }
@@ -200,6 +203,7 @@ type nestedPtr struct {
 // are pointers pointing to some memory location.
 // The returned map associates the memory offsets of the pointers
 // relative to ptr with their destinations.
+/* #nosec */
 func getPointers(data []byte, ptr unsafe.Pointer, t reflect.Type) map[uintptr]nestedPtr {
 	ptrs := make(map[uintptr]nestedPtr)
 
@@ -217,12 +221,12 @@ func getPointers(data []byte, ptr unsafe.Pointer, t reflect.Type) map[uintptr]ne
 			switch uintptrsize {
 			case 4:
 				ptrs[offset] = nestedPtr{
-					ptr: unsafe.Pointer(uintptr(endian.Endian.Uint32(data[offset : offset+uintptrsize]))), // #nosec
+					ptr: unsafe.Pointer(uintptr(endian.Endian.Uint32(data[offset : offset+uintptrsize]))),
 					t:   tField.Type,
 				}
 			case 8:
 				ptrs[offset] = nestedPtr{
-					ptr: unsafe.Pointer(uintptr(endian.Endian.Uint64(data[offset : offset+uintptrsize]))), // #nosec
+					ptr: unsafe.Pointer(uintptr(endian.Endian.Uint64(data[offset : offset+uintptrsize]))),
 					t:   tField.Type,
 				}
 			default:
