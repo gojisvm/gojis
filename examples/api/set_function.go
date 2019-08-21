@@ -43,10 +43,11 @@ func main() {
 	// go drainAlerts(alerts)
 
 	vm.SetFunction("alert", func(args gojis.Args) gojis.Object {
-		val := args.Get(0)
-		if val.IsUndefined() {
+		if args.Len() == 0 {
 			panic("No argument provided.")
 		}
+
+		val := args.Get(0)
 		if val.Type() != gojis.TypeString {
 			panic("Argument has to be a string")
 		}
