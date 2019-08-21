@@ -143,17 +143,17 @@ func TestPointer(t *testing.T) {
 	require := require.New(t)
 
 	type T1 struct {
-		content string
+		content int64
 	}
 	type T struct {
-		content string
+		another int64
 		object  *T1
-		another int
+		content int64
 	}
 	obj := T{
-		"Hello",
-		&T1{"World"},
 		24,
+		&T1{32},
+		64,
 	}
 
 	var buf bytes.Buffer

@@ -14,12 +14,12 @@ type Snapshot struct{ capnp.Struct }
 const Snapshot_TypeID = 0xc499a1c127bebec9
 
 func NewSnapshot(s *capnp.Segment) (Snapshot, error) {
-	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 8, PointerCount: 2})
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
 	return Snapshot{st}, err
 }
 
 func NewRootSnapshot(s *capnp.Segment) (Snapshot, error) {
-	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 8, PointerCount: 2})
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
 	return Snapshot{st}, err
 }
 
@@ -33,40 +33,18 @@ func (s Snapshot) String() string {
 	return str
 }
 
-func (s Snapshot) Uintptrsize() int64 {
-	return int64(s.Struct.Uint64(0))
-}
-
-func (s Snapshot) SetUintptrsize(v int64) {
-	s.Struct.SetUint64(0, uint64(v))
-}
-
-func (s Snapshot) Signature() ([]byte, error) {
-	p, err := s.Struct.Ptr(0)
-	return []byte(p.Data()), err
-}
-
-func (s Snapshot) HasSignature() bool {
-	p, err := s.Struct.Ptr(0)
-	return p.IsValid() || err != nil
-}
-
-func (s Snapshot) SetSignature(v []byte) error {
-	return s.Struct.SetData(0, v)
-}
-
 func (s Snapshot) Nested() (Nested, error) {
-	p, err := s.Struct.Ptr(1)
+	p, err := s.Struct.Ptr(0)
 	return Nested{Struct: p.Struct()}, err
 }
 
 func (s Snapshot) HasNested() bool {
-	p, err := s.Struct.Ptr(1)
+	p, err := s.Struct.Ptr(0)
 	return p.IsValid() || err != nil
 }
 
 func (s Snapshot) SetNested(v Nested) error {
-	return s.Struct.SetPtr(1, v.Struct.ToPtr())
+	return s.Struct.SetPtr(0, v.Struct.ToPtr())
 }
 
 // NewNested sets the nested field to a newly
@@ -76,7 +54,7 @@ func (s Snapshot) NewNested() (Nested, error) {
 	if err != nil {
 		return Nested{}, err
 	}
-	err = s.Struct.SetPtr(1, ss.Struct.ToPtr())
+	err = s.Struct.SetPtr(0, ss.Struct.ToPtr())
 	return ss, err
 }
 
@@ -85,7 +63,7 @@ type Snapshot_List struct{ capnp.List }
 
 // NewSnapshot creates a new list of Snapshot.
 func NewSnapshot_List(s *capnp.Segment, sz int32) (Snapshot_List, error) {
-	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 8, PointerCount: 2}, sz)
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1}, sz)
 	return Snapshot_List{l}, err
 }
 
@@ -107,7 +85,7 @@ func (p Snapshot_Promise) Struct() (Snapshot, error) {
 }
 
 func (p Snapshot_Promise) Nested() Nested_Promise {
-	return Nested_Promise{Pipeline: p.Pipeline.GetPipeline(1)}
+	return Nested_Promise{Pipeline: p.Pipeline.GetPipeline(0)}
 }
 
 type Nested struct{ capnp.Struct }
@@ -116,12 +94,12 @@ type Nested struct{ capnp.Struct }
 const Nested_TypeID = 0x9a2e520f421c93df
 
 func NewNested(s *capnp.Segment) (Nested, error) {
-	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 2})
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 8, PointerCount: 2})
 	return Nested{st}, err
 }
 
 func NewRootNested(s *capnp.Segment) (Nested, error) {
-	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 2})
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 8, PointerCount: 2})
 	return Nested{st}, err
 }
 
@@ -147,6 +125,14 @@ func (s Nested) HasData() bool {
 
 func (s Nested) SetData(v []byte) error {
 	return s.Struct.SetData(0, v)
+}
+
+func (s Nested) Len() int64 {
+	return int64(s.Struct.Uint64(0))
+}
+
+func (s Nested) SetLen(v int64) {
+	s.Struct.SetUint64(0, uint64(v))
 }
 
 func (s Nested) Pointers() (Pointer_List, error) {
@@ -179,7 +165,7 @@ type Nested_List struct{ capnp.List }
 
 // NewNested creates a new list of Nested.
 func NewNested_List(s *capnp.Segment, sz int32) (Nested_List, error) {
-	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 2}, sz)
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 8, PointerCount: 2}, sz)
 	return Nested_List{l}, err
 }
 
@@ -288,29 +274,28 @@ func (p Pointer_Promise) Target() Nested_Promise {
 	return Nested_Promise{Pipeline: p.Pipeline.GetPipeline(0)}
 }
 
-const schema_bf39c8350769d85a = "x\xdal\x91\xbf\x8b\x13A\x1c\xc5\xdf\x9b\xc9\xba\x16\x89" +
-	"\xbbCR\x0a6\x82?\xd0\xa0\xa0\x85iVDAD" +
-	"e'\"\x04\xb1Y\xcd&n\xe1f\xdd\x9d hm" +
-	"aae\xa5\x9d`/X\x89B\x82\xc7\x15w\xff\xc1" +
-	"u\xc7\x15W\xdc\x95\xf7\x0f\xec1\xb9l\x02\xc9U\xdf" +
-	"\x99\xc7\x97\xf9\xbc\xf7\xc6\xffyW\xdct<\x02\xba\xee" +
-	"\x9c)w\xbf\x9e\xbf\xe7u\xdb\xdf\xa1<\x96/v\x12" +
-	"\xf7\xf6\xd6\x9d)\x1c\xe1\x02\xea\xedo5\xb6\xf3\xdd{" +
-	"\xb0\xdc\x9eL.\xfd\xff\xf1m\x13\xda\xe3\xda\xe6\xde\x86" +
-	":\xb0s\xff\x178\xfd\xf7\xa7\xff\xb1wt\xb8\xb2G" +
-	"\x17h~\xe2\xdf\xe6\x97\xd9\xe93\xed\xa3E\x1ae\xc5" +
-	"\x9b\x91a\xfbu\x94\xa5Y\xe7\xe9\x85\xb80q?$" +
-	"\xf5YY\x03j\x04\xd4\x95\xab\x80\xbe(\xa9o\x08*" +
-	"\xb2E+^\x7f\x04\xe8k\x92\xfa\xa1\xa0\xd7\x8fL\xc4" +
-	"\x06\x04\x1b`\x99\x8d\x92\xd4\xc4y\x01\x80\xe7\xc0P\x92" +
-	"~\xe5\x09\xb4\xd2\x02+\xe6\xd8g\xf3;,\xb8\xbe\x00" +
-	"?x\x05\xe8\xfb\x92:\x14\xac\xb8O\xba\x80~,\xa9" +
-	"{\x82J\xb0E\x01\xa8\xe7\x1d@\x87\x92\xfa\xa5`9" +
-	"NR\x93\x99\xbc\x80\x9b|\x88\xe9@\xd0\xb1\xc8d\x98" +
-	"Ff\x9c\x83q\xe54Hga\xe9/?\x01\xa4\x7f" +
-	"J-ap\x92i\xa5\x97\xce\xb2\x97E-V\xbb," +
-	"\xa9o\x09\x06\xa3\xc1\xa0\x88Me!0Q>\x8c\xcd" +
-	":\xee8\x00\x00\xff\xffw\xcd}\xa9"
+const schema_bf39c8350769d85a = "x\xdal\x90\xbfJ#Q\x18\xc5\xcf\xb97\xb3\x93\"" +
+	"\xd9\x99!)wYv\xd9ew\x05\x83\x82\x16\xa6\x99" +
+	"(\xa6\x88D\x99\xab\x8d\xd8\x0dfb\x02:\x193#" +
+	"\x16>F*\xed|\x02\xc1J\x14\x12\x14\x0b}\x03;" +
+	"{K_`d\xc6\xfc\x11\xb5\xba\xdf=|\xfc\xee\xef" +
+	"\\\xb3W\x11\xb3\x9aA@\xe5\xb4/\xf1c\xef\xdb\x92" +
+	"\xb1^:\x812\xc8x\xeb\xa1\xad\xcf\xdf-\x0c\xa0\x09" +
+	"\x1d\xb0\xf6\xce\xad\x83\xe4\xdc?\x03\xe3\xfb~\xff\xef\xf5" +
+	"\xe9\xf1-,\xe3\xed\"u\xa0\xf0\x9d7\x85?\xe9\xf4" +
+	"\x9368\xb8\xbah\x1cm>?\xbdc\xa6\x0b\x8b\xbc" +
+	",\xd4\xd2\xa9\xcaC0\x0e}7\x08[\x9d\x88\xa5m" +
+	"7\xf0\x83\xf2\xda\x0f/\x8c\xbc\x86C\xaa\x9c\xcc\x00\x19" +
+	"\x02Vu\x0aP\x15IU\x17$\x8bL\xb2\xda/@" +
+	"-K*G\xd0\x12,R\x00\xd6\xea\x0a\xa0\xea\x92\xaa" +
+	"%h4\xdc\xc8e\x1e\x82yP\xdf\xf5|j\x10\xd4" +
+	"\xc08\xe8\xb4\xfd\xc8\xeb\x86\x00\xf8\x15t$i\x8e\x9c" +
+	"\xc1$\x1ak\x89\xa1\xd6\xc6\xf0\x8eD,3\x16\xcb\x97" +
+	"\x01\x95\x95TEA\xdbO\xcdiN>\x15\xa4\xf9I" +
+	"G\xc7~\x15HX\xd91\xeb\x7f\xc2\xfa-\xa9f&" +
+	"%\xa7\x93\xec\x9f\xa4\x9a\x13\xb4;\xcdf\xe8E\xa3\x16" +
+	"v\xe4vw\xbc\xe8\xe3s/\x01\x00\x00\xff\xff\xf4O" +
+	"nD"
 
 func init() {
 	schemas.Register(schema_bf39c8350769d85a,

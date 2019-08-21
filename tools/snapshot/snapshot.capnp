@@ -4,15 +4,13 @@ $Go.package("snapshot");
 $Go.import("tools/snapshot");
 
 struct Snapshot {
-    uintptrsize @0 :Int64;
-    signature @1 :Data;
-
-    nested @2 :Nested;
+    nested @0 :Nested;
 }
 
 struct Nested {
     data @0 :Data;
-    pointers @1 :List(Pointer);
+    len @1 :Int64;
+    pointers @2 :List(Pointer);
 }
 
 struct Pointer {

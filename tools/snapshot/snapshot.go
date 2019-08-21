@@ -1,22 +1,64 @@
 package snapshot
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"reflect"
 	"unsafe"
 
+	"github.com/davecgh/go-spew/spew"
 	endian "github.com/virtao/GoEndian"
 	capnp "zombiezen.com/go/capnproto2"
 )
 
 const uintptrsize = unsafe.Sizeof(uintptr(0))
 
-func Load(bytes []byte, v interface{}, size uintptr) error {
+func Load(b []byte, v interface{}, size uintptr) error {
 	ptr := unsafe.Pointer(reflect.ValueOf(v).Pointer()) // #nosec
-	data := (*(*[1<<31 - 1]byte)(ptr))[:size]
+	data := bytesAt(ptr, size)
 
-	copy(data, bytes)
+	msg, err := capnp.NewDecoder(bytes.NewReader(b)).Decode()
+	if err != nil {
+		return fmt.Errorf("Load: %v", err)
+	}
+
+	sn, err := ReadRootSnapshot(msg)
+
+	root, err := sn.Nested()
+	if err != nil {
+		return fmt.Errorf("Load(root): %v", err)
+	}
+
+	err = loadTo(&data, root)
+	spew.Dump(data)
+	return err
+}
+
+func loadTo(dst *[]byte, nst Nested) error {
+	data, err := nst.Data()
+	if err != nil {
+		return fmt.Errorf("loadTo(data): %v", err)
+	}
+	copy(*dst, data)
+
+	ptrList, err := nst.Pointers()
+	if err != nil {
+		return fmt.Errorf("loadTo(ptrList): %v", err)
+	}
+
+	for i := 0; i < ptrList.Len(); i++ {
+		ptr := ptrList.At(i)
+		offset := uintptr(ptr.Offset())
+		target, err := ptr.Target()
+		if err != nil {
+			return fmt.Errorf("loadTo(target): %v", err)
+		}
+
+		nextData := make([]byte, target.Len())
+		copy((*dst)[offset:offset+uintptrsize], (*[uintptrsize]byte)(unsafe.Pointer(&((*reflect.StringHeader)(unsafe.Pointer(&nextData)).Data)))[:])
+		loadTo(&nextData, target)
+	}
 
 	return nil
 }
@@ -65,7 +107,6 @@ func storeToCapnp(v interface{}, s *capnp.Segment) (Snapshot, error) {
 		return snapshot, fmt.Errorf("storeToCapnp: %v", err)
 	}
 
-	snapshot.SetUintptrsize(int64(uintptrsize))
 	snapshot.SetNested(nested)
 
 	return snapshot, err
@@ -97,6 +138,7 @@ func storeNestedInSegment(internalNested *internalNested, s *capnp.Segment) (Nes
 	}
 
 	nested.SetData(internalNested.data)
+	nested.SetLen(int64(len(internalNested.data)))
 	nested.SetPointers(pointers)
 
 	return nested, nil
