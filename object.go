@@ -2,8 +2,8 @@ package gojis
 
 // Object represents any ECMAScript language value. This can be a String or a
 // Number as well as Null or Undefined. To check if the object represents Null,
-// use object#IsNull. To check if the object represents Undefined, use
-// object#IsUndefined.
+// use Object#IsNull. To check if the object represents Undefined, use
+// Object#IsUndefined.
 type Object interface {
 	// Lookup returns a property of this object with the given name. If no such
 	// property exists, Undefined will be returned. This method never returns nil.
@@ -17,7 +17,7 @@ type Object interface {
 	// this object does not have a 'Call' property that is callable, an error will
 	// be returned.
 	CallWithArgs(...interface{}) (Object, error)
-	// SetBbject adds a property with the given name to this object. The property's
+	// SetObject adds a property with the given name to this object. The property's
 	// value will be the given object.
 	SetObject(string, Object)
 

@@ -13,14 +13,12 @@ Alternatively, you can
 
 * No test cases can be removed and/or changed (if a test fails, but ran green in the past, this is a regression)
   * If you think a test is incorrect, open an issue, stating why the test should be changed/removed
-* To be consistent, new objects are created with constructor methods (`foo := NewFoo()` instead of `foo := &Foo{...}`)
-  * Within constructor functions, the keyword `new` shall be used (`f := new(Foo); f.x = y` instead of `f := &Foo{x: y}`)
-* [![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
 * Readability > Performance (there **are** exceptions, but don't optimize prematurely)
+* The project layout is conformant to [this standard](https://github.com/golang-standards/project-layout)
 
 # Getting started
 
 * Checkout the repository
-* Run `go test -short ./...` to ensure everything works
+* Run `go test -short ./...` to ensure everything works (provide the short flags, otherwise all conformance tests will be run, which will take a while)
 * To test everything, run `go test -v ./...` (includes parser and conformance tests, takes a while)
-* To build the application, run `go build -o gojisvm .` and it will build the executable file `./gojisvm`
+* To build the application, run `go build -o gojisvm ./cmd` and it will build the executable file `./gojisvm`
