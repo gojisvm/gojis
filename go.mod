@@ -8,4 +8,6 @@ require (
 	github.com/google/uuid v1.1.1
 	github.com/rs/zerolog v1.15.0
 	github.com/stretchr/testify v1.4.0
+	github.com/virtao/GoEndian v0.0.0-20140331034613-586fa83c856a // indirect
+	zombiezen.com/go/capnproto2 v2.17.0+incompatible // indirect
 )
