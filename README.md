@@ -9,7 +9,10 @@ Gojis is an implementation of ECMAScript 2018 (ES 9). It basically is a JavaScri
 [Goja](https://github.com/dop251/goja) or [Otto](https://github.com/robertkrimen/otto).
 The documentation can be found [here](https://gojisvm.github.io).
 
-Gojis requires Go >= 1.12.9 to compile (see [golang/go#33555](https://github.com/golang/go/issues/33555))
+For building, Gojis requires a Go version
+* `1.13+`
+* `1.12.9+`
+* `1.11.14+`
 
 ## Why
 [Goja](https://github.com/dop251/goja) and [Otto](https://github.com/robertkrimen/otto) are both stuck at implementing _most_ features of ES 5.1. This implementation aims to support ES 9, and, after that maybe even ES 10 (not released as of 2019-06-27) and later.
