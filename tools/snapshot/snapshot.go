@@ -200,7 +200,6 @@ type nestedPtr struct {
 // are pointers pointing to some memory location.
 // The returned map associates the memory offsets of the pointers
 // relative to ptr with their destinations.
-/* #nosec */
 func getPointers(ptr unsafe.Pointer, t reflect.Type) map[uintptr]nestedPtr {
 	ptrs := make(map[uintptr]nestedPtr)
 
@@ -211,14 +210,15 @@ func getPointers(ptr unsafe.Pointer, t reflect.Type) map[uintptr]nestedPtr {
 
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
-		if field.Type.Kind() == reflect.Ptr {
+		if field.Type.Kind() == reflect.Ptr ||
+			field.Type.Kind() == reflect.Uintptr {
 			tField := t.Field(i)
 			offset := tField.Offset
 
 			ptrs[offset] = nestedPtr{
-				ptr: *(*unsafe.Pointer)(unsafe.Pointer(uintptr(ptr) + offset)), // #nosec
+				ptr: *(*unsafe.Pointer)(unsafe.Pointer(uintptr(ptr) + offset)),
 				t:   tField.Type,
-			}
+			} // #nosec
 		}
 	}
 
