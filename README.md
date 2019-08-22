@@ -1,6 +1,6 @@
 # Gojis
 
-[![Build Status](https://travis-ci.com/gojisvm/gojis.svg?branch=develop)](https://travis-ci.com/gojisvm/gojis)
+[![Build Status](https://api.travis-ci.com/gojisvm/gojis.svg?branch=develop)](https://travis-ci.com/gojisvm/gojis)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/dd5507e3d34543e3a526b05aaea3eba8)](https://www.codacy.com/app/gojisvm/gojis?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gojisvm/gojis&amp;utm_campaign=Badge_Grade)
 
 <a href="https://www.buymeacoffee.com/timsatke" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
