@@ -7,7 +7,6 @@ import (
 	"reflect"
 	"unsafe"
 
-	"github.com/davecgh/go-spew/spew"
 	endian "github.com/virtao/GoEndian"
 	capnp "zombiezen.com/go/capnproto2"
 )
@@ -35,7 +34,6 @@ func Load(b []byte, v interface{}, size uintptr) error {
 	}
 
 	err = loadTo(&data, root)
-	spew.Dump(data)
 	return err
 }
 
