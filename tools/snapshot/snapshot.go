@@ -7,7 +7,6 @@ import (
 	"reflect"
 	"unsafe"
 
-	endian "github.com/virtao/GoEndian"
 	capnp "zombiezen.com/go/capnproto2"
 )
 
@@ -216,19 +215,9 @@ func getPointers(data []byte, t reflect.Type) map[uintptr]nestedPtr {
 			tField := t.Field(i)
 			offset := tField.Offset
 
-			switch uintptrsize {
-			case 4:
-				ptrs[offset] = nestedPtr{
-					ptr: unsafe.Pointer(uintptr(endian.Endian.Uint32(data[offset : offset+uintptrsize]))),
-					t:   tField.Type,
-				}
-			case 8:
-				ptrs[offset] = nestedPtr{
-					ptr: unsafe.Pointer(uintptr(endian.Endian.Uint64(data[offset : offset+uintptrsize]))),
-					t:   tField.Type,
-				}
-			default:
-				panic("Unknown uintptr size: " + string(uintptrsize))
+			ptrs[offset] = nestedPtr{
+				ptr: *(*unsafe.Pointer)(unsafe.Pointer(uintptr(unsafe.Pointer(&data[0])) + offset)), // #nosec
+				t:   tField.Type,
 			}
 		}
 	}
