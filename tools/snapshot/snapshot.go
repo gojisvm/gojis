@@ -175,7 +175,7 @@ func toInternalNested(ptr unsafe.Pointer, t reflect.Type) *internalNested {
 	result := &internalNested{}
 	result.data = bytesAt(ptr, t.Size())
 
-	ptrs := getPointers(result.data, ptr, t)
+	ptrs := getPointers(result.data, t)
 	for ptrOffset, nested := range ptrs {
 		next := toInternalNested(nested.ptr, nested.t)
 
@@ -202,7 +202,7 @@ type nestedPtr struct {
 // The returned map associates the memory offsets of the pointers
 // relative to ptr with their destinations.
 /* #nosec */
-func getPointers(data []byte, ptr unsafe.Pointer, t reflect.Type) map[uintptr]nestedPtr {
+func getPointers(data []byte, t reflect.Type) map[uintptr]nestedPtr {
 	ptrs := make(map[uintptr]nestedPtr)
 
 	if t.Kind() != reflect.Struct {
