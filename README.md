@@ -1,6 +1,6 @@
 # Gojis
 
-[![Build Status](https://travis-ci.com/gojisvm/gojis.svg?branch=develop)](https://travis-ci.com/gojisvm/gojis)
+[![Build Status](https://api.travis-ci.com/gojisvm/gojis.svg?branch=develop)](https://travis-ci.com/gojisvm/gojis)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/dd5507e3d34543e3a526b05aaea3eba8)](https://www.codacy.com/app/gojisvm/gojis?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gojisvm/gojis&amp;utm_campaign=Badge_Grade)
 
 <a href="https://www.buymeacoffee.com/timsatke" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
@@ -9,7 +9,8 @@ Gojis is an implementation of ECMAScript 2018 (ES 9). It basically is a JavaScri
 [Goja](https://github.com/dop251/goja) or [Otto](https://github.com/robertkrimen/otto).
 The documentation can be found [here](https://gojisvm.github.io).
 
-Gojis requires Go >= 1.12.9 to compile (see [golang/go#33555](https://github.com/golang/go/issues/33555))
+## Requirements
+* `Go 1.12.9+`
 
 ## Why
 [Goja](https://github.com/dop251/goja) and [Otto](https://github.com/robertkrimen/otto) are both stuck at implementing _most_ features of ES 5.1. This implementation aims to support ES 9, and, after that maybe even ES 10 (not released as of 2019-06-27) and later.
