@@ -10,5 +10,6 @@ require (
 	github.com/rs/zerolog v1.15.0
 	github.com/stretchr/testify v1.4.0
 	github.com/tinylib/msgp v1.1.0 // indirect
+	golang.org/x/net v0.0.0-20190620200207-3b0461eec859 // indirect
 	zombiezen.com/go/capnproto2 v2.17.0+incompatible
 )
