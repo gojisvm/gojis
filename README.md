@@ -13,7 +13,7 @@ The documentation can be found [here](https://gojisvm.github.io).
 * `Go 1.12.9+`
 
 ## Why
-[Goja](https://github.com/dop251/goja) and [Otto](https://github.com/robertkrimen/otto) are both stuck at implementing _most_ features of ES 5.1. This implementation aims to support ES 9, and, after that maybe even ES 10 (not released as of 2019-06-27) and later.
+[Goja](https://github.com/dop251/goja) and [Otto](https://github.com/robertkrimen/otto) are both stuck at implementing _most_ features of ES 5.1. This implementation aims to support ES 9, and, after that maybe even ES 10 and later.
 
 ## What is this Gojis VM good for?
 The Gojis VM can be run as a standalone, or you can embed it into your Go application by using the API. Go get it with
