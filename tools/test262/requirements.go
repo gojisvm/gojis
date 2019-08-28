@@ -10,9 +10,9 @@ const (
 	PhaseRuntime
 )
 
-// Expectation contains all information that were
+// Requirements contains all information that were
 // included in the metadata of a Test262-testcase.
-type Expectation struct {
+type Requirements struct {
 	Negative Negative
 	Includes []string
 	Flags    Flag

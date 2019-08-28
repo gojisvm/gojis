@@ -11,17 +11,17 @@ import (
 func TestParseHeader(t *testing.T) {
 	tests := []struct {
 		file    string
-		want    Expectation
+		want    Requirements
 		wantErr bool
 	}{
 		{
 			"file000.js",
-			Expectation{},
+			Requirements{},
 			true,
 		},
 		{
 			"file001.js",
-			Expectation{
+			Requirements{
 				Negative: Negative{
 					Phase: PhaseRuntime,
 					Type:  "ReferenceError",
@@ -31,7 +31,7 @@ func TestParseHeader(t *testing.T) {
 		},
 		{
 			"file002.js",
-			Expectation{
+			Requirements{
 				Negative: Negative{
 					Phase: PhaseParse,
 					Type:  "SyntaxError",
@@ -41,7 +41,7 @@ func TestParseHeader(t *testing.T) {
 		},
 		{
 			"file003.js",
-			Expectation{
+			Requirements{
 				Negative: Negative{
 					Phase: PhaseResolution,
 					Type:  "ReferenceError",

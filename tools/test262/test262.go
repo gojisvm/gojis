@@ -37,15 +37,15 @@ type metadata struct {
 	Locale   []string `yaml:"locale"`
 }
 
-func ParseHeader(r io.Reader) (Expectation, error) {
+func ParseHeader(r io.Reader) (Requirements, error) {
 	content, err := ioutil.ReadAll(r) // files are small, so this should be fine
 	if err != nil {
-		return Expectation{}, fmt.Errorf("read data source: %v", err)
+		return Requirements{}, fmt.Errorf("read data source: %v", err)
 	}
 
 	meta, err := parseMetadata(content)
 	if err != nil {
-		return Expectation{}, fmt.Errorf("parse metadata: %v", err)
+		return Requirements{}, fmt.Errorf("parse metadata: %v", err)
 	}
 
 	flags := new(Flag)
@@ -53,7 +53,7 @@ func ParseHeader(r io.Reader) (Expectation, error) {
 		flags.Set(toFlag(f))
 	}
 
-	exp := Expectation{
+	exp := Requirements{
 		Negative: Negative{
 			Phase: toPhase(meta.Negative.Phase),
 			Type:  meta.Negative.ErrType,
