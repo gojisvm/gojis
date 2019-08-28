@@ -37,6 +37,10 @@ type metadata struct {
 	Locale   []string `yaml:"locale"`
 }
 
+// ParseHeader parses a Test262-Metadata-Header from the given reader and
+// returns a struct containing all values from the header. If the reader can be
+// fully read and the data contains a syntactical correct YAML document, err
+// will always be nil.
 func ParseHeader(r io.Reader) (Requirements, error) {
 	content, err := ioutil.ReadAll(r) // files are small, so this should be fine
 	if err != nil {
