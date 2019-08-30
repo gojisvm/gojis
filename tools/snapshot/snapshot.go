@@ -57,7 +57,7 @@ func loadTo(dst *[]byte, nst Nested) error {
 		}
 
 		nextData := make([]byte, target.Len())
-		copy((*dst)[offset:offset+uintptrsize], (*[uintptrsize]byte)(unsafe.Pointer(&((*reflect.StringHeader)(unsafe.Pointer(&nextData)).Data)))[:]) // #nosec
+		copy((*dst)[offset:offset+uintptrsize], (*[uintptrsize]byte)(unsafe.Pointer(&((*reflect.SliceHeader)(unsafe.Pointer(&nextData)).Data)))[:]) // #nosec
 		err = loadTo(&nextData, target)
 		if err != nil {
 			return fmt.Errorf("loadTo(loadTo): %v", err)
