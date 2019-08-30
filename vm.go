@@ -33,8 +33,8 @@ func NewVM() *VM {
 //
 // Internally, this function directly delegates to the method 'eval' that is specified
 // by the ECMAScript language specification.
-func (vm *VM) Eval(script string) Object {
-	return vm.Lookup("eval")
+func (vm *VM) Eval(script string) (Object, error) {
+	return vm.Lookup("eval").CallWithArgs(script)
 }
 
 // SetConsole is used to change the console of the VM.
