@@ -1,7 +1,5 @@
 package gojis
 
-import "io"
-
 // Type represents the ECMAScript language types.
 type Type uint8
 
@@ -12,7 +10,11 @@ const (
 	TypeUnknown = iota
 	TypeUndefined
 	TypeNull
+	TypeBoolean
 	TypeString
+	TypeSymbol
+	TypeNumber
+	TypeObject
 )
 
 // VM represents an instance of the GojisVM.
@@ -22,15 +24,21 @@ type VM struct {
 }
 
 // NewVM creates a new, initialized VM that is ready to use.
-func NewVM() *VM { panic("TODO") }
+func NewVM() *VM {
+	panic("TODO")
+}
 
 // Eval evaluates the given ECMAScript code, and returns an Object, representing the
 // result of the evaluation. The result may be Null or Undefined.
 //
 // Internally, this function directly delegates to the method 'eval' that is specified
 // by the ECMAScript language specification.
-func (vm *VM) Eval(script string) Object { return vm.Lookup("eval") }
+func (vm *VM) Eval(script string) Object {
+	return vm.Lookup("eval")
+}
 
 // SetConsole is used to change the console of the VM.
-// Calls like 'console.log' will be written to the given writer.
-func (vm *VM) SetConsole(w io.Writer) { panic("TODO") }
+// Calls like 'console.log' will be written to the given Console.
+func (vm *VM) SetConsole(console Console) {
+	vm.Object.SetObject("console", console)
+}
