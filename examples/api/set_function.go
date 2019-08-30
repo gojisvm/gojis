@@ -26,7 +26,7 @@ func main() {
 		consoleLog.CallWithArgs("Hello", "World!")
 		consoleLog.CallWithArgs("I am reusable!")
 
-		return nil
+		return gojis.Undefined
 	})
 
 	vm.Eval(`greet();`)
