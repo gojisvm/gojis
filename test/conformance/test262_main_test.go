@@ -11,7 +11,8 @@ import (
 )
 
 const (
-	test262repo = "https://github.com/tc39/test262"
+	test262folder = "test262"
+	test262repo   = "https://github.com/tc39/test262"
 )
 
 func TestMain(m *testing.M) {
@@ -35,12 +36,12 @@ func cloneTest262Repo() {
 		return
 	}
 
-	if _, err := os.Stat("test262"); os.IsNotExist(err) {
+	if _, err := os.Stat(test262folder); os.IsNotExist(err) {
 		log.Println("Conformance test directory does not exist, cloning it...")
 
 		var stdout, stderr bytes.Buffer
 
-		cmd := exec.Command("git", "clone", test262repo)
+		cmd := exec.Command("git", "clone", test262repo, test262folder)
 		cmd.Stdout = &stdout
 		cmd.Stderr = &stderr
 
@@ -48,19 +49,5 @@ func cloneTest262Repo() {
 		if err != nil {
 			panic(fmt.Sprintf("Clone failed.\nStdout: '%v'\nStderr: '%v'", stdout.String(), stderr.String()))
 		}
-	}
-}
-
-type testCase struct {
-	path                  string
-	expectSuccessfulParse bool
-	expectSuccessfulRun   bool
-}
-
-func runTable(t *testing.T, basePath string, testCases []testCase) {
-	for _, tt := range testCases {
-		t.Run(tt.path, func(t *testing.T) {
-			panic("TODO")
-		})
 	}
 }
