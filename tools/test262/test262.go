@@ -78,7 +78,7 @@ func parseMetadata(data []byte) (md metadata, err error) {
 
 	yamlStart := bytes.Index(data, magicHeader) + len(magicHeader)
 	yamlEnd := bytes.Index(data, magicFooter)
-	yamlData := bytes.TrimSpace(data[yamlStart:yamlEnd])
+	yamlData := data[yamlStart:yamlEnd]
 
 	err = yaml.Unmarshal(yamlData, &md)
 	if err != nil {

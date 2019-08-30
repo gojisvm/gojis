@@ -14,7 +14,7 @@ func TestHelloWorld(t *testing.T) {
 	vm := gojis.NewVM()
 
 	var buf bytes.Buffer
-	vm.SetConsole(&buf)
+	vm.SetConsole(gojis.NewConsole(&buf))
 
 	vm.Eval(`console.log("Hello World!");`)
 
@@ -27,7 +27,7 @@ func TestInlineObject(t *testing.T) {
 	vm := gojis.NewVM()
 
 	var buf bytes.Buffer
-	vm.SetConsole(&buf)
+	vm.SetConsole(gojis.NewConsole(&buf))
 
 	vm.Eval(`
 function foo(arg) {
