@@ -28,3 +28,7 @@ func (r *Record) GetField(n string) (interface{}, bool) {
 func (r *Record) SetField(n string, val interface{}) {
 	r.fields[n] = val
 }
+
+func (r *Record) Type() Type { return TypeInternal }
+
+func (r *Record) Value() interface{} { return r }
