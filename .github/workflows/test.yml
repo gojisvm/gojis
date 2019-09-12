@@ -17,11 +17,6 @@ jobs:
       id: go
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
-    - name: Setup tools
-      run: |
-        go get gotest.tools/gotestsum
-        go get github.com/securego/gosec/cmd/gosec
     - name: Test
       run: |
-        gosec -quiet ./...
-        gotestsum --no-summary skipped --raw-command go test -json -race -v ./...
+        go test -json -race ./...
