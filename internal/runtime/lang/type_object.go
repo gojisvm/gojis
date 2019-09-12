@@ -70,7 +70,7 @@ type Object struct {
 	// Call is the Call function of an object as (kind of) specified by the
 	// language spec. This is only not nil for function and constructor function
 	// objects.
-	Call func(Value, ...Value) (Value, errors.Error)
+	Call NativeFunction
 
 	// Constructor Function Object
 
