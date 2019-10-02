@@ -69,8 +69,11 @@ func (i *isolate) ensureCache() {
 }
 
 func (i *isolate) accept(t token.Type) bool {
-	if i.next().Type == t {
-		return true
+	next := i.next()
+	for _, typ := range next.Types {
+		if typ == t {
+			return true
+		}
 	}
 	i.unread()
 	return false

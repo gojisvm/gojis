@@ -1,7 +1,6 @@
 package lexer
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/gojisvm/gojis/internal/parser/token"
@@ -38,15 +37,4 @@ func testToken(_t *testing.T, data, content string, types ...token.Type) {
 			// drain token stream so that the lexer closes the token stream
 		}
 	})
-}
-
-func TestSmall(t *testing.T) {
-	data := "/* foo bar * / \nfoobar /** */"
-	l := New([]byte(data))
-	go l.StartLexing()
-	for t := range l.TokenStream().Tokens() {
-		fmt.Printf("token: %v\n", t.String())
-	}
-
-	t.Fail()
 }
