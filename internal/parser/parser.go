@@ -8,8 +8,6 @@ import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 )
 
-//go:generate antlr -Dlanguage=Go -visitor ECMAScript.g4
-
 // Parser parses ECMAScript code and generates an AST
 // that can be evaluated by the runtime.
 type Parser struct {
