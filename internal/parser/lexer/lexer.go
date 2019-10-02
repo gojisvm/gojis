@@ -140,11 +140,13 @@ func (l *Lexer) acceptWord(word string) bool {
 
 func (l *Lexer) acceptMultiple(m matcher.M) uint {
 	var matched uint
-	for m.Matches(l.next()) && !l.IsEOF() {
+	for m.Matches(l.next()) {
 		matched++
+
+		if l.IsEOF() {
+			return matched
+		}
 	}
-	if !l.IsEOF() {
-		l.unread()
-	}
+	l.unread()
 	return matched
 }

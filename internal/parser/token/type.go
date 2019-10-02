@@ -10,10 +10,16 @@ const (
 	Unknown Type = iota
 	Error
 
-	// as of this point, token types should be sorted alphabetically
+	LineTerminator // 11.3
+	Whitespace     // 11.2
 
-	LineTerminator    // 11.3
 	MultiLineComment  // 11.4
 	SingleLineComment // 11.4
-	Whitespace        // 11.2
+
+	CommonToken    // 11.5
+	IdentifierName // 11.5
+	Punctuator     // 11.5
+	NumericLiteral // 11.5
+	StringLiteral  // 11.5
+	Template       // 11.5
 )
