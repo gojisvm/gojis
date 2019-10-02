@@ -7,13 +7,7 @@ import "fmt"
 type Token struct {
 	Type  Type
 	Value string
-	Pos   Pos
-}
-
-// Pos describes the position of a token, with start and end index.
-type Pos struct {
-	Start int
-	End   int
+	Pos   int
 }
 
 // New creates a new token with the given type, value, start position and token
@@ -22,10 +16,7 @@ func New(t Type, v string, start, length int) Token {
 	return Token{
 		Type:  t,
 		Value: v,
-		Pos: Pos{
-			Start: start,
-			End:   start + length,
-		},
+		Pos:   start,
 	}
 }
 

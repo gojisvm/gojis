@@ -35,8 +35,9 @@ func (s *Stream) Tokens() <-chan Token {
 
 // Next returns the next token that was pushed onto the stream. This is a common
 // channel receive operation.
-func (s *Stream) Next() Token {
-	return <-s.ch
+func (s *Stream) Next() (Token, bool) {
+	t, ok := <-s.ch
+	return t, ok
 }
 
 // Push will push the given token onto the token stream. This is a common

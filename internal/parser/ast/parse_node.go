@@ -1,5 +1,5 @@
 package ast
 
 type ParseNode interface {
-	Evaluate() interface{}
+	Pos() int
 }

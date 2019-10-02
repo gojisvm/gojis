@@ -4,7 +4,7 @@ import "github.com/gojisvm/gojis/internal/parser/lexer/matcher"
 
 // state is a definition of a state. The state returned will be the one that is
 // executed next.
-type state func(*lexer) state
+type state func(*Lexer) state
 
 // Defined matchers
 var (
@@ -16,11 +16,11 @@ var (
 
 // Below this point, all lexer states are defined.
 
-func lexScript(l *lexer) state {
+func lexScript(l *Lexer) state {
 	return lexToken
 }
 
-func lexToken(l *lexer) state {
+func lexToken(l *Lexer) state {
 	switch r := l.Peek(); r {
 	case '}':
 		return lexBraceClose
@@ -36,28 +36,28 @@ func lexToken(l *lexer) state {
 	return unexpectedToken
 }
 
-func lexBraceClose(l *lexer) state {
+func lexBraceClose(l *Lexer) state {
 	if !l.accept(BraceClose) {
 		return unexpectedToken
 	}
 	return lexToken
 }
 
-func lexBraceOpen(l *lexer) state {
+func lexBraceOpen(l *Lexer) state {
 	if !l.accept(BraceOpen) {
 		return unexpectedToken
 	}
 	return lexToken
 }
 
-func lexBracketClose(l *lexer) state {
+func lexBracketClose(l *Lexer) state {
 	if !l.accept(BracketClose) {
 		return unexpectedToken
 	}
 	return lexToken
 }
 
-func lexBracketOpen(l *lexer) state {
+func lexBracketOpen(l *Lexer) state {
 	if !l.accept(BracketOpen) {
 		return unexpectedToken
 	}

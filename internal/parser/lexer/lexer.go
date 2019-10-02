@@ -7,12 +7,12 @@ import (
 	"github.com/gojisvm/gojis/internal/parser/token"
 )
 
-// lexer is a tokenizer/scanner for ECMAScript source code. It operates on a
-// byte slice and with runes. A lexer has a token stream where it pushes all
-// tokens onto. lexer states are defined recursively. It is recommended to
+// Lexer is a tokenizer/scanner for ECMAScript source code. It operates on a
+// byte slice and with runes. A Lexer has a token stream where it pushes all
+// tokens onto. Lexer states are defined recursively. It is recommended to
 // return to an initial state after every token, since token sequences should be
 // a responsibility of the parser.
-type lexer struct {
+type Lexer struct {
 	input []byte
 	start int
 	pos   int
@@ -26,8 +26,8 @@ type lexer struct {
 // To start pushing tokens onto its token stream, the lexer must be started with
 // a call to StartLexing. It is recommended that this call is executed in a
 // separate goroutine.
-func New(input []byte) *lexer {
-	return &lexer{
+func New(input []byte) *Lexer {
+	return &Lexer{
 		input: input,
 		start: 0,
 		pos:   0,
@@ -41,7 +41,7 @@ func New(input []byte) *lexer {
 // StartLexing starts this lexer, so that it will start pusing tokens onto the
 // token stream. This should be executed in a separate goroutine, as it will
 // block until the lexer is done.
-func (l *lexer) StartLexing() {
+func (l *Lexer) StartLexing() {
 	defer l.tokens.Close()
 
 	for !l.IsEOF() {
@@ -55,18 +55,18 @@ func (l *lexer) StartLexing() {
 
 // IsEOF determines whether the position marker of the lexer has reached the end
 // of its input.
-func (l *lexer) IsEOF() bool {
+func (l *Lexer) IsEOF() bool {
 	return l.pos >= len(l.input)
 }
 
 // TokenStream returns the token stream of this lexer. This is the stream that
 // it will push tokens onto. The token stream is closed after StartLexing is
 // done.
-func (l *lexer) TokenStream() *token.Stream {
+func (l *Lexer) TokenStream() *token.Stream {
 	return l.tokens
 }
 
-func (l *lexer) emit(t token.Type) {
+func (l *Lexer) emit(t token.Type) {
 	l.tokens.Push(token.New(
 		t,                              // token type
 		string(l.input[l.start:l.pos]), // token value
@@ -76,7 +76,7 @@ func (l *lexer) emit(t token.Type) {
 	l.start = l.pos
 }
 
-func (l *lexer) error(msg string) {
+func (l *Lexer) error(msg string) {
 	l.tokens.Push(token.New(
 		token.Error, // error token type
 		msg,         // error message
@@ -85,28 +85,28 @@ func (l *lexer) error(msg string) {
 	))
 }
 
-func (l *lexer) next() rune {
+func (l *Lexer) next() rune {
 	r, w := utf8.DecodeRune(l.input[l.pos:])
 	l.width = w
 	l.pos += w
 	return r
 }
 
-func (l *lexer) unread() {
+func (l *Lexer) unread() {
 	l.pos -= l.width
 }
 
-func (l *lexer) unreadN(n int) {
+func (l *Lexer) unreadN(n int) {
 	l.pos -= n
 }
 
-func (l *lexer) Peek() rune {
+func (l *Lexer) Peek() rune {
 	r := l.next()
 	l.unread()
 	return r
 }
 
-func (l *lexer) accept(m matcher.M) bool {
+func (l *Lexer) accept(m matcher.M) bool {
 	if m.Matches(l.next()) {
 		return true
 	}
@@ -114,7 +114,7 @@ func (l *lexer) accept(m matcher.M) bool {
 	return false
 }
 
-func (l *lexer) acceptRune(r rune) bool {
+func (l *Lexer) acceptRune(r rune) bool {
 	if r == l.next() {
 		return true
 	}
@@ -122,7 +122,7 @@ func (l *lexer) acceptRune(r rune) bool {
 	return false
 }
 
-func (l *lexer) acceptWord(word string) bool {
+func (l *Lexer) acceptWord(word string) bool {
 	advanced := 1
 	for _, r := range word {
 		if !l.acceptRune(r) {
@@ -134,7 +134,7 @@ func (l *lexer) acceptWord(word string) bool {
 	return true
 }
 
-func (l *lexer) acceptMultiple(m matcher.M) uint {
+func (l *Lexer) acceptMultiple(m matcher.M) uint {
 	var matched uint
 	for m.Matches(l.next()) {
 		matched++

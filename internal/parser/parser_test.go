@@ -73,7 +73,7 @@ func parse(t *testing.T, path string, successfulParse bool) {
 		require := require.New(t)
 
 		p := New()
-		err := p.ParseFile(path)
+		_, err := p.ParseFile(path)
 
 		if successfulParse {
 			require.NoError(err)
