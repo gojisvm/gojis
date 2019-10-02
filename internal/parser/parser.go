@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 
 	"github.com/gojisvm/gojis/internal/parser/ast"
 )
@@ -19,7 +20,7 @@ func New() *Parser {
 }
 
 func (p *Parser) ParseFile(path string) (ast.ParseNode, error) {
-	f, err := os.Open(path)
+	f, err := os.Open(filepath.Clean(path))
 	if err != nil {
 		return nil, fmt.Errorf("cannot open file: %v", err)
 	}
