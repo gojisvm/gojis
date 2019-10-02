@@ -10,21 +10,15 @@ func _() {
 	var x [1]struct{}
 	_ = x[Unknown-0]
 	_ = x[Error-1]
-	_ = x[BraceClose-2]
-	_ = x[BraceOpen-3]
-	_ = x[BracketClose-4]
-	_ = x[BracketOpen-5]
-	_ = x[Keyword-6]
-	_ = x[Linefeed-7]
-	_ = x[QuoteDouble-8]
-	_ = x[QuoteSingle-9]
-	_ = x[String-10]
-	_ = x[Whitespace-11]
+	_ = x[LineTerminator-2]
+	_ = x[MultiLineComment-3]
+	_ = x[SingleLineComment-4]
+	_ = x[Whitespace-5]
 }
 
-const _Type_name = "UnknownErrorBraceCloseBraceOpenBracketCloseBracketOpenKeywordLinefeedQuoteDoubleQuoteSingleStringWhitespace"
+const _Type_name = "UnknownErrorLineTerminatorMultiLineCommentSingleLineCommentWhitespace"
 
-var _Type_index = [...]uint8{0, 7, 12, 22, 31, 43, 54, 61, 69, 80, 91, 97, 107}
+var _Type_index = [...]uint8{0, 7, 12, 26, 42, 59, 69}
 
 func (i Type) String() string {
 	if i >= Type(len(_Type_index)-1) {

@@ -1,65 +1,57 @@
 package lexer
 
-import "github.com/gojisvm/gojis/internal/parser/lexer/matcher"
+import "github.com/gojisvm/gojis/internal/parser/token"
 
 // state is a definition of a state. The state returned will be the one that is
 // executed next.
 type state func(*Lexer) state
 
-// Defined matchers
-var (
-	BraceClose   = matcher.String("}")
-	BraceOpen    = matcher.String("{")
-	BracketClose = matcher.String("]")
-	BracketOpen  = matcher.String("[")
-)
-
 // Below this point, all lexer states are defined.
 
 func lexScript(l *Lexer) state {
-	return lexToken
+	// return lexToken
+	return lexComment
 }
 
 func lexToken(l *Lexer) state {
-	switch r := l.Peek(); r {
-	case '}':
-		return lexBraceClose
-	case '{':
-		return lexBraceOpen
-	case ']':
-		return lexBracketClose
-	case '[':
-		return lexBracketOpen
+	switch r := l.peek(); r {
 	default:
 		// handle all cases that cannot be expressed in a switch block
 	}
 	return unexpectedToken
 }
 
-func lexBraceClose(l *Lexer) state {
-	if !l.accept(BraceClose) {
-		return unexpectedToken
+func lexComment(l *Lexer) state {
+	if !l.accept(Slash) {
+		return tokenMismatch(Slash)
 	}
-	return lexToken
+
+	switch r := l.next(); r {
+	case '/':
+		return lexSingleLineComment
+	case '*':
+		return lexMultiLineComment
+	}
+	l.unread()
+	return tokenMismatch(Asterisk, Slash)
 }
 
-func lexBraceOpen(l *Lexer) state {
-	if !l.accept(BraceOpen) {
-		return unexpectedToken
-	}
-	return lexToken
+func lexSingleLineComment(l *Lexer) state {
+	l.acceptMultiple(SingleLineCommentChar)
+	l.emit(token.SingleLineComment)
+	return nil
 }
 
-func lexBracketClose(l *Lexer) state {
-	if !l.accept(BracketClose) {
-		return unexpectedToken
+func lexMultiLineComment(l *Lexer) state {
+	for {
+		l.acceptMultiple(MultiLineNotAsteriskChar)
+		if !l.accept(Asterisk) {
+			return tokenMismatch(Asterisk)
+		}
+		if l.accept(Slash) {
+			break
+		}
 	}
-	return lexToken
-}
-
-func lexBracketOpen(l *Lexer) state {
-	if !l.accept(BracketOpen) {
-		return unexpectedToken
-	}
-	return lexToken
+	l.emit(token.MultiLineComment)
+	return nil
 }

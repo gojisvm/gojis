@@ -12,14 +12,8 @@ const (
 
 	// as of this point, token types should be sorted alphabetically
 
-	BraceClose   // }
-	BraceOpen    // {
-	BracketClose // ]
-	BracketOpen  // [
-	Keyword      // any valid keyword, not a value
-	Linefeed     // any valid linefeed characters
-	QuoteDouble  // "
-	QuoteSingle  // '
-	String       // any string without surrounding quotes
-	Whitespace   // any whitespace that is not a linefeed
+	LineTerminator    // 11.3
+	MultiLineComment  // 11.4
+	SingleLineComment // 11.4
+	Whitespace        // 11.2
 )

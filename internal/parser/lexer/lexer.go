@@ -66,9 +66,13 @@ func (l *Lexer) TokenStream() *token.Stream {
 	return l.tokens
 }
 
-func (l *Lexer) emit(t token.Type) {
+func (l *Lexer) ignore() {
+	l.start = l.pos
+}
+
+func (l *Lexer) emit(t ...token.Type) {
 	l.tokens.Push(token.New(
-		t,                              // token type
+		t,                              // token types
 		string(l.input[l.start:l.pos]), // token value
 		l.start,                        // token start pos
 		l.pos-l.start,                  // token length
@@ -78,10 +82,10 @@ func (l *Lexer) emit(t token.Type) {
 
 func (l *Lexer) error(msg string) {
 	l.tokens.Push(token.New(
-		token.Error, // error token type
-		msg,         // error message
-		l.pos,       // error position
-		0,           // length
+		[]token.Type{token.Error}, // error token type
+		msg,                       // error message
+		l.pos,                     // error position
+		0,                         // length
 	))
 }
 
@@ -100,7 +104,7 @@ func (l *Lexer) unreadN(n int) {
 	l.pos -= n
 }
 
-func (l *Lexer) Peek() rune {
+func (l *Lexer) peek() rune {
 	r := l.next()
 	l.unread()
 	return r
@@ -136,9 +140,11 @@ func (l *Lexer) acceptWord(word string) bool {
 
 func (l *Lexer) acceptMultiple(m matcher.M) uint {
 	var matched uint
-	for m.Matches(l.next()) {
+	for m.Matches(l.next()) && !l.IsEOF() {
 		matched++
 	}
-	l.unread()
+	if !l.IsEOF() {
+		l.unread()
+	}
 	return matched
 }
