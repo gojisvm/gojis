@@ -44,9 +44,20 @@ var (
 	MultiLineNotAsteriskChar               = matcher.Diff(SourceCharacter, Asterisk)
 	MultiLineNotForwardSlashOrAsteriskChar = matcher.Diff(SourceCharacter, matcher.Merge(Asterisk, Slash))
 
-	UnicodeIDStart = matcher.New("ID_Start", isUnicodeIDStart)
-	// UnicodeIDContinue      = matcher.New("ID_Continue", isUnicodeIDContinue)
-	UnicodeIDContinue = matcher.RangeTable("ID_Continue", &unicode.RangeTable{
+	UnicodeIDStart         = matcher.New("ID_Start", isUnicodeIDStart)
+	UnicodeIDContinue      = matcher.New("ID_Continue", isUnicodeIDContinue)
+	IdentifierStartPartial = matcher.Merge(UnicodeIDStart, Dollar, Underscore)
+	IdentifierStart        = matcher.Merge(UnicodeIDStart, Dollar, Underscore, Backslash)
+	IdentifierPartPartial  = matcher.Merge(UnicodeIDContinue, Dollar, _ZWNJ, _ZWJ)
+	IdentifierPart         = matcher.Merge(UnicodeIDContinue, Dollar, _ZWNJ, _ZWJ, Backslash)
+)
+
+func isUnicodeIDStart(r rune) bool {
+	return unicode.Is(unicode.Other_ID_Start, r)
+}
+func isUnicodeIDContinue(r rune) bool {
+	// return unicode.Is(unicode.Other_ID_Continue, r)
+	return unicode.Is(&unicode.RangeTable{
 		R16: []unicode.Range16{
 			{0x0030, 0x0039, 1}, // 0-9
 			{0x0041, 0x005a, 1}, // A-Z
@@ -821,18 +832,7 @@ var (
 			{0x0002f800, 0x0002fa1d, 1},
 			{0x000e0100, 0x000e01ef, 1},
 		},
-	})
-	IdentifierStartPartial = matcher.Merge(UnicodeIDStart, Dollar, Underscore)
-	IdentifierStart        = matcher.Merge(UnicodeIDStart, Dollar, Underscore, Backslash)
-	IdentifierPartPartial  = matcher.Merge(UnicodeIDContinue, Dollar, _ZWNJ, _ZWJ)
-	IdentifierPart         = matcher.Merge(UnicodeIDContinue, Dollar, _ZWNJ, _ZWJ, Backslash)
-)
-
-func isUnicodeIDStart(r rune) bool {
-	return unicode.Is(unicode.Other_ID_Start, r)
-}
-func isUnicodeIDContinue(r rune) bool {
-	return unicode.Is(unicode.Other_ID_Continue, r)
+	}, r)
 }
 
 func isUnicodeCategoryZ(r rune) bool {
