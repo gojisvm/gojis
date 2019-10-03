@@ -14,25 +14,25 @@ func TestNext(t *testing.T) {
 		require.Equal(0, l.pos)
 		require.Equal(0, l.width)
 
-		l.next()
+		require.Equal('\u007f', l.next())
 
 		require.Equal(0, l.start)
 		require.Equal(1, l.pos)
 		require.Equal(1, l.width)
 
-		l.next()
+		require.Equal('\u07ff', l.next())
 
 		require.Equal(0, l.start)
 		require.Equal(3, l.pos)
 		require.Equal(2, l.width)
 
-		l.next()
+		require.Equal('\u7fff', l.next())
 
 		require.Equal(0, l.start)
 		require.Equal(6, l.pos)
 		require.Equal(3, l.width)
 
-		l.next()
+		require.Equal('\ufffd', l.next())
 
 		require.True(l.IsEOF())
 		require.Equal(0, l.start)
