@@ -138,7 +138,7 @@ func (l *Lexer) acceptRune(r rune) bool {
 }
 
 func (l *Lexer) acceptWord(word string) bool {
-	advanced := 1
+	advanced := 0
 	for _, r := range word {
 		if !l.acceptRune(r) {
 			l.unreadN(advanced)
