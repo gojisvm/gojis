@@ -20,11 +20,12 @@ func _() {
 	_ = x[NumericLiteral-9]
 	_ = x[StringLiteral-10]
 	_ = x[Template-11]
+	_ = x[ReservedWord-12]
 }
 
-const _Type_name = "UnknownErrorLineTerminatorWhitespaceMultiLineCommentSingleLineCommentCommonTokenIdentifierNamePunctuatorNumericLiteralStringLiteralTemplate"
+const _Type_name = "UnknownErrorLineTerminatorWhitespaceMultiLineCommentSingleLineCommentCommonTokenIdentifierNamePunctuatorNumericLiteralStringLiteralTemplateReservedWord"
 
-var _Type_index = [...]uint8{0, 7, 12, 26, 36, 52, 69, 80, 94, 104, 118, 131, 139}
+var _Type_index = [...]uint8{0, 7, 12, 26, 36, 52, 69, 80, 94, 104, 118, 131, 139, 151}
 
 func (i Type) String() string {
 	if i >= Type(len(_Type_index)-1) {

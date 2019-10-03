@@ -2,39 +2,15 @@ package lexer
 
 import (
 	"testing"
-
-	"github.com/gojisvm/gojis/internal/parser/token"
-	"github.com/stretchr/testify/require"
 )
 
-func TestSingleLineComment(t *testing.T) {
-	contents := []struct {
-		data, content string
-	}{
-		{"// Hello World!", "// Hello World!"},
-		{"// Hello World!\n", "// Hello World!"},
-		{"// Hello World!\n\n", "// Hello World!"},
-		{"//foo", "//foo"},
-		{"//f o / bar // snafu //// abcdef ", "//f o / bar // snafu //// abcdef "},
+func TestFoo(t *testing.T) {
+	data := "_\\uabcdeffoobar"
+	l := newWithInitialState([]byte(data), lexIdentifierName)
+	go l.StartLexing()
+	for tok := range l.TokenStream().Tokens() {
+		t.Logf("token: %v\n", tok.String())
 	}
-	for _, c := range contents {
-		testToken(t, c.data, c.content, token.SingleLineComment)
-	}
-}
 
-func testToken(_t *testing.T, data, content string, types ...token.Type) {
-	_t.Run(data, func(t *testing.T) {
-		require := require.New(t)
-
-		l := New([]byte(data))
-		go l.StartLexing()
-		next, ok := l.TokenStream().Next()
-		require.True(ok)
-		require.ElementsMatch(types, next.Types)
-		require.Equal(content, next.Value)
-
-		for range l.TokenStream().Tokens() {
-			// drain token stream so that the lexer closes the token stream
-		}
-	})
+	// t.Fail()
 }

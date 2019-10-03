@@ -8,7 +8,7 @@ import (
 
 func tokenMismatch(expected ...matcher.M) state {
 	return func(l *Lexer) state {
-		return errorf("Unexpected token, got '%s' but expected '%s'", string(l.peek()), matcher.Merge(expected...).String())
+		return errorf("Unexpected token, got '%s' but expected %s", string(l.peek()), matcher.Merge(expected...).String())
 	}
 }
 

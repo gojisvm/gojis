@@ -27,13 +27,17 @@ type Lexer struct {
 // a call to StartLexing. It is recommended that this call is executed in a
 // separate goroutine.
 func New(input []byte) *Lexer {
+	return newWithInitialState(input, lexScript)
+}
+
+func newWithInitialState(input []byte, initial state) *Lexer {
 	return &Lexer{
 		input: input,
 		start: 0,
 		pos:   0,
 		width: 0,
 
-		current: lexScript,
+		current: initial,
 		tokens:  token.NewStream(),
 	}
 }
@@ -89,6 +93,8 @@ func (l *Lexer) error(msg string) {
 	))
 }
 
+// next consumes the next rune from the input. When using next, always check if
+// the lexer is EOF.
 func (l *Lexer) next() rune {
 	r, w := utf8.DecodeRune(l.input[l.pos:])
 	l.width = w
@@ -96,14 +102,19 @@ func (l *Lexer) next() rune {
 	return r
 }
 
+// unread unreads the last read rune. This must only be called once per call to
+// next.
 func (l *Lexer) unread() {
 	l.pos -= l.width
 }
 
+// unreadN unreads n bytes (NOT runes). n must be the sum of the width of all
+// runes to unread.
 func (l *Lexer) unreadN(n int) {
 	l.pos -= n
 }
 
+// peek returns the next rune without consuming it.
 func (l *Lexer) peek() rune {
 	r := l.next()
 	l.unread()

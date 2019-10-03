@@ -3,6 +3,7 @@ package matcher
 import (
 	"regexp"
 	"strings"
+	"unicode"
 )
 
 // M is the definition of a character class, which can tell whether a rune is
@@ -40,6 +41,8 @@ func New(desc string, matchFn func(r rune) bool) functionMatcher {
 	return functionMatcher{matchFn, desc}
 }
 
+// Merge creates a new matcher, that accepts runes that are matched by one or
+// more of the given matchers.
 func Merge(ms ...M) functionMatcher {
 	descs := make([]string, len(ms))
 	for i, m := range ms {
@@ -59,10 +62,18 @@ func Merge(ms ...M) functionMatcher {
 	}
 }
 
+// Rune creates a matcher that matches only the given rune.
 func Rune(exp rune) functionMatcher {
+	return RuneWithDesc("'"+string(exp)+"'", exp)
+}
+
+// RuneWithDesc creates a matcher that matches only the given rune. The
+// description is the string representation of this matcher. This is useful when
+// dealing with whitespace characters.
+func RuneWithDesc(desc string, exp rune) functionMatcher {
 	return functionMatcher{
 		fn:   func(r rune) bool { return r == exp },
-		desc: "'" + string(exp) + "'",
+		desc: desc,
 	}
 }
 
@@ -94,11 +105,26 @@ func Regexp(expr string) *regexpMatcher {
 	}
 }
 
+// Diff returns a matcher that matches runes, that are matched by shouldMatch,
+// but are not matched by butNot.
+//
+//	Diff(A, B).Matches(r) => r element (A \ B)
 func Diff(shouldMatch M, butNot M) functionMatcher {
 	return functionMatcher{
 		fn: func(r rune) bool {
 			return !butNot.Matches(r) && shouldMatch.Matches(r)
 		},
 		desc: shouldMatch.String() + " but not (" + butNot.String() + ")",
+	}
+}
+
+// RangeTable creates a matcher that matches runes that are contained in the
+// given range table.
+func RangeTable(desc string, rt *unicode.RangeTable) functionMatcher {
+	return functionMatcher{
+		fn: func(r rune) bool {
+			return unicode.Is(rt, r)
+		},
+		desc: desc,
 	}
 }
