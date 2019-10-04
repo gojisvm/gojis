@@ -51,6 +51,8 @@ const (
 )
 
 var (
+	// AllReservedWords is a slice containing all keywords and future reserved
+	// words.
 	AllReservedWords = []string{
 		KeywordAwait,
 		KeywordBreak,
