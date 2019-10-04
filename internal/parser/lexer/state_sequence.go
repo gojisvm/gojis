@@ -1,7 +1,35 @@
 package lexer
 
 func acceptEscapeSequence(l *Lexer) state {
-	panic("TODO")
+	switch l.peek() {
+	case 'u':
+		return acceptUnicodeEscapeSequence(l)
+	case 'x':
+		return acceptHexEscapeSequence(l)
+	}
+
+	return errorf("Expected escape sequence, but did not find valid escape token, got '%s'.", string(l.peek()))
+}
+
+func acceptCharacterEscapeSequence(l *Lexer) state {
+	if !(l.accept(SingleEscapeCharacter) || l.accept(NonEscapeCharacter)) {
+		return tokenMismatch(SingleEscapeCharacter, NonEscapeCharacter)
+	}
+	return nil
+}
+
+func acceptHexEscapeSequence(l *Lexer) state {
+	if !l.accept(LowerX) {
+		return tokenMismatch(LowerX)
+	}
+
+	for i := 0; i < 2; i++ {
+		if !l.accept(HexDigit) {
+			return tokenMismatch(HexDigit)
+		}
+	}
+
+	return nil
 }
 
 // acceptUnicodeEscapeSequence accepts a unicode escape sequence from the given

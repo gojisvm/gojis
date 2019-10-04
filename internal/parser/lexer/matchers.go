@@ -24,6 +24,7 @@ var (
 	HexDigit          = matcher.String("0123456789abcdefABCDEF")
 	HexIndicator      = matcher.String("xX")
 	LowerU            = matcher.Rune('u')
+	LowerX            = matcher.Rune('x')
 	NonZeroDigit      = matcher.String("123456789")
 	OctalDigit        = matcher.String("01234567")
 	OctalIndicator    = matcher.String("oO")
@@ -66,6 +67,10 @@ var (
 
 	DoubleStringCharacterPartial = matcher.Diff(SourceCharacter, matcher.Merge(DoubleQuote, Backslash, LineTerminator))
 	SingleStringCharacterPartial = matcher.Diff(SourceCharacter, matcher.Merge(SingleQuote, Backslash, LineTerminator))
+
+	SingleEscapeCharacter = matcher.String(`'"\bfnrtv`)
+	EscapeCharacter       = matcher.Merge(SingleEscapeCharacter, DecimalDigit, LowerX, LowerU)
+	NonEscapeCharacter    = matcher.Diff(SourceCharacter, matcher.Merge(EscapeCharacter, LineTerminator))
 )
 
 func isUnicodeIDStart(r rune) bool {
