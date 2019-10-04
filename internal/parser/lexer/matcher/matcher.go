@@ -4,6 +4,8 @@ import (
 	"regexp"
 	"strings"
 	"unicode"
+
+	"golang.org/x/text/unicode/rangetable"
 )
 
 // M is the definition of a character class, which can tell whether a rune is
@@ -15,41 +17,49 @@ type M interface {
 	String() string
 }
 
-type functionMatcher struct {
+type FunctionMatcher struct {
 	fn   func(rune) bool
 	desc string
 }
 
-func (m functionMatcher) Matches(r rune) bool { return m.fn(r) }
-func (m functionMatcher) String() string      { return m.desc }
+func (m FunctionMatcher) Matches(r rune) bool { return m.fn(r) }
+func (m FunctionMatcher) String() string      { return m.desc }
 
-type regexpMatcher struct {
+type RangeTableMatcher struct {
+	rt   *unicode.RangeTable
+	desc string
+}
+
+func (m RangeTableMatcher) Matches(r rune) bool { return unicode.Is(m.rt, r) }
+func (m RangeTableMatcher) String() string      { return m.desc }
+
+type RegexpMatcher struct {
 	regexp *regexp.Regexp
 	desc   string
 }
 
-func (m *regexpMatcher) Matches(r rune) bool {
+func (m *RegexpMatcher) Matches(r rune) bool {
 	return m.regexp.MatchString(string(r))
 }
 
-func (m *regexpMatcher) String() string { return m.desc }
+func (m *RegexpMatcher) String() string { return m.desc }
 
 // Matcher constructors
 
 // New creates a new matcher from a given match function.
-func New(desc string, matchFn func(r rune) bool) functionMatcher {
-	return functionMatcher{matchFn, desc}
+func New(desc string, matchFn func(r rune) bool) FunctionMatcher {
+	return FunctionMatcher{matchFn, desc}
 }
 
 // Merge creates a new matcher, that accepts runes that are matched by one or
 // more of the given matchers.
-func Merge(ms ...M) functionMatcher {
+func Merge(ms ...M) FunctionMatcher {
 	descs := make([]string, len(ms))
 	for i, m := range ms {
 		descs[i] = m.String()
 	}
 
-	return functionMatcher{
+	return FunctionMatcher{
 		fn: func(r rune) bool {
 			for _, m := range ms {
 				if m.Matches(r) {
@@ -63,15 +73,15 @@ func Merge(ms ...M) functionMatcher {
 }
 
 // Rune creates a matcher that matches only the given rune.
-func Rune(exp rune) functionMatcher {
+func Rune(exp rune) FunctionMatcher {
 	return RuneWithDesc("'"+string(exp)+"'", exp)
 }
 
 // RuneWithDesc creates a matcher that matches only the given rune. The
 // description is the string representation of this matcher. This is useful when
 // dealing with whitespace characters.
-func RuneWithDesc(desc string, exp rune) functionMatcher {
-	return functionMatcher{
+func RuneWithDesc(desc string, exp rune) FunctionMatcher {
+	return FunctionMatcher{
 		fn:   func(r rune) bool { return r == exp },
 		desc: desc,
 	}
@@ -80,8 +90,8 @@ func RuneWithDesc(desc string, exp rune) functionMatcher {
 // Negate negates whatever matcher is passed into it, meaning that the new
 // matcher will return false when the passed matcher returned true and vice
 // versa.
-func Negate(m M) functionMatcher {
-	return functionMatcher{
+func Negate(m M) FunctionMatcher {
+	return FunctionMatcher{
 		fn:   func(r rune) bool { return !m.Matches(r) },
 		desc: "not (" + m.String() + ")",
 	}
@@ -89,17 +99,17 @@ func Negate(m M) functionMatcher {
 
 // String creates a matcher that checks whether a rune is part of the given
 // string.
-func String(s string) functionMatcher {
-	return functionMatcher{
-		fn:   func(r rune) bool { return strings.IndexRune(s, r) >= 0 },
+func String(s string) RangeTableMatcher {
+	return RangeTableMatcher{
+		rt:   rangetable.New([]rune(s)...),
 		desc: s,
 	}
 }
 
 // Regexp creates a matcher that checks whether a rune is matched by the given
 // regular expression.
-func Regexp(expr string) *regexpMatcher {
-	return &regexpMatcher{
+func Regexp(expr string) *RegexpMatcher {
+	return &RegexpMatcher{
 		regexp: regexp.MustCompile(expr),
 		desc:   "g/" + expr + "/",
 	}
@@ -109,8 +119,8 @@ func Regexp(expr string) *regexpMatcher {
 // but are not matched by butNot.
 //
 //	Diff(A, B).Matches(r) => r element (A \ B)
-func Diff(shouldMatch M, butNot M) functionMatcher {
-	return functionMatcher{
+func Diff(shouldMatch M, butNot M) FunctionMatcher {
+	return FunctionMatcher{
 		fn: func(r rune) bool {
 			return !butNot.Matches(r) && shouldMatch.Matches(r)
 		},
@@ -120,8 +130,8 @@ func Diff(shouldMatch M, butNot M) functionMatcher {
 
 // RangeTable creates a matcher that matches runes that are contained in the
 // given range table.
-func RangeTable(desc string, rt *unicode.RangeTable) functionMatcher {
-	return functionMatcher{
+func RangeTable(desc string, rt *unicode.RangeTable) FunctionMatcher {
+	return FunctionMatcher{
 		fn: func(r rune) bool {
 			return unicode.Is(rt, r)
 		},

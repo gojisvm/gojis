@@ -20,6 +20,8 @@ type Lexer struct {
 
 	current state
 	tokens  *token.Stream
+
+	unreads uint64
 }
 
 // New creates a new ready to use lexer that operates on the given input bytes.
@@ -105,6 +107,7 @@ func (l *Lexer) next() rune {
 // unread unreads the last read rune. This must only be called once per call to
 // next.
 func (l *Lexer) unread() {
+	l.unreads++
 	l.pos -= l.width
 }
 
@@ -144,7 +147,7 @@ func (l *Lexer) acceptWord(word string) bool {
 			l.unreadN(advanced)
 			return false
 		}
-		advanced++
+		advanced += len(string(r))
 	}
 	return true
 }

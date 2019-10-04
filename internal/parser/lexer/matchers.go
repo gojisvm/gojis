@@ -17,6 +17,7 @@ var (
 	BracketOpen       = matcher.Rune('[')
 	DecimalDigit      = matcher.String("0123456789")
 	Dollar            = matcher.Rune('$')
+	Dot               = matcher.Rune('.')
 	ExponentIndicator = matcher.String("eE")
 	HexDigit          = matcher.String("0123456789abcdefABCDEF")
 	LowerU            = matcher.Rune('u')
@@ -25,6 +26,7 @@ var (
 	Sign              = matcher.String("+-")
 	Slash             = matcher.Rune('/')
 	Underscore        = matcher.Rune('_')
+	Zero              = matcher.Rune('0')
 
 	SourceCharacter = matcher.New("SourceCharacter", isUnicodeCodePoint) // 10.1
 
