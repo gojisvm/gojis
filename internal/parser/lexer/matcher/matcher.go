@@ -54,13 +54,28 @@ func New(desc string, matchFn func(r rune) bool) FunctionMatcher {
 // Merge creates a new matcher, that accepts runes that are matched by one or
 // more of the given matchers.
 func Merge(ms ...M) FunctionMatcher {
+	var rtms []*unicode.RangeTable
+	var others []M
+
 	descs := make([]string, len(ms))
 	for i, m := range ms {
 		descs[i] = m.String()
+
+		if rtm, ok := m.(RangeTableMatcher); ok {
+			rtms = append(rtms, rtm.rt)
+		} else {
+			others = append(others, m)
+		}
 	}
+
+	mergedRangeTable := rangetable.Merge(rtms...)
 
 	return FunctionMatcher{
 		fn: func(r rune) bool {
+			if unicode.Is(mergedRangeTable, r) {
+				return true
+			}
+
 			for _, m := range ms {
 				if m.Matches(r) {
 					return true
@@ -73,16 +88,16 @@ func Merge(ms ...M) FunctionMatcher {
 }
 
 // Rune creates a matcher that matches only the given rune.
-func Rune(exp rune) FunctionMatcher {
+func Rune(exp rune) RangeTableMatcher {
 	return RuneWithDesc("'"+string(exp)+"'", exp)
 }
 
 // RuneWithDesc creates a matcher that matches only the given rune. The
 // description is the string representation of this matcher. This is useful when
 // dealing with whitespace characters.
-func RuneWithDesc(desc string, exp rune) FunctionMatcher {
-	return FunctionMatcher{
-		fn:   func(r rune) bool { return r == exp },
+func RuneWithDesc(desc string, exp rune) RangeTableMatcher {
+	return RangeTableMatcher{
+		rt:   rangetable.New(exp),
 		desc: desc,
 	}
 }
@@ -130,11 +145,9 @@ func Diff(shouldMatch M, butNot M) FunctionMatcher {
 
 // RangeTable creates a matcher that matches runes that are contained in the
 // given range table.
-func RangeTable(desc string, rt *unicode.RangeTable) FunctionMatcher {
-	return FunctionMatcher{
-		fn: func(r rune) bool {
-			return unicode.Is(rt, r)
-		},
+func RangeTable(desc string, rt *unicode.RangeTable) RangeTableMatcher {
+	return RangeTableMatcher{
+		rt:   rt,
 		desc: desc,
 	}
 }
