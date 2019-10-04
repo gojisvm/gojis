@@ -1,6 +1,9 @@
 package lexer
 
-import "github.com/gojisvm/gojis/internal/parser/token"
+import (
+	"github.com/gojisvm/gojis/internal/parser/lexer/matcher"
+	"github.com/gojisvm/gojis/internal/parser/token"
+)
 
 // Defined literals
 const (
@@ -127,5 +130,44 @@ func lexHexIntegerLiteral(l *Lexer) state {
 	}
 
 	l.emit(token.NumericLiteral, token.HexIntegerLiteral)
+	return lexToken
+}
+
+func lexStringLiteral(l *Lexer) state {
+	var quote matcher.M
+	var partial matcher.M
+
+	switch l.peek() {
+	case '"':
+		quote = DoubleQuote
+		partial = DoubleStringCharacterPartial
+	case '\'':
+		quote = SingleQuote
+		partial = SingleStringCharacterPartial
+	default:
+		return tokenMismatch(DoubleQuote, SingleQuote)
+	}
+
+	if !l.accept(quote) {
+		return tokenMismatch(quote)
+	}
+
+	for l.acceptMultiple(partial) > 0 {
+		if l.accept(Backslash) {
+			errState := acceptEscapeSequence(l)
+			if errState != nil {
+				errState = acceptLineTerminatorSequence(l)
+				if errState != nil {
+					return errState
+				}
+			}
+		}
+	}
+
+	if !l.accept(quote) {
+		return tokenMismatch(quote)
+	}
+
+	l.emit(token.StringLiteral)
 	return lexToken
 }

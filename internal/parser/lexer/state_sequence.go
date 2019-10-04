@@ -1,5 +1,9 @@
 package lexer
 
+func acceptEscapeSequence(l *Lexer) state {
+	panic("TODO")
+}
+
 // acceptUnicodeEscapeSequence accepts a unicode escape sequence from the given
 // lexer. If everything went ok, it will return nil as state, otherwise the
 // state will not be nil and will emit an error token. If the returned state is
@@ -33,5 +37,16 @@ func acceptUnicodeEscapeSequence(l *Lexer) state {
 		}
 	}
 
+	return nil
+}
+
+func acceptLineTerminatorSequence(l *Lexer) state {
+	if l.accept(_CR) {
+		l.accept(_LF)
+		return nil
+	}
+	if !l.accept(LineTerminator) {
+		return tokenMismatch(LineTerminator)
+	}
 	return nil
 }

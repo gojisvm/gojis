@@ -19,6 +19,7 @@ var (
 	DecimalDigit      = matcher.String("0123456789")
 	Dollar            = matcher.Rune('$')
 	Dot               = matcher.Rune('.')
+	DoubleQuote       = matcher.Rune('"')
 	ExponentIndicator = matcher.String("eE")
 	HexDigit          = matcher.String("0123456789abcdefABCDEF")
 	HexIndicator      = matcher.String("xX")
@@ -27,6 +28,7 @@ var (
 	OctalDigit        = matcher.String("01234567")
 	OctalIndicator    = matcher.String("oO")
 	Sign              = matcher.String("+-")
+	SingleQuote       = matcher.Rune('\'')
 	Slash             = matcher.Rune('/')
 	Underscore        = matcher.Rune('_')
 	Zero              = matcher.Rune('0')
@@ -61,6 +63,9 @@ var (
 	IdentifierStart        = matcher.Merge(UnicodeIDStart, Dollar, Underscore, Backslash)
 	IdentifierPartPartial  = matcher.Merge(UnicodeIDContinue, Dollar, _ZWNJ, _ZWJ)
 	IdentifierPart         = matcher.Merge(UnicodeIDContinue, Dollar, _ZWNJ, _ZWJ, Backslash)
+
+	DoubleStringCharacterPartial = matcher.Diff(SourceCharacter, matcher.Merge(DoubleQuote, Backslash, LineTerminator))
+	SingleStringCharacterPartial = matcher.Diff(SourceCharacter, matcher.Merge(SingleQuote, Backslash, LineTerminator))
 )
 
 func isUnicodeIDStart(r rune) bool {
