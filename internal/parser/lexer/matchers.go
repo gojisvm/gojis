@@ -8,17 +8,23 @@ import (
 
 // Defined matchers
 var (
-	Asterisk     = matcher.Rune('*')
-	Backslash    = matcher.Rune('\\')
-	BraceClose   = matcher.Rune('}')
-	BraceOpen    = matcher.Rune('{')
-	BracketClose = matcher.Rune(']')
-	BracketOpen  = matcher.Rune('[')
-	Dollar       = matcher.Rune('$')
-	LowerU       = matcher.Rune('u')
-	Slash        = matcher.Rune('/')
-	HexDigit     = matcher.String("0123456789abcdefABCDEF")
-	Underscore   = matcher.Rune('_')
+	Asterisk          = matcher.Rune('*')
+	Backslash         = matcher.Rune('\\')
+	BinaryDigit       = matcher.String("01")
+	BraceClose        = matcher.Rune('}')
+	BraceOpen         = matcher.Rune('{')
+	BracketClose      = matcher.Rune(']')
+	BracketOpen       = matcher.Rune('[')
+	DecimalDigit      = matcher.String("0123456789")
+	Dollar            = matcher.Rune('$')
+	ExponentIndicator = matcher.String("eE")
+	HexDigit          = matcher.String("0123456789abcdefABCDEF")
+	LowerU            = matcher.Rune('u')
+	NonZeroDigit      = matcher.String("123456789")
+	OctalDigit        = matcher.String("01234567")
+	Sign              = matcher.String("+-")
+	Slash             = matcher.Rune('/')
+	Underscore        = matcher.Rune('_')
 
 	SourceCharacter = matcher.New("SourceCharacter", isUnicodeCodePoint) // 10.1
 

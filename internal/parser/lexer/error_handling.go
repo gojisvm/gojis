@@ -6,6 +6,12 @@ import (
 	"github.com/gojisvm/gojis/internal/parser/lexer/matcher"
 )
 
+func unexpectedWord(expected ...string) state {
+	return func(l *Lexer) state {
+		return errorf("Unexpected token, expected one of %v, but next rune was '%s'", expected, string(l.peek()))
+	}
+}
+
 func tokenMismatch(expected ...matcher.M) state {
 	return func(l *Lexer) state {
 		return errorf("Unexpected token, got '%s' but expected %s", string(l.peek()), matcher.Merge(expected...).String())
