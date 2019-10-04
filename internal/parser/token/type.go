@@ -25,6 +25,10 @@ const (
 
 	ReservedWord // 11.6
 
-	Null    // 11.8.1
-	Boolean // 11.8.2
+	Null                 // 11.8.1
+	Boolean              // 11.8.2
+	DecimalLiteral       // 11.8.3
+	BinaryIntegerLiteral // 11.8.3
+	OctalIntegerLiteral  // 11.8.3
+	HexIntegerLiteral    // 11.8.3
 )

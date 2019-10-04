@@ -6,11 +6,11 @@ import (
 	"github.com/gojisvm/gojis/internal/parser/token"
 )
 
-func TestSingleLineComment(t *testing.T) {
+func Test_lexSingleLineComment(t *testing.T) {
 	SingleTokenTests{
 		name:    "single line comment",
-		types:   []token.Type{token.SingleLineComment},
 		initial: lexComment,
+		types:   []token.Type{token.SingleLineComment},
 		tests: []SingleTokenTest{
 			{"//"},
 			{"// "},
@@ -26,11 +26,11 @@ func TestSingleLineComment(t *testing.T) {
 	}.Execute(t)
 }
 
-func TestMultiLineComment(t *testing.T) {
+func Test_lexMultiLineComment(t *testing.T) {
 	SingleTokenTests{
 		name:    "multi line comment",
-		types:   []token.Type{token.MultiLineComment},
 		initial: lexComment,
+		types:   []token.Type{token.MultiLineComment},
 		tests: []SingleTokenTest{
 			{"/**/"},
 			{"/* */"},

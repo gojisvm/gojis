@@ -12,6 +12,10 @@ func lexScript(l *Lexer) state {
 }
 
 func lexToken(l *Lexer) state {
+	if l.IsEOF() {
+		return nil
+	}
+
 	switch r := l.peek(); r {
 	default:
 		// handle all cases that cannot be expressed in a switch block

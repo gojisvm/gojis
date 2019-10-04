@@ -61,12 +61,16 @@ func lexDecimalLiteral(l *Lexer) state {
 }
 
 func lexDecimalIntegerLiteral(l *Lexer) state {
-	if !l.accept(Zero) {
-		if !l.accept(NonZeroDigit) {
-			return tokenMismatch(NonZeroDigit)
-		}
-		l.acceptMultiple(DecimalDigit)
+	if l.IsEOF() {
+		l.emit(token.NumericLiteral, token.DecimalLiteral)
+		return lexToken
 	}
+
+	// zero has already been accepted in lexNumericLiteral
+	if !l.accept(NonZeroDigit) {
+		return tokenMismatch(NonZeroDigit)
+	}
+	l.acceptMultiple(DecimalDigit)
 
 	if l.accept(Dot) {
 		l.acceptMultiple(DecimalDigit)
@@ -77,7 +81,7 @@ func lexDecimalIntegerLiteral(l *Lexer) state {
 func lexOptionalExponentPart(l *Lexer) state {
 	if !l.accept(ExponentIndicator) {
 		// no exponent, emit token
-		l.emit(token.NumericLiteral)
+		l.emit(token.NumericLiteral, token.DecimalLiteral)
 		return lexToken
 	}
 
@@ -86,18 +90,42 @@ func lexOptionalExponentPart(l *Lexer) state {
 		return tokenMismatch(DecimalDigit)
 	}
 
-	l.emit(token.NumericLiteral)
+	l.emit(token.NumericLiteral, token.DecimalLiteral)
 	return lexToken
 }
 
 func lexBinaryIntegerLiteral(l *Lexer) state {
-	panic("TODO")
+	if !l.accept(BinaryIndicator) {
+		return tokenMismatch(BinaryIndicator)
+	}
+	if l.acceptMultiple(BinaryDigit) < 1 {
+		return tokenMismatch(BinaryDigit)
+	}
+
+	l.emit(token.NumericLiteral, token.BinaryIntegerLiteral)
+	return lexToken
 }
 
 func lexOctalIntegerLiteral(l *Lexer) state {
-	panic("TODO")
+	if !l.accept(OctalIndicator) {
+		return tokenMismatch(OctalIndicator)
+	}
+	if l.acceptMultiple(OctalDigit) < 1 {
+		return tokenMismatch(OctalDigit)
+	}
+
+	l.emit(token.NumericLiteral, token.OctalIntegerLiteral)
+	return lexToken
 }
 
 func lexHexIntegerLiteral(l *Lexer) state {
-	panic("TODO")
+	if !l.accept(HexIndicator) {
+		return tokenMismatch(HexIndicator)
+	}
+	if l.acceptMultiple(HexDigit) < 1 {
+		return tokenMismatch(HexDigit)
+	}
+
+	l.emit(token.NumericLiteral, token.HexIntegerLiteral)
+	return lexToken
 }

@@ -50,7 +50,7 @@ func newWithInitialState(input []byte, initial state) *Lexer {
 func (l *Lexer) StartLexing() {
 	defer l.tokens.Close()
 
-	for !l.IsEOF() {
+	for {
 		l.current = l.current(l)
 		if l.current == nil {
 			// last state was end state

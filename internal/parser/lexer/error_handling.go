@@ -2,13 +2,14 @@ package lexer
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/gojisvm/gojis/internal/parser/lexer/matcher"
 )
 
 func unexpectedWord(expected ...string) state {
 	return func(l *Lexer) state {
-		return errorf("Unexpected token, expected one of %v, but next rune was '%s'", expected, string(l.peek()))
+		return errorf("Unexpected token, expected one of ['%v'], but next rune was '%s'", strings.Join(expected, "', '"), string(l.peek()))
 	}
 }
 

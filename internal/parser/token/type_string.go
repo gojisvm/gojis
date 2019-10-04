@@ -21,11 +21,17 @@ func _() {
 	_ = x[StringLiteral-10]
 	_ = x[Template-11]
 	_ = x[ReservedWord-12]
+	_ = x[Null-13]
+	_ = x[Boolean-14]
+	_ = x[DecimalLiteral-15]
+	_ = x[BinaryIntegerLiteral-16]
+	_ = x[OctalIntegerLiteral-17]
+	_ = x[HexIntegerLiteral-18]
 }
 
-const _Type_name = "UnknownErrorLineTerminatorWhitespaceMultiLineCommentSingleLineCommentCommonTokenIdentifierNamePunctuatorNumericLiteralStringLiteralTemplateReservedWord"
+const _Type_name = "UnknownErrorLineTerminatorWhitespaceMultiLineCommentSingleLineCommentCommonTokenIdentifierNamePunctuatorNumericLiteralStringLiteralTemplateReservedWordNullBooleanDecimalLiteralBinaryIntegerLiteralOctalIntegerLiteralHexIntegerLiteral"
 
-var _Type_index = [...]uint8{0, 7, 12, 26, 36, 52, 69, 80, 94, 104, 118, 131, 139, 151}
+var _Type_index = [...]uint8{0, 7, 12, 26, 36, 52, 69, 80, 94, 104, 118, 131, 139, 151, 155, 162, 176, 196, 215, 232}
 
 func (i Type) String() string {
 	if i >= Type(len(_Type_index)-1) {
