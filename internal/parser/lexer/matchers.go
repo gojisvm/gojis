@@ -47,11 +47,11 @@ var (
 	_ZWNBSP    = matcher.RuneWithDesc("<ZWNBSP>", '\uFEFF')                            // 11.1
 	_ZWNJ      = matcher.RuneWithDesc("<ZWNJ>", '\u200C')                              // 11.1
 
-	LineTerminator = matcher.Merge(_LF, _CR, _LS, _PS)      // 11.3
-	_LF            = matcher.RuneWithDesc("<LF>", '\u000A') // 11.3
-	_CR            = matcher.RuneWithDesc("<CR>", '\u000D') // 11.3
-	_LS            = matcher.RuneWithDesc("<LS>", '\u2028') // 11.3
-	_PS            = matcher.RuneWithDesc("<PS>", '\u2029') // 11.3
+	LineTerminator = matcher.MergeRuneBased(_LF, _CR, _LS, _PS) // 11.3
+	_LF            = matcher.RuneWithDesc("<LF>", '\u000A')     // 11.3
+	_CR            = matcher.RuneWithDesc("<CR>", '\u000D')     // 11.3
+	_LS            = matcher.RuneWithDesc("<LS>", '\u2028')     // 11.3
+	_PS            = matcher.RuneWithDesc("<PS>", '\u2029')     // 11.3
 
 	SingleLineCommentChar = matcher.Diff(SourceCharacter, LineTerminator) // 11.4
 
@@ -69,7 +69,7 @@ var (
 	SingleStringCharacterPartial = matcher.Diff(SourceCharacter, matcher.Merge(SingleQuote, Backslash, LineTerminator))
 
 	SingleEscapeCharacter = matcher.String(`'"\bfnrtv`)
-	EscapeCharacter       = matcher.Merge(SingleEscapeCharacter, DecimalDigit, LowerX, LowerU)
+	EscapeCharacter       = matcher.MergeRuneBased(SingleEscapeCharacter, DecimalDigit, LowerX, LowerU)
 	NonEscapeCharacter    = matcher.Diff(SourceCharacter, matcher.Merge(EscapeCharacter, LineTerminator))
 )
 
