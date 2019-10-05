@@ -87,6 +87,21 @@ func Merge(ms ...M) FunctionMatcher {
 	}
 }
 
+func MergeRuneBased(ms ...RangeTableMatcher) RangeTableMatcher {
+	var rtms []*unicode.RangeTable
+	descs := make([]string, len(ms))
+
+	for i, m := range ms {
+		descs[i] = m.String()
+		rtms = append(rtms, m.rt)
+	}
+
+	return RangeTableMatcher{
+		rt:   rangetable.Merge(rtms...),
+		desc: strings.Join(descs, " or "),
+	}
+}
+
 // Rune creates a matcher that matches only the given rune.
 func Rune(exp rune) RangeTableMatcher {
 	return RuneWithDesc("'"+string(exp)+"'", exp)
