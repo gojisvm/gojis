@@ -53,7 +53,7 @@ func New(desc string, matchFn func(r rune) bool) FunctionMatcher {
 
 // Merge creates a new matcher, that accepts runes that are matched by one or
 // more of the given matchers.
-func Merge(ms ...M) FunctionMatcher {
+func Merge(ms ...M) M {
 	var rtms []*unicode.RangeTable
 	var others []M
 
@@ -68,7 +68,15 @@ func Merge(ms ...M) FunctionMatcher {
 		}
 	}
 
+	desc := strings.Join(descs, " or ")
 	mergedRangeTable := rangetable.Merge(rtms...)
+
+	if len(others) == 0 {
+		return RangeTableMatcher{
+			rt:   mergedRangeTable,
+			desc: desc,
+		}
+	}
 
 	return FunctionMatcher{
 		fn: func(r rune) bool {
@@ -83,7 +91,7 @@ func Merge(ms ...M) FunctionMatcher {
 			}
 			return false
 		},
-		desc: strings.Join(descs, " or "),
+		desc: desc,
 	}
 }
 
