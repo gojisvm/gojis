@@ -18,18 +18,18 @@ func acceptEscapeSequence(l *Lexer) state {
 	case 'x':
 		return acceptHexEscapeSequence(l)
 	default:
+		if l.accept(Zero) {
+			if DecimalDigit.Matches(l.peek()) {
+				l.unreadN(1) // '0' has 1 byte, which is why we don't need to compute bytes of the rune
+				return unexpectedToken
+			}
+			return nil
+		}
+
 		if SingleEscapeCharacter.Matches(r) || NonEscapeCharacter.Matches(r) {
 			return acceptCharacterEscapeSequence(l)
 		}
 	}
-
-	if l.accept(Zero) {
-		if DecimalDigit.Matches(l.peek()) {
-			l.unreadN(1) // '0' has 1 byte, which is why we don't need to compute bytes of the rune
-			return unexpectedToken
-		}
-	}
-
 	return errorf("Expected escape sequence, but did not find valid escape token, got '%s'.", string(l.peek()))
 }
 
