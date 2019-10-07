@@ -47,47 +47,13 @@ func (m *RegexpMatcher) String() string { return m.desc }
 // Matcher constructors
 
 // New creates a new matcher from a given match function.
-func New(desc string, matchFn func(r rune) bool) FunctionMatcher {
-	return FunctionMatcher{matchFn, desc}
+func New(desc string, rt *unicode.RangeTable) RangeTableMatcher {
+	return RangeTableMatcher{rt, desc}
 }
 
 // Merge creates a new matcher, that accepts runes that are matched by one or
 // more of the given matchers.
-func Merge(ms ...M) FunctionMatcher {
-	var rtms []*unicode.RangeTable
-	var others []M
-
-	descs := make([]string, len(ms))
-	for i, m := range ms {
-		descs[i] = m.String()
-
-		if rtm, ok := m.(RangeTableMatcher); ok {
-			rtms = append(rtms, rtm.rt)
-		} else {
-			others = append(others, m)
-		}
-	}
-
-	mergedRangeTable := rangetable.Merge(rtms...)
-
-	return FunctionMatcher{
-		fn: func(r rune) bool {
-			if unicode.Is(mergedRangeTable, r) {
-				return true
-			}
-
-			for _, m := range ms {
-				if m.Matches(r) {
-					return true
-				}
-			}
-			return false
-		},
-		desc: strings.Join(descs, " or "),
-	}
-}
-
-func MergeRuneBased(ms ...RangeTableMatcher) RangeTableMatcher {
+func Merge(ms ...RangeTableMatcher) RangeTableMatcher {
 	var rtms []*unicode.RangeTable
 	descs := make([]string, len(ms))
 
@@ -132,7 +98,7 @@ func Negate(m M) FunctionMatcher {
 func String(s string) RangeTableMatcher {
 	return RangeTableMatcher{
 		rt:   rangetable.New([]rune(s)...),
-		desc: s,
+		desc: "one of '" + s + "'",
 	}
 }
 

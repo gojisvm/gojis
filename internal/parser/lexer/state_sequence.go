@@ -1,16 +1,49 @@
 package lexer
 
+// acceptEscapeSequence accepts an escape sequence from the given
+// lexer. If everything went ok, it will return nil as state, otherwise the
+// state will not be nil and will emit an error token. If the returned state is
+// not nil, it must be returned by the caller.
+//
+//	errState := acceptEscapeSequence(l)
+//	if errState != nil {
+//		return errState
+//	}
+//
+// EscapeSequence and other escape sequences are specified in 11.8.4.
 func acceptEscapeSequence(l *Lexer) state {
-	switch l.peek() {
+	switch r := l.peek(); r {
 	case 'u':
 		return acceptUnicodeEscapeSequence(l)
 	case 'x':
 		return acceptHexEscapeSequence(l)
+	default:
+		if SingleEscapeCharacter.Matches(r) || NonEscapeCharacter.Matches(r) {
+			return acceptCharacterEscapeSequence(l)
+		}
+	}
+
+	if l.accept(Zero) {
+		if DecimalDigit.Matches(l.peek()) {
+			l.unreadN(1) // '0' has 1 byte, which is why we don't need to compute bytes of the rune
+			return unexpectedToken
+		}
 	}
 
 	return errorf("Expected escape sequence, but did not find valid escape token, got '%s'.", string(l.peek()))
 }
 
+// acceptCharacterEscapeSequence accepts a character escape sequence from the given
+// lexer. If everything went ok, it will return nil as state, otherwise the
+// state will not be nil and will emit an error token. If the returned state is
+// not nil, it must be returned by the caller.
+//
+//	errState := acceptCharacterEscapeSequence(l)
+//	if errState != nil {
+//		return errState
+//	}
+//
+// characterEscapeSequence is specified in 11.8.4.
 func acceptCharacterEscapeSequence(l *Lexer) state {
 	if !(l.accept(SingleEscapeCharacter) || l.accept(NonEscapeCharacter)) {
 		return tokenMismatch(SingleEscapeCharacter, NonEscapeCharacter)
@@ -18,6 +51,17 @@ func acceptCharacterEscapeSequence(l *Lexer) state {
 	return nil
 }
 
+// acceptHexEscapeSequence accepts a hex escape sequence from the given
+// lexer. If everything went ok, it will return nil as state, otherwise the
+// state will not be nil and will emit an error token. If the returned state is
+// not nil, it must be returned by the caller.
+//
+//	errState := acceptHexEscapeSequence(l)
+//	if errState != nil {
+//		return errState
+//	}
+//
+// HexEscapeSequence is specified in 11.8.4.
 func acceptHexEscapeSequence(l *Lexer) state {
 	if !l.accept(LowerX) {
 		return tokenMismatch(LowerX)
@@ -55,6 +99,9 @@ func acceptUnicodeEscapeSequence(l *Lexer) state {
 			return errorf("Must be a code point (<= 0x10FFFF)")
 		}
 		if !l.accept(BraceClose) {
+			if n < 6 {
+				return tokenMismatch(BraceClose, HexDigit)
+			}
 			return tokenMismatch(BraceClose)
 		}
 	} else {
@@ -68,6 +115,17 @@ func acceptUnicodeEscapeSequence(l *Lexer) state {
 	return nil
 }
 
+// acceptLineTerminatorEscapeSequence accepts a line terminator escape sequence from the given
+// lexer. If everything went ok, it will return nil as state, otherwise the
+// state will not be nil and will emit an error token. If the returned state is
+// not nil, it must be returned by the caller.
+//
+//	errState := acceptLineTerminatorEscapeSequence(l)
+//	if errState != nil {
+//		return errState
+//	}
+//
+// LineTerminatorEscapeSequence is specified in 11.8.4.
 func acceptLineTerminatorSequence(l *Lexer) state {
 	if l.accept(_CR) {
 		l.accept(_LF)

@@ -45,25 +45,3 @@ func BenchmarkMerge(b *testing.B) {
 
 	result = r
 }
-
-func BenchmarkMergeRuneBased(b *testing.B) {
-	matcher := MergeRuneBased(
-		String("0123456789"),
-		String("abcdefghijklmnopqrstuvwxyz"),
-		String("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
-	)
-	var r bool
-
-	b.ReportAllocs()
-	b.ResetTimer()
-
-	for i := 0; i < b.N; i++ {
-		r = matcher.Matches('2')
-		r = matcher.Matches('d')
-		r = matcher.Matches('u')
-		r = matcher.Matches('F')
-		r = matcher.Matches('U')
-	}
-
-	result = r
-}

@@ -34,32 +34,32 @@ var (
 	Underscore        = matcher.Rune('_')
 	Zero              = matcher.Rune('0')
 
-	SourceCharacter = matcher.New("SourceCharacter", isUnicodeCodePoint) // 10.1
+	SourceCharacter = matcher.New("SourceCharacter", CodePoint) // 10.1
 
 	WhiteSpace = matcher.Merge(_FF, _NBSP, _SP, _TAB, _USP, _VT, _ZWJ, _ZWNBSP, _ZWNJ) // 11.2
 	_FF        = matcher.RuneWithDesc("<FF>", '\u000C')                                // 11.2
 	_NBSP      = matcher.RuneWithDesc("<NBSP>", '\u00A0')                              // 11.2
 	_SP        = matcher.RuneWithDesc("<SP>", '\u0020')                                // 11.2
 	_TAB       = matcher.RuneWithDesc("<TAB>", '\u0009')                               // 11.2
-	_USP       = matcher.New("<USP>", isUnicodeCategoryZ)                              // 11.2
+	_USP       = matcher.New("<USP>", unicode.Z)                                       // 11.2
 	_VT        = matcher.RuneWithDesc("<VT>", '\u000B')                                // 11.2
 	_ZWJ       = matcher.RuneWithDesc("<ZWJ>", '\u200D')                               // 11.1
 	_ZWNBSP    = matcher.RuneWithDesc("<ZWNBSP>", '\uFEFF')                            // 11.1
 	_ZWNJ      = matcher.RuneWithDesc("<ZWNJ>", '\u200C')                              // 11.1
 
-	LineTerminator = matcher.MergeRuneBased(_LF, _CR, _LS, _PS) // 11.3
-	_LF            = matcher.RuneWithDesc("<LF>", '\u000A')     // 11.3
-	_CR            = matcher.RuneWithDesc("<CR>", '\u000D')     // 11.3
-	_LS            = matcher.RuneWithDesc("<LS>", '\u2028')     // 11.3
-	_PS            = matcher.RuneWithDesc("<PS>", '\u2029')     // 11.3
+	LineTerminator = matcher.Merge(_LF, _CR, _LS, _PS)      // 11.3
+	_LF            = matcher.RuneWithDesc("<LF>", '\u000A') // 11.3
+	_CR            = matcher.RuneWithDesc("<CR>", '\u000D') // 11.3
+	_LS            = matcher.RuneWithDesc("<LS>", '\u2028') // 11.3
+	_PS            = matcher.RuneWithDesc("<PS>", '\u2029') // 11.3
 
 	SingleLineCommentChar = matcher.Diff(SourceCharacter, LineTerminator) // 11.4
 
 	MultiLineNotAsteriskChar               = matcher.Diff(SourceCharacter, Asterisk)
 	MultiLineNotForwardSlashOrAsteriskChar = matcher.Diff(SourceCharacter, matcher.Merge(Asterisk, Slash))
 
-	UnicodeIDStart         = matcher.New("ID_Start", isUnicodeIDStart)
-	UnicodeIDContinue      = matcher.New("ID_Continue", isUnicodeIDContinue)
+	UnicodeIDStart         = matcher.New("ID_Start", unicode.Other_ID_Start)
+	UnicodeIDContinue      = matcher.New("ID_Continue", ID_Continue)
 	IdentifierStartPartial = matcher.Merge(UnicodeIDStart, Dollar, Underscore)
 	IdentifierStart        = matcher.Merge(UnicodeIDStart, Dollar, Underscore, Backslash)
 	IdentifierPartPartial  = matcher.Merge(UnicodeIDContinue, Dollar, _ZWNJ, _ZWJ)
@@ -69,16 +69,17 @@ var (
 	SingleStringCharacterPartial = matcher.Diff(SourceCharacter, matcher.Merge(SingleQuote, Backslash, LineTerminator))
 
 	SingleEscapeCharacter = matcher.String(`'"\bfnrtv`)
-	EscapeCharacter       = matcher.MergeRuneBased(SingleEscapeCharacter, DecimalDigit, LowerX, LowerU)
+	EscapeCharacter       = matcher.Merge(SingleEscapeCharacter, DecimalDigit, LowerX, LowerU)
 	NonEscapeCharacter    = matcher.Diff(SourceCharacter, matcher.Merge(EscapeCharacter, LineTerminator))
 )
 
-func isUnicodeIDStart(r rune) bool {
-	return unicode.Is(unicode.Other_ID_Start, r)
-}
-func isUnicodeIDContinue(r rune) bool {
-	// return unicode.Is(unicode.Other_ID_Continue, r)
-	return unicode.Is(&unicode.RangeTable{
+var (
+	CodePoint = &unicode.RangeTable{
+		R32: []unicode.Range32{
+			{0, unicode.MaxRune, 1},
+		},
+	}
+	ID_Continue = &unicode.RangeTable{
 		R16: []unicode.Range16{
 			{0x0030, 0x0039, 1}, // 0-9
 			{0x0041, 0x005a, 1}, // A-Z
@@ -853,13 +854,5 @@ func isUnicodeIDContinue(r rune) bool {
 			{0x0002f800, 0x0002fa1d, 1},
 			{0x000e0100, 0x000e01ef, 1},
 		},
-	}, r)
-}
-
-func isUnicodeCategoryZ(r rune) bool {
-	return unicode.Is(unicode.Z, r)
-}
-
-func isUnicodeCodePoint(r rune) bool {
-	return r <= unicode.MaxRune
-}
+	}
+)

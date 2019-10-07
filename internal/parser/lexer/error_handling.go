@@ -14,8 +14,13 @@ func unexpectedWord(expected ...string) state {
 }
 
 func tokenMismatch(expected ...matcher.M) state {
+	var descs []string
+	for _, m := range expected {
+		descs = append(descs, m.String())
+	}
+
 	return func(l *Lexer) state {
-		return errorf("Unexpected token, got '%s' but expected %s", string(l.peek()), matcher.Merge(expected...).String())
+		return errorf("Unexpected token, got '%s' but expected %s", string(l.peek()), strings.Join(descs, " or "))
 	}
 }
 

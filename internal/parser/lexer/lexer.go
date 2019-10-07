@@ -124,6 +124,27 @@ func (l *Lexer) peek() rune {
 	return r
 }
 
+// acceptEnclosed enters the given state on the stack, and returns after it was
+// processed. This function is useful when having states that consist of other
+// states, e.g. a string enclosed in quotes.
+//
+//	if !l.accept(Quote){
+//		return tokenMismatch(Quote)
+//	}
+//	if ok, errState := l.acceptEnclosed(StringCharacters); !ok {
+//		return errState
+//	}
+//	if !l.accept(Quote){
+//		return tokenMismatch(Quote)
+//	}
+//
+// In some cases, this removes the need to store state inside the lexer itself.
+func (l *Lexer) acceptEnclosed(enclosed state) (ok bool, err state) {
+	err = enclosed(l)
+	ok = err == nil
+	return
+}
+
 func (l *Lexer) accept(m matcher.M) bool {
 	if m.Matches(l.next()) {
 		return true

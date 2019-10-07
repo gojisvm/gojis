@@ -152,13 +152,11 @@ func lexStringLiteral(l *Lexer) state {
 		return tokenMismatch(quote)
 	}
 
-	for l.acceptMultiple(partial) > 0 {
+	for n := uint(1); n > 0; n = l.acceptMultiple(partial) {
 		if l.accept(Backslash) {
-			errState := acceptEscapeSequence(l)
-			if errState != nil {
-				errState = acceptLineTerminatorSequence(l)
-				if errState != nil {
-					return errState
+			if ok, _ := l.acceptEnclosed(acceptEscapeSequence); !ok { // #71: don't swallow error state
+				if ok, _ := l.acceptEnclosed(acceptLineTerminatorSequence); !ok {
+					return errorf("'%s' is not a valid escape token", string(l.peek()))
 				}
 			}
 		}
