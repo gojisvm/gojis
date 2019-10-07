@@ -20,7 +20,6 @@ func acceptEscapeSequence(l *Lexer) state {
 	default:
 		if l.accept(Zero) {
 			if DecimalDigit.Matches(l.peek()) {
-				l.unreadN(1) // '0' has 1 byte, which is why we don't need to compute bytes of the rune
 				return unexpectedToken
 			}
 			return nil
