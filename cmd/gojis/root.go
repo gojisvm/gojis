@@ -34,7 +34,7 @@ func init() {
 
 	rootCmd.PersistentFlags().BoolP(Profiling, "p", false, "Enable to write a CPU profile to \".\"")
 
-	viper.BindPFlag(Profiling, rootCmd.PersistentFlags().Lookup(Profiling))
+	_ = viper.BindPFlag(Profiling, rootCmd.PersistentFlags().Lookup(Profiling))
 }
 
 func initConfig() {
