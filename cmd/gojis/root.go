@@ -8,8 +8,12 @@ import (
 )
 
 const (
+	// AppName is the name of the executable CLI application, that will be used
+	// in the help text.
 	AppName = "gojis"
 
+	// Profiling is the constant key for the flag and configuration entry
+	// "profiling".
 	Profiling = "profiling"
 )
 
