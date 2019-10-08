@@ -82,8 +82,6 @@ func (i *isolate) accept(t token.Type) bool {
 // actual parsing including all rules starts here
 
 func (i *isolate) parse() (script *ast.Script, err error) {
-	go i.lx.StartLexing()
-
 	defer func() {
 		if recovered := recover(); recovered != nil {
 			parseError, ok := recovered.(Error)
@@ -91,6 +89,13 @@ func (i *isolate) parse() (script *ast.Script, err error) {
 				panic(recovered) // re-panic if not parser error
 			}
 			err = parseError
+		}
+	}()
+
+	go func() {
+		err := i.lx.StartLexing()
+		if err != nil {
+			i.fatalf("Lexer failed: %v", err)
 		}
 	}()
 

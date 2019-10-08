@@ -1,7 +1,6 @@
 package lexer
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/gojisvm/gojis/internal/parser/lexer/matcher"
@@ -30,7 +29,7 @@ func unexpectedToken(l *Lexer) state {
 
 func errorf(msg string, args ...interface{}) state {
 	return func(l *Lexer) state {
-		l.error(fmt.Sprintf(msg, args...))
+		l.fatalf(msg, args...)
 		return nil
 	}
 }

@@ -104,7 +104,13 @@ func TestAcceptWord(t *testing.T) {
 
 func testWithDataAndState(data []byte, initial state) {
 	l := newWithInitialState(data, initial)
-	go l.StartLexing()
+
+	go func() {
+		err := l.StartLexing()
+		if err != nil {
+			panic(err)
+		}
+	}()
 
 	for range l.TokenStream().Tokens() {
 		// drain all tokens

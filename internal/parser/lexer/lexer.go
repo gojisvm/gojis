@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"fmt"
 	"unicode/utf8"
 
 	"github.com/gojisvm/gojis/internal/parser/lexer/matcher"
@@ -44,11 +45,18 @@ func newWithInitialState(input []byte, initial state) *Lexer {
 	}
 }
 
-// StartLexing starts this lexer, so that it will start pusing tokens onto the
-// token stream. This should be executed in a separate goroutine, as it will
-// block until the lexer is done.
-func (l *Lexer) StartLexing() {
+func (l *Lexer) StartLexing() (err error) {
 	defer l.tokens.Close()
+
+	defer func() {
+		if recovered := recover(); recovered != nil {
+			parseError, ok := recovered.(Error)
+			if !ok {
+				panic(recovered) // re-panic if not lexer error
+			}
+			err = parseError
+		}
+	}()
 
 	for {
 		l.current = l.current(l)
@@ -57,6 +65,8 @@ func (l *Lexer) StartLexing() {
 			break
 		}
 	}
+
+	return
 }
 
 // IsEOF determines whether the position marker of the lexer has reached the end
@@ -86,13 +96,14 @@ func (l *Lexer) emit(t ...token.Type) {
 	l.start = l.pos
 }
 
-func (l *Lexer) error(msg string) {
-	l.tokens.Push(token.New(
-		[]token.Type{token.Error}, // error token type
-		msg,                       // error message
-		l.pos,                     // error position
-		0,                         // length
-	))
+func (l *Lexer) fatalf(format string, args ...interface{}) {
+	l.fatal(fmt.Sprintf(format, args...))
+}
+
+func (l *Lexer) fatal(msg string) {
+	panic(Error{
+		msg: msg,
+	})
 }
 
 // next consumes the next rune from the input. When using next, always check if

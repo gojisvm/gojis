@@ -35,7 +35,10 @@ func (s SingleTokenTests) Execute(t *testing.T) {
 			t.Logf("data: %v", test.data)
 
 			l := newWithInitialState([]byte(test.data), s.initial)
-			go l.StartLexing()
+			go func() {
+				err := l.StartLexing()
+				require.NoError(err)
+			}()
 
 			next, ok := l.TokenStream().Next()
 			require.True(ok, "Attempt to read a token failed, lexer did not produce one.")
