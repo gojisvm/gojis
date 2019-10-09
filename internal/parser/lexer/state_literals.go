@@ -65,7 +65,7 @@ func lexDecimalLiteral(l *Lexer) state {
 
 func lexDecimalIntegerLiteral(l *Lexer) state {
 	if l.IsEOF() {
-		l.emit(token.NumericLiteral, token.DecimalLiteral)
+		l.emit(token.DecimalLiteral)
 		return lexToken
 	}
 
@@ -84,7 +84,7 @@ func lexDecimalIntegerLiteral(l *Lexer) state {
 func lexOptionalExponentPart(l *Lexer) state {
 	if !l.accept(ExponentIndicator) {
 		// no exponent, emit token
-		l.emit(token.NumericLiteral, token.DecimalLiteral)
+		l.emit(token.DecimalLiteral)
 		return lexToken
 	}
 
@@ -93,7 +93,7 @@ func lexOptionalExponentPart(l *Lexer) state {
 		return tokenMismatch(DecimalDigit)
 	}
 
-	l.emit(token.NumericLiteral, token.DecimalLiteral)
+	l.emit(token.DecimalLiteral)
 	return lexToken
 }
 
@@ -105,7 +105,7 @@ func lexBinaryIntegerLiteral(l *Lexer) state {
 		return tokenMismatch(BinaryDigit)
 	}
 
-	l.emit(token.NumericLiteral, token.BinaryIntegerLiteral)
+	l.emit(token.BinaryIntegerLiteral)
 	return lexToken
 }
 
@@ -117,7 +117,7 @@ func lexOctalIntegerLiteral(l *Lexer) state {
 		return tokenMismatch(OctalDigit)
 	}
 
-	l.emit(token.NumericLiteral, token.OctalIntegerLiteral)
+	l.emit(token.OctalIntegerLiteral)
 	return lexToken
 }
 
@@ -129,7 +129,7 @@ func lexHexIntegerLiteral(l *Lexer) state {
 		return tokenMismatch(HexDigit)
 	}
 
-	l.emit(token.NumericLiteral, token.HexIntegerLiteral)
+	l.emit(token.HexIntegerLiteral)
 	return lexToken
 }
 

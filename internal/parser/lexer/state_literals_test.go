@@ -10,7 +10,7 @@ func Test_lexNull(t *testing.T) {
 	SingleTokenTests{
 		name:    "null literal",
 		initial: lexNull,
-		types:   []token.Type{token.Null},
+		typ:     token.Null,
 		tests: []SingleTokenTest{
 			{"null"},
 		},
@@ -21,7 +21,7 @@ func Test_lexBoolean(t *testing.T) {
 	SingleTokenTests{
 		name:    "boolean literals",
 		initial: lexBoolean,
-		types:   []token.Type{token.Boolean},
+		typ:     token.Boolean,
 		tests: []SingleTokenTest{
 			{"true"},
 			{"false"},
@@ -33,7 +33,7 @@ func Test_lexNumericLiteral(t *testing.T) {
 	SingleTokenTests{
 		name:    "binary integer literals",
 		initial: lexNumericLiteral,
-		types:   []token.Type{token.NumericLiteral, token.BinaryIntegerLiteral},
+		typ:     token.BinaryIntegerLiteral,
 		tests: []SingleTokenTest{
 			{"0b0"},
 			{"0b1"},
@@ -53,7 +53,7 @@ func Test_lexNumericLiteral(t *testing.T) {
 	SingleTokenTests{
 		name:    "octal integer literals",
 		initial: lexNumericLiteral,
-		types:   []token.Type{token.NumericLiteral, token.OctalIntegerLiteral},
+		typ:     token.OctalIntegerLiteral,
 		tests: []SingleTokenTest{
 			{"0o0"},
 			{"0o1"},
@@ -75,7 +75,7 @@ func Test_lexNumericLiteral(t *testing.T) {
 	SingleTokenTests{
 		name:    "hex integer literals",
 		initial: lexNumericLiteral,
-		types:   []token.Type{token.NumericLiteral, token.HexIntegerLiteral},
+		typ:     token.HexIntegerLiteral,
 		tests: []SingleTokenTest{
 			{"0x0"},
 			{"0x1"},
@@ -99,7 +99,7 @@ func Test_lexNumericLiteral(t *testing.T) {
 	SingleTokenTests{
 		name:    "decimal integer literals",
 		initial: lexNumericLiteral,
-		types:   []token.Type{token.NumericLiteral, token.DecimalLiteral},
+		typ:     token.DecimalLiteral,
 		tests: []SingleTokenTest{
 			{"0"},
 			{"1"},
@@ -143,7 +143,7 @@ func Test_lexStringLiteral(t *testing.T) {
 	SingleTokenTests{
 		name:    "string literals",
 		initial: lexStringLiteral,
-		types:   []token.Type{token.StringLiteral},
+		typ:     token.StringLiteral,
 		tests: []SingleTokenTest{
 			{`"0"`},
 			{`"0.5e3"`},

@@ -8,7 +8,6 @@ type Type uint64
 // Available token type.
 const (
 	Unknown Type = iota
-	Error
 
 	LineTerminator // 11.3
 	Whitespace     // 11.2
@@ -36,7 +35,6 @@ const (
 	Await // 12.1
 	This  // 12.2
 
-	Equals
 	NewType
 	Super
 	Target
@@ -51,15 +49,15 @@ const (
 	LeftShiftAssign
 	UnsignedRightShift
 	RightShiftAssign
-	StrictEqual
-	StrictNotEqual
+	StrictEquals
+	StrictNotEquals
 	PowerAssign
 	LeftShift
 	LessThanOrEqualTo
 	RightShift
 	GreaterThanOrEqualTo
-	Equal
-	NotEqual
+	Equals
+	NotEquals
 	UpdatePlus
 	UpdateMinus
 	Power
@@ -77,6 +75,7 @@ const (
 	Dot
 	SemiColon
 	Comma
+	Tilde
 	LessThan
 	ParOpen
 	ParClose

@@ -10,7 +10,7 @@ func Test_lexSingleLineComment(t *testing.T) {
 	SingleTokenTests{
 		name:    "single line comment",
 		initial: lexComment,
-		types:   []token.Type{token.SingleLineComment},
+		typ:     token.SingleLineComment,
 		tests: []SingleTokenTest{
 			{"//"},
 			{"// "},
@@ -30,7 +30,7 @@ func Test_lexMultiLineComment(t *testing.T) {
 	SingleTokenTests{
 		name:    "multi line comment",
 		initial: lexComment,
-		types:   []token.Type{token.MultiLineComment},
+		typ:     token.MultiLineComment,
 		tests: []SingleTokenTest{
 			{"/**/"},
 			{"/* */"},

@@ -3,6 +3,7 @@ package lexer
 import (
 	"testing"
 
+	"github.com/gojisvm/gojis/internal/parser/token"
 	"github.com/stretchr/testify/require"
 )
 
@@ -59,7 +60,7 @@ func TestAcceptWord(t *testing.T) {
 		require.Equal(5, l.pos)
 		require.Equal(1, l.width)
 
-		l.emit()
+		l.emit(token.Unknown)
 
 		require.Equal(5, l.start)
 		require.Equal(5, l.pos)
@@ -77,7 +78,7 @@ func TestAcceptWord(t *testing.T) {
 		require.Equal(8, l.pos)
 		require.Equal(3, l.width)
 
-		l.emit()
+		l.emit(token.Unknown)
 
 		require.Equal(8, l.start)
 		require.Equal(8, l.pos)
@@ -89,7 +90,7 @@ func TestAcceptWord(t *testing.T) {
 		require.Equal(11, l.pos)
 		require.Equal(1, l.width)
 
-		l.emit()
+		l.emit(token.Unknown)
 
 		require.Equal(11, l.start)
 		require.Equal(11, l.pos)

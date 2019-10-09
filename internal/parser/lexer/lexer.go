@@ -86,7 +86,7 @@ func (l *Lexer) ignore() {
 	l.start = l.pos
 }
 
-func (l *Lexer) emit(t ...token.Type) {
+func (l *Lexer) emit(t token.Type) {
 	l.tokens.Push(token.New(
 		t,                              // token types
 		string(l.input[l.start:l.pos]), // token value
