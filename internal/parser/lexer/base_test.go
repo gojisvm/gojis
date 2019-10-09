@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/gojisvm/gojis/internal/parser/token"
@@ -29,8 +30,13 @@ func (s TokenSequenceTests) Execute(t *testing.T) {
 
 			t.Logf("data: %v", test.data)
 
+			var wg sync.WaitGroup
+
 			l := newWithInitialState([]byte(test.data), lexToken)
+			wg.Add(1)
 			go func() {
+				defer wg.Done()
+
 				err := l.StartLexing()
 				require.NoError(err)
 			}()
@@ -46,6 +52,8 @@ func (s TokenSequenceTests) Execute(t *testing.T) {
 			}
 
 			require.Equal(len(test.types), cnt, "Received too few tokens")
+
+			wg.Wait()
 		})
 	}
 }
@@ -73,8 +81,13 @@ func (s SingleTokenTests) Execute(t *testing.T) {
 
 			t.Logf("data: %v", test.data)
 
+			var wg sync.WaitGroup
+
 			l := newWithInitialState([]byte(test.data), s.initial)
+			wg.Add(1)
 			go func() {
+				defer wg.Done()
+
 				err := l.StartLexing()
 				require.NoError(err)
 			}()
@@ -86,6 +99,8 @@ func (s SingleTokenTests) Execute(t *testing.T) {
 
 			_, ok = l.TokenStream().Next()
 			require.False(ok, "The lexer produced another token, which was not expected. SingleTokenTests must not produce more than one token.")
+
+			wg.Wait()
 		})
 	}
 }
