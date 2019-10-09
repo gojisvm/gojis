@@ -18,7 +18,13 @@ func lexToken(l *Lexer) state {
 
 	switch r := l.peek(); r {
 	default:
-		// handle all cases that cannot be expressed in a switch block
+		// handle all cases that cannot be expressed in a switch block. for
+		// optimization, matcher matches from here can be converted to cases if
+		// necessary.
+
+		if PunctuatorStart.Matches(r) {
+			return lexPunctuator
+		}
 	}
 	return unexpectedToken
 }

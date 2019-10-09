@@ -31,4 +31,71 @@ const (
 	BinaryIntegerLiteral // 11.8.3
 	OctalIntegerLiteral  // 11.8.3
 	HexIntegerLiteral    // 11.8.3
+
+	Yield // 12.1
+	Await // 12.1
+	This  // 12.2
+
+	Equals
+	NewType
+	Super
+	Target
+	Delete
+	Void
+	Typeof
+
+	// punctuators
+
+	UnsignedRightShiftAssign
+	Ellipsis
+	LeftShiftAssign
+	UnsignedRightShift
+	RightShiftAssign
+	StrictEqual
+	StrictNotEqual
+	PowerAssign
+	LeftShift
+	LessThanOrEqualTo
+	RightShift
+	GreaterThanOrEqualTo
+	Equal
+	NotEqual
+	UpdatePlus
+	UpdateMinus
+	Power
+	LogicalAnd
+	LogicalOr
+	PlusAssign
+	MinusAssign
+	MultiplyAssign
+	ModuloAssign
+	AndAssign
+	OrAssign
+	XorAssign
+	Arrow
+	GreaterThan
+	Dot
+	SemiColon
+	Comma
+	LessThan
+	ParOpen
+	ParClose
+	BraceOpen
+	BraceClose
+	BracketOpen
+	BracketClose
+	LogicalNot
+	Plus
+	Minus
+	Multiply
+	Modulo
+	BitwiseAnd
+	BitwiseOr
+	BitwiseXor
+	BitwiseNot
+	QuestionMark
+	Colon
+	Assign
+	DivAssign
+	Div
 )

@@ -3,30 +3,49 @@ package lexer
 import "github.com/gojisvm/gojis/internal/parser/token"
 
 func lexPunctuator(l *Lexer) state {
-	for _, punctuator := range Punctuators {
-		if l.acceptWord(punctuator) {
-			// punctuator was matched
-			l.emit(token.Punctuator)
-			return lexToken
-		}
+	switch r := l.peek(); r {
+	case '>':
+		return lexPunctuatorStartingWithGreaterThan
 	}
-	return errorf("Unexpected token '%s', expected punctuator", string(l.peek()))
+	return tokenMismatch(PunctuatorStart)
 }
 
-func lexDivPunctuator(l *Lexer) state {
-	for _, punctuator := range DivPunctuators {
-		if l.acceptWord(punctuator) {
-			// div punctuator was matched
-			l.emit(token.Punctuator)
-			return lexToken
+func lexPunctuatorStartingWithGreaterThan(l *Lexer) state {
+	// >>>=
+	// >>>
+	// >>=
+	// >>
+	// >=
+	// >
+	if l.accept(GreaterThan) {
+		if l.accept(GreaterThan) {
+			if l.accept(GreaterThan) {
+				if l.accept(Equals) {
+					// >>>=
+					l.emit(token.UnsignedRightShiftAssign)
+				} else {
+					// >>>
+					l.emit(token.UnsignedRightShift)
+				}
+			} else {
+				if l.accept(Equals) {
+					// >>=
+					l.emit(token.RightShiftAssign)
+				} else {
+					// >>
+					l.emit(token.RightShift)
+				}
+			}
+		} else {
+			if l.accept(Equals) {
+				// >=
+				l.emit(token.GreaterThanOrEqualTo)
+			} else {
+				// >
+				l.emit(token.GreaterThan)
+			}
 		}
+		return lexToken
 	}
-	return errorf("Unexpected token '%s', expected div punctuator", string(l.peek()))
-}
-
-func lexRightBracePunctuator(l *Lexer) state {
-	if !l.accept(RightBracePunctuator) {
-		return tokenMismatch(RightBracePunctuator)
-	}
-	return lexToken
+	return unexpectedToken
 }
