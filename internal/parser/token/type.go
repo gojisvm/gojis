@@ -3,6 +3,15 @@ package token
 // Type is a type of a token.
 type Type uint64
 
+func (t Type) Implies(other Type) bool {
+	for _, implication := range implications[t] {
+		if implication == other {
+			return true
+		}
+	}
+	return false
+}
+
 //go:generate stringer -type=Type
 
 // Available token type.
