@@ -30,6 +30,8 @@ func _punctuators() TokenSequenceTests {
 			{">>>", []token.Type{token.UnsignedRightShift}},
 			{">>>=", []token.Type{token.UnsignedRightShiftAssign}},
 			{">>>>", []token.Type{token.UnsignedRightShift, token.GreaterThan}},
+			{">>>>>", []token.Type{token.UnsignedRightShift, token.RightShift}},
+			{">>>>>>", []token.Type{token.UnsignedRightShift, token.UnsignedRightShift}},
 			// <
 		},
 	}
