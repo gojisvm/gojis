@@ -1,5 +1,6 @@
 /vendor/
-.DS_Store
+**.DS_Store
 /test/conformance/test262/
 /internal/parser/test262-parser-tests/
 /bin/
+**.pprof
