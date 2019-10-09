@@ -1,5 +1,7 @@
 package ast
 
+var _ ParseNode = (*Script)(nil) // ensure that Script implements ParseNode
+
 type Script struct {
 }
 
