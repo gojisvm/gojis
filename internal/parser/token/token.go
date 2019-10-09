@@ -21,5 +21,5 @@ func New(t Type, v string, start, length int) Token {
 }
 
 func (t Token) String() string {
-	return fmt.Sprintf("%v(%v), pos %v", t.Type.String(), t.Value, t.Pos)
+	return fmt.Sprintf("%v(%v), offset %v", t.Type.String(), t.Value, t.Pos)
 }
