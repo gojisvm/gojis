@@ -1,7 +1,6 @@
 package matcher
 
 import (
-	"regexp"
 	"strings"
 	"unicode"
 
@@ -10,50 +9,29 @@ import (
 
 // M is the definition of a character class, which can tell whether a rune is
 // part of that character definition or not.
-type M interface {
-	// Matches determines, whether the given rune is part of the defined
-	// character class.
-	Matches(rune) bool
-	String() string
-}
-
-type FunctionMatcher struct {
-	fn   func(rune) bool
-	desc string
-}
-
-func (m FunctionMatcher) Matches(r rune) bool { return m.fn(r) }
-func (m FunctionMatcher) String() string      { return m.desc }
-
-type RangeTableMatcher struct {
+type M struct {
 	rt   *unicode.RangeTable
 	desc string
 }
 
-func (m RangeTableMatcher) Matches(r rune) bool { return unicode.Is(m.rt, r) }
-func (m RangeTableMatcher) String() string      { return m.desc }
+// Matches describes, whether the given rune is contained in this matcher's
+// range table.
+func (m M) Matches(r rune) bool { return unicode.Is(m.rt, r) }
 
-type RegexpMatcher struct {
-	regexp *regexp.Regexp
-	desc   string
-}
-
-func (m *RegexpMatcher) Matches(r rune) bool {
-	return m.regexp.MatchString(string(r))
-}
-
-func (m *RegexpMatcher) String() string { return m.desc }
+// String returns a human readable string description of the runes that this
+// matcher matches.
+func (m M) String() string { return m.desc }
 
 // Matcher constructors
 
 // New creates a new matcher from a given match function.
-func New(desc string, rt *unicode.RangeTable) RangeTableMatcher {
-	return RangeTableMatcher{rt, desc}
+func New(desc string, rt *unicode.RangeTable) M {
+	return M{rt, desc}
 }
 
 // Merge creates a new matcher, that accepts runes that are matched by one or
 // more of the given matchers.
-func Merge(ms ...RangeTableMatcher) RangeTableMatcher {
+func Merge(ms ...M) M {
 	var rtms []*unicode.RangeTable
 	descs := make([]string, len(ms))
 
@@ -62,52 +40,28 @@ func Merge(ms ...RangeTableMatcher) RangeTableMatcher {
 		rtms = append(rtms, m.rt)
 	}
 
-	return RangeTableMatcher{
+	return M{
 		rt:   rangetable.Merge(rtms...),
 		desc: strings.Join(descs, " or "),
 	}
 }
 
-// Rune creates a matcher that matches only the given rune.
-func Rune(exp rune) RangeTableMatcher {
-	return RuneWithDesc("'"+string(exp)+"'", exp)
-}
-
 // RuneWithDesc creates a matcher that matches only the given rune. The
 // description is the string representation of this matcher. This is useful when
 // dealing with whitespace characters.
-func RuneWithDesc(desc string, exp rune) RangeTableMatcher {
-	return RangeTableMatcher{
+func RuneWithDesc(desc string, exp rune) M {
+	return M{
 		rt:   rangetable.New(exp),
 		desc: desc,
 	}
 }
 
-// Negate negates whatever matcher is passed into it, meaning that the new
-// matcher will return false when the passed matcher returned true and vice
-// versa.
-func Negate(m M) FunctionMatcher {
-	return FunctionMatcher{
-		fn:   func(r rune) bool { return !m.Matches(r) },
-		desc: "not (" + m.String() + ")",
-	}
-}
-
 // String creates a matcher that checks whether a rune is part of the given
 // string.
-func String(s string) RangeTableMatcher {
-	return RangeTableMatcher{
+func String(s string) M {
+	return M{
 		rt:   rangetable.New([]rune(s)...),
 		desc: "one of '" + s + "'",
-	}
-}
-
-// Regexp creates a matcher that checks whether a rune is matched by the given
-// regular expression.
-func Regexp(expr string) *RegexpMatcher {
-	return &RegexpMatcher{
-		regexp: regexp.MustCompile(expr),
-		desc:   "g/" + expr + "/",
 	}
 }
 
@@ -115,19 +69,40 @@ func Regexp(expr string) *RegexpMatcher {
 // but are not matched by butNot.
 //
 //	Diff(A, B).Matches(r) => r element (A \ B)
-func Diff(shouldMatch M, butNot M) FunctionMatcher {
-	return FunctionMatcher{
-		fn: func(r rune) bool {
-			return !butNot.Matches(r) && shouldMatch.Matches(r)
-		},
+func Diff(shouldMatch M, butNot M) M {
+	r16s := []unicode.Range16{}
+	r32s := []unicode.Range32{}
+	// r16
+	for _, rng := range shouldMatch.rt.R16 {
+		for r := rng.Lo; r <= rng.Hi; r += rng.Stride {
+			if !butNot.Matches(rune(r)) {
+				r16s = append(r16s, unicode.Range16{r, r, 1})
+			}
+		}
+	}
+
+	// r32
+	for _, rng := range shouldMatch.rt.R32 {
+		for r := rng.Lo; r <= rng.Hi; r += rng.Stride {
+			if !butNot.Matches(rune(r)) {
+				r32s = append(r32s, unicode.Range32{r, r, 1})
+			}
+		}
+	}
+
+	return M{
+		rt: rangetable.Merge(&unicode.RangeTable{
+			R16: r16s,
+			R32: r32s,
+		}), // this optimizes the generated range table
 		desc: shouldMatch.String() + " but not (" + butNot.String() + ")",
 	}
 }
 
 // RangeTable creates a matcher that matches runes that are contained in the
 // given range table.
-func RangeTable(desc string, rt *unicode.RangeTable) RangeTableMatcher {
-	return RangeTableMatcher{
+func RangeTable(desc string, rt *unicode.RangeTable) M {
+	return M{
 		rt:   rt,
 		desc: desc,
 	}

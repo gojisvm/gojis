@@ -40,6 +40,8 @@ const (
 	OctalIntegerLiteral  // 11.8.3
 	HexIntegerLiteral    // 11.8.3
 
+	RegularExpressionLiteral // 11.8.5
+
 	Yield // 12.1
 	Await // 12.1
 	This  // 12.2

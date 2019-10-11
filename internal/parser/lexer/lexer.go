@@ -164,6 +164,15 @@ func (l *Lexer) accept(m matcher.M) bool {
 	return false
 }
 
+func (l *Lexer) acceptOneOf(ms ...matcher.M) bool {
+	for _, m := range ms {
+		if l.accept(m) {
+			return true
+		}
+	}
+	return false
+}
+
 func (l *Lexer) acceptRune(r rune) bool {
 	if r == l.next() {
 		return true

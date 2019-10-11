@@ -169,3 +169,24 @@ func lexStringLiteral(l *Lexer) state {
 	l.emit(token.StringLiteral)
 	return lexToken
 }
+
+func lexRegularExpressionLiteral(l *Lexer) state {
+	if !l.accept(Slash) {
+		return tokenMismatch(Slash)
+	}
+
+	if ok, errState := l.acceptEnclosed(acceptRegularExpressionBody); !ok {
+		return errState
+	}
+
+	if !l.accept(Slash) {
+		return tokenMismatch(Slash)
+	}
+
+	if ok, errState := l.acceptEnclosed(acceptRegularExpressionFlags); !ok {
+		return errState
+	}
+
+	l.emit(token.RegularExpressionLiteral)
+	return lexToken
+}

@@ -126,12 +126,20 @@ func acceptUnicodeEscapeSequence(l *Lexer) state {
 //
 // LineTerminatorEscapeSequence is specified in 11.8.4.
 func acceptLineTerminatorSequence(l *Lexer) state {
-	if l.accept(_CR) {
-		l.accept(_LF)
+	if l.accept(CarriageReturn) {
+		l.accept(LineFeed)
 		return nil
 	}
 	if !l.accept(LineTerminator) {
 		return tokenMismatch(LineTerminator)
 	}
 	return nil
+}
+
+func acceptRegularExpressionBody(l *Lexer) state {
+	panic("TODO")
+}
+
+func acceptRegularExpressionFlags(l *Lexer) state {
+	panic("TODO")
 }
