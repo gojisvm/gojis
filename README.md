@@ -3,8 +3,6 @@
 [![Build Status](https://api.travis-ci.com/gojisvm/gojis.svg?branch=develop)](https://travis-ci.com/gojisvm/gojis)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/dd5507e3d34543e3a526b05aaea3eba8)](https://www.codacy.com/app/gojisvm/gojis?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gojisvm/gojis&amp;utm_campaign=Badge_Grade)
 
-<a href="https://www.buymeacoffee.com/timsatke" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
-
 Gojis is an implementation of ECMAScript 2018 (ES 9). It basically is a JavaScript VM, just like
 [Goja](https://github.com/dop251/goja) or [Otto](https://github.com/robertkrimen/otto).
 The documentation can be found [here](https://gojisvm.github.io).
@@ -48,3 +46,5 @@ Another goal I am trying to achieve is, to provide the Go community with a JavaS
 
 ## Current status
 There is a [milestone](https://github.com/gojisvm/gojis/milestone/1) to keep track of the implementation progress of ES 9.
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgojisvm%2Fgojis.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgojisvm%2Fgojis?ref=badge_large)
