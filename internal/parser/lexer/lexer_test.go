@@ -13,32 +13,25 @@ func TestNext(t *testing.T) {
 	s1 := func(l *Lexer) state {
 		require.Equal(0, l.start)
 		require.Equal(0, l.pos)
-		require.Equal(0, l.width)
 
 		require.Equal('\u007f', l.next())
 
 		require.Equal(0, l.start)
 		require.Equal(1, l.pos)
-		require.Equal(1, l.width)
 
 		require.Equal('\u07ff', l.next())
 
 		require.Equal(0, l.start)
-		require.Equal(3, l.pos)
-		require.Equal(2, l.width)
+		require.Equal(2, l.pos)
 
 		require.Equal('\u7fff', l.next())
 
 		require.Equal(0, l.start)
-		require.Equal(6, l.pos)
-		require.Equal(3, l.width)
-
-		require.Equal('\ufffd', l.next())
+		require.Equal(3, l.pos)
 
 		require.True(l.IsEOF())
 		require.Equal(0, l.start)
-		require.Equal(6, l.pos)
-		require.Equal(0, l.width)
+		require.Equal(3, l.pos)
 
 		return nil
 	}
@@ -52,49 +45,41 @@ func TestAcceptWord(t *testing.T) {
 	s1 := func(l *Lexer) state {
 		require.Equal(0, l.start)
 		require.Equal(0, l.pos)
-		require.Equal(0, l.width)
 
 		require.True(l.acceptWord("hello"))
 
 		require.Equal(0, l.start)
 		require.Equal(5, l.pos)
-		require.Equal(1, l.width)
 
 		l.emit(token.Unknown)
 
 		require.Equal(5, l.start)
 		require.Equal(5, l.pos)
-		require.Equal(1, l.width)
 
 		require.False(l.acceptWord("world"))
 
 		require.Equal(5, l.start)
 		require.Equal(5, l.pos)
-		require.Equal(3, l.width)
 
 		require.True(l.acceptWord("\u7fff"))
 
 		require.Equal(5, l.start)
-		require.Equal(8, l.pos)
-		require.Equal(3, l.width)
+		require.Equal(6, l.pos)
 
 		l.emit(token.Unknown)
 
-		require.Equal(8, l.start)
-		require.Equal(8, l.pos)
-		require.Equal(3, l.width)
+		require.Equal(6, l.start)
+		require.Equal(6, l.pos)
 
 		require.True(l.acceptWord("abc"))
 
-		require.Equal(8, l.start)
-		require.Equal(11, l.pos)
-		require.Equal(1, l.width)
+		require.Equal(6, l.start)
+		require.Equal(9, l.pos)
 
 		l.emit(token.Unknown)
 
-		require.Equal(11, l.start)
-		require.Equal(11, l.pos)
-		require.Equal(1, l.width)
+		require.Equal(9, l.start)
+		require.Equal(9, l.pos)
 
 		require.True(l.IsEOF())
 

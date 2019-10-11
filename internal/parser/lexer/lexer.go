@@ -2,11 +2,12 @@ package lexer
 
 import (
 	"fmt"
-	"unicode/utf8"
 
 	"github.com/gojisvm/gojis/internal/parser/lexer/matcher"
 	"github.com/gojisvm/gojis/internal/parser/token"
 )
+
+const eofRune = '\ufffd'
 
 // Lexer is a tokenizer/scanner for ECMAScript source code. It operates on a
 // byte slice and with runes. A Lexer has a token stream where it pushes all
@@ -14,10 +15,9 @@ import (
 // return to an initial state after every token, since token sequences should be
 // a responsibility of the parser.
 type Lexer struct {
-	input []byte
+	input []rune
 	start int
 	pos   int
-	width int
 
 	current state
 	tokens  *token.Stream
@@ -35,10 +35,9 @@ func New(input []byte) *Lexer {
 
 func newWithInitialState(input []byte, initial state) *Lexer {
 	return &Lexer{
-		input: input,
+		input: []rune(string(input)),
 		start: 0,
 		pos:   0,
-		width: 0,
 
 		current: initial,
 		tokens:  token.NewStream(),
@@ -109,27 +108,30 @@ func (l *Lexer) fatal(msg string) {
 // next consumes the next rune from the input. When using next, always check if
 // the lexer is EOF.
 func (l *Lexer) next() rune {
-	r, w := utf8.DecodeRune(l.input[l.pos:])
-	l.width = w
-	l.pos += w
+	r := l.input[l.pos]
+	l.pos++
 	return r
 }
 
-// unread unreads the last read rune. This must only be called once per call to
-// next.
+// unread unreads the last read rune.
 func (l *Lexer) unread() {
 	l.unreads++
-	l.pos -= l.width
+	l.pos--
 }
 
-// unreadN unreads n bytes (NOT runes). n must be the sum of the width of all
-// runes to unread.
+// unreadN unreads n runes.
 func (l *Lexer) unreadN(n int) {
+	l.unreads++
 	l.pos -= n
 }
 
-// peek returns the next rune without consuming it.
+// peek returns the next rune without consuming it. When l.IsEOF(),
+// lexer.eofRune will be returned.
 func (l *Lexer) peek() rune {
+	if l.IsEOF() {
+		return eofRune
+	}
+
 	r := l.next()
 	l.unread()
 	return r
@@ -157,6 +159,10 @@ func (l *Lexer) acceptEnclosed(enclosed state) (ok bool, err state) {
 }
 
 func (l *Lexer) accept(m matcher.M) bool {
+	if l.IsEOF() {
+		return false
+	}
+
 	if m.Matches(l.next()) {
 		return true
 	}
@@ -165,6 +171,10 @@ func (l *Lexer) accept(m matcher.M) bool {
 }
 
 func (l *Lexer) acceptOneOf(ms ...matcher.M) bool {
+	if l.IsEOF() {
+		return false
+	}
+
 	for _, m := range ms {
 		if l.accept(m) {
 			return true
@@ -174,6 +184,10 @@ func (l *Lexer) acceptOneOf(ms ...matcher.M) bool {
 }
 
 func (l *Lexer) acceptRune(r rune) bool {
+	if l.IsEOF() {
+		return false
+	}
+
 	if r == l.next() {
 		return true
 	}
@@ -182,20 +196,26 @@ func (l *Lexer) acceptRune(r rune) bool {
 }
 
 func (l *Lexer) acceptWord(word string) bool {
-	advanced := 0
-	for _, r := range word {
+	if l.IsEOF() {
+		return false
+	}
+
+	for i, r := range word {
 		if !l.acceptRune(r) {
-			l.unreadN(advanced)
+			l.unreadN(i)
 			return false
 		}
-		advanced += len(string(r))
 	}
 	return true
 }
 
 func (l *Lexer) acceptMultiple(m matcher.M) uint {
+	if l.IsEOF() {
+		return 0
+	}
+
 	var matched uint
-	for m.Matches(l.next()) {
+	for !l.IsEOF() && m.Matches(l.next()) {
 		matched++
 
 		if l.IsEOF() {
