@@ -40,6 +40,7 @@ var (
 	plus                              = matcher.String(`+`)
 	punctuatorStart                   = matcher.String(`!%&()*+,-.:;<=>?[]^{|~`)
 	regularExpressionCharPartial      = matcher.Diff(regularExpressionNonTerminator, matcher.String(`\/[`))
+	regularExpressionClassCharPartial = matcher.Diff(regularExpressionNonTerminator, matcher.String(`]\`))
 	regularExpressionFirstCharPartial = matcher.Diff(regularExpressionNonTerminator, matcher.String(`*\/[`))
 	regularExpressionNonTerminator    = matcher.Diff(sourceCharacter, lineTerminator)
 	sign                              = matcher.String(`+-`)

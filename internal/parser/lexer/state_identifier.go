@@ -20,15 +20,8 @@ func lexIdentifierStart(l *Lexer) state {
 }
 
 func lexIdentifierPart(l *Lexer) state {
-	for l.acceptMultiple(identifierPartPartial) >= 0 {
-		if l.accept(backslash) {
-			errState := acceptUnicodeEscapeSequence(l)
-			if errState != nil {
-				return errState
-			}
-		} else {
-			break
-		}
+	if ok, errState := l.acceptEnclosed(acceptIdentifierPart); !ok {
+		return errState
 	}
 
 	l.emit(token.IdentifierName)
