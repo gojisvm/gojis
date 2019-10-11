@@ -102,6 +102,5 @@ func (i *isolate) parse() (script *ast.Script, err error) {
 }
 
 func (i *isolate) parseScript() *ast.Script {
-	i.fatalf("Unimplemented")
-	return nil
+	return parseScript(i, 0)
 }

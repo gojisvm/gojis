@@ -1,5 +1,3 @@
 package ast
 
-type ParseNode interface {
-	Pos() int
-}
+type ParseNode interface{}
