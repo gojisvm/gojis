@@ -5,8 +5,8 @@ type StatementList struct {
 }
 
 type StatementListItem struct {
-	Statement *Statement
-	// Declaration *Declaration
+	Statement   *Statement
+	Declaration *Declaration
 }
 
 type Statement struct {
