@@ -68,9 +68,9 @@ func (l *Lexer) StartLexing() (err error) {
 	return
 }
 
-// IsEOF determines whether the position marker of the lexer has reached the end
+// eof determines whether the position marker of the lexer has reached the end
 // of its input.
-func (l *Lexer) IsEOF() bool {
+func (l *Lexer) eof() bool {
 	return l.pos >= len(l.input)
 }
 
@@ -128,7 +128,7 @@ func (l *Lexer) unreadN(n int) {
 // peek returns the next rune without consuming it. When l.IsEOF(),
 // lexer.eofRune will be returned.
 func (l *Lexer) peek() rune {
-	if l.IsEOF() {
+	if l.eof() {
 		return eofRune
 	}
 
@@ -159,7 +159,7 @@ func (l *Lexer) acceptEnclosed(enclosed state) (ok bool, err state) {
 }
 
 func (l *Lexer) accept(m matcher.M) bool {
-	if l.IsEOF() {
+	if l.eof() {
 		return false
 	}
 
@@ -171,7 +171,7 @@ func (l *Lexer) accept(m matcher.M) bool {
 }
 
 func (l *Lexer) acceptOneOf(ms ...matcher.M) bool {
-	if l.IsEOF() {
+	if l.eof() {
 		return false
 	}
 
@@ -184,7 +184,7 @@ func (l *Lexer) acceptOneOf(ms ...matcher.M) bool {
 }
 
 func (l *Lexer) acceptRune(r rune) bool {
-	if l.IsEOF() {
+	if l.eof() {
 		return false
 	}
 
@@ -196,7 +196,7 @@ func (l *Lexer) acceptRune(r rune) bool {
 }
 
 func (l *Lexer) acceptWord(word string) bool {
-	if l.IsEOF() {
+	if l.eof() {
 		return false
 	}
 
@@ -210,15 +210,15 @@ func (l *Lexer) acceptWord(word string) bool {
 }
 
 func (l *Lexer) acceptMultiple(m matcher.M) uint {
-	if l.IsEOF() {
+	if l.eof() {
 		return 0
 	}
 
 	var matched uint
-	for !l.IsEOF() && m.Matches(l.next()) {
+	for !l.eof() && m.Matches(l.next()) {
 		matched++
 
-		if l.IsEOF() {
+		if l.eof() {
 			return matched
 		}
 	}

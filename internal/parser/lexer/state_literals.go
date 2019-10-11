@@ -64,7 +64,7 @@ func lexDecimalLiteral(l *Lexer) state {
 }
 
 func lexDecimalIntegerLiteral(l *Lexer) state {
-	if l.IsEOF() {
+	if l.eof() {
 		l.emit(token.DecimalLiteral)
 		return lexToken
 	}

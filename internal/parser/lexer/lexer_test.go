@@ -29,7 +29,7 @@ func TestNext(t *testing.T) {
 		require.Equal(0, l.start)
 		require.Equal(3, l.pos)
 
-		require.True(l.IsEOF())
+		require.True(l.eof())
 		require.Equal(0, l.start)
 		require.Equal(3, l.pos)
 
@@ -81,7 +81,7 @@ func TestAcceptWord(t *testing.T) {
 		require.Equal(9, l.start)
 		require.Equal(9, l.pos)
 
-		require.True(l.IsEOF())
+		require.True(l.eof())
 
 		return nil
 	}

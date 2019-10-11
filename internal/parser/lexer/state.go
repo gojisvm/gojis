@@ -12,7 +12,7 @@ func lexScript(l *Lexer) state {
 }
 
 func lexToken(l *Lexer) state {
-	if l.IsEOF() {
+	if l.eof() {
 		return nil
 	}
 
