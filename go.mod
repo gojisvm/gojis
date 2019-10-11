@@ -12,6 +12,7 @@ require (
 	github.com/spf13/viper v1.4.0
 	github.com/stretchr/testify v1.4.0
 	github.com/tinylib/msgp v1.1.0 // indirect
+	golang.org/x/sys v0.0.0-20190422165155-953cdadca894 // indirect
 	gopkg.in/yaml.v2 v2.2.4
 	zombiezen.com/go/capnproto2 v2.17.0+incompatible
 )
