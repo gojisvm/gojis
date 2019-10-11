@@ -12,6 +12,7 @@ var (
 	assign                            = matcher.String(`=`)
 	asterisk                          = matcher.String(`*`)
 	backslash                         = matcher.String(`\`)
+	backtick                          = matcher.String("`")
 	binaryDigit                       = matcher.String(`01`)
 	binaryIndicator                   = matcher.String(`bB`)
 	braceClose                        = matcher.String(`}`)
@@ -46,6 +47,7 @@ var (
 	sign                              = matcher.String(`+-`)
 	singleQuote                       = matcher.String(`'`)
 	slash                             = matcher.String(`/`)
+	templateCharacterPartial          = matcher.Diff(sourceCharacter, matcher.Merge(backtick, backslash, dollar, lineTerminator))
 	underscore                        = matcher.String(`_`)
 	zero                              = matcher.String(`0`)
 

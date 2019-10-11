@@ -150,98 +150,96 @@ func acceptIdentifierPart(l *Lexer) state {
 	return nil
 }
 
-func acceptRegularExpressionBody(l *Lexer) state {
-	if ok, errState := l.acceptEnclosed(acceptRegularExpressionFirstChar); !ok {
-		return errState
+func acceptNotEscapeSequence(l *Lexer) state {
+	// 0 DecimalDigit
+	if l.accept(zero) {
+		if !l.accept(decimalDigit) {
+			return tokenMismatch(decimalDigit)
+		}
+		return nil
 	}
-	if ok, errState := l.acceptEnclosed(acceptRegularExpressionChars); !ok {
-		return errState
-	}
-	return nil
-}
 
-func acceptRegularExpressionFirstChar(l *Lexer) state {
-	if !l.accept(regularExpressionFirstCharPartial) {
-		if ok, errState := l.acceptEnclosed(acceptRegularExpressionClassOrBackslashSequence); !ok {
+	// DecimalDigit but not 0
+	if l.accept(nonZeroDigit) {
+		return nil
+	}
+
+	// x [nla HexDigit]
+	if l.negativeLookahead(1, hexDigit) &&
+		l.accept(lowerX) {
+		return nil
+	}
+
+	// x HexDigit [nla HexDigit]
+	if l.negativeLookahead(2, hexDigit) &&
+		l.acceptSequence(lowerX, hexDigit) {
+		return nil
+	}
+
+	if l.negativeLookahead(1, hexDigit) && l.negativeLookahead(1, braceOpen) &&
+		l.accept(lowerU) {
+		return nil
+	}
+
+	if l.negativeLookahead(2, hexDigit) &&
+		l.acceptSequence(lowerU, hexDigit) {
+		return nil
+	}
+
+	if l.negativeLookahead(3, hexDigit) &&
+		l.acceptSequence(lowerU, hexDigit, hexDigit) {
+		return nil
+	}
+
+	if l.negativeLookahead(4, hexDigit) &&
+		l.acceptSequence(lowerU, hexDigit, hexDigit, hexDigit) {
+		return nil
+	}
+
+	if l.negativeLookahead(2, hexDigit) &&
+		l.acceptSequence(lowerU, braceOpen) {
+		return nil
+	}
+
+	if l.negativeLookahead(3, hexDigit) && // #79: look ahead of NotCodePoint
+		l.acceptSequence(lowerU, braceOpen) {
+		if ok, errState := l.acceptEnclosed(acceptNotCodePoint); !ok {
 			return errState
 		}
+		return nil
 	}
-	return nil
-}
 
-func acceptRegularExpressionChars(l *Lexer) state {
-	// zero or more regular expression char
-	var ok bool
-	for {
-		ok, _ = l.acceptEnclosed(acceptRegularExpressionChar)
-		if !ok {
-			break
-		}
-	}
-	return nil
-}
-
-func acceptRegularExpressionChar(l *Lexer) state {
-	if !l.accept(regularExpressionCharPartial) {
-		if ok, errState := l.acceptEnclosed(acceptRegularExpressionClassOrBackslashSequence); !ok {
+	if l.negativeLookahead(3, hexDigit) && l.negativeLookahead(3, braceClose) && // #79: look ahead of CodePoint
+		l.acceptSequence(lowerU, braceOpen) {
+		if ok, errState := l.acceptEnclosed(acceptCodePoint); !ok {
 			return errState
 		}
+		return nil
 	}
-	return nil
+
+	return errorf("Expected not escape sequence, but got '%s'", string(l.peek()))
 }
 
-func acceptRegularExpressionClassOrBackslashSequence(l *Lexer) state {
-	if ok, _ := l.acceptEnclosed(acceptRegularExpressionClass); !ok {
-		if ok, _ := l.acceptEnclosed(acceptRegularExpressionBackslashSequence); !ok {
-			return errorf("Expected regular expression class or backslash sequence, got '%s'", string(l.peek()))
-		}
-	}
-	return nil
-}
-
-func acceptRegularExpressionBackslashSequence(l *Lexer) state {
+func acceptLineContinuation(l *Lexer) state {
 	if !l.accept(backslash) {
 		return tokenMismatch(backslash)
 	}
-	if !l.accept(regularExpressionNonTerminator) {
-		return tokenMismatch(regularExpressionNonTerminator)
+	if ok, errState := l.acceptEnclosed(acceptLineTerminatorSequence); !ok {
+		return errState
 	}
 	return nil
 }
 
-func acceptRegularExpressionClass(l *Lexer) state {
-	panic("TODO")
-}
-
-func acceptRegularExpressionClassChars(l *Lexer) state {
-	// zero or more regular expression class char
-	var ok bool
-	for {
-		ok, _ = l.acceptEnclosed(acceptRegularExpressionClassChar)
-		if !ok {
-			break
-		}
+func acceptNotCodePoint(l *Lexer) state {
+	if mv := l.mvHex(l.acceptMultiple(hexDigit)); mv <= 0x10FFFF {
+		return errorf("MV of hex digits must be > 0x10FFFF, but was %x", mv)
 	}
 	return nil
 }
 
-func acceptRegularExpressionClassChar(l *Lexer) state {
-	if !l.accept(regularExpressionClassCharPartial) {
-		if ok, errState := l.acceptEnclosed(acceptRegularExpressionBackslashSequence); !ok {
-			return errState
-		}
-	}
-	return nil
-}
-
-func acceptRegularExpressionFlags(l *Lexer) state {
-	// zero or more IdentifierPart
-	var ok bool
-	for {
-		ok, _ = l.acceptEnclosed(acceptIdentifierPart)
-		if !ok {
-			break
-		}
+func acceptCodePoint(l *Lexer) state {
+	if mv := l.mvHex(l.acceptMultiple(hexDigit)); mv > 0x10FFFF {
+		return errorf("MV of hex digits must be <= 0x10FFFF, but was %x", mv)
 	}
 	return nil
 }

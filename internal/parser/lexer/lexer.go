@@ -132,9 +132,47 @@ func (l *Lexer) peek() rune {
 		return eofRune
 	}
 
-	r := l.next()
-	l.unread()
-	return r
+	return l.input[l.pos]
+}
+
+// peekN returns a rune slice containing the next n runes and a flag telling
+// whether the returned rune slice is nil. This is only the case, if one or more
+// of the requested runes are after the lexer's eof.
+func (l *Lexer) peekN(n uint) ([]rune, bool) {
+	if l.pos+int(n) >= len(l.input) {
+		return nil, false
+	}
+
+	return l.input[l.pos : l.pos+int(n)], true
+}
+
+// lookahead return the rune n places after the current lexer position.
+// l.lookahead(0) is equal to l.peek(), l.lookahead(4) is equal to
+// l.peekN(5)[4]. If the requested rune is beyong the lexer's eof, (rune(0),
+// false) will be returned.
+func (l *Lexer) lookahead(n uint) (rune, bool) {
+	if l.pos+int(n) >= len(l.input) {
+		return 0, false
+	}
+	return l.input[l.pos+int(n)], true
+}
+
+// negativeLookahead determines whether the nth next rune (singular) is not
+// matched by the given matcher.
+func (l *Lexer) negativeLookahead(n uint, m matcher.M) bool {
+	r, ok := l.lookahead(n)
+	if !ok {
+		return false
+	}
+	return m.Matches(r)
+}
+
+func (l *Lexer) lastN(n uint) ([]rune, bool) {
+	if l.pos-int(n) < 0 {
+		return nil, false
+	}
+
+	return l.input[l.pos-int(n) : l.pos], true
 }
 
 // acceptEnclosed enters the given state on the stack, and returns after it was
@@ -168,6 +206,16 @@ func (l *Lexer) accept(m matcher.M) bool {
 	}
 	l.unread()
 	return false
+}
+
+func (l *Lexer) acceptSequence(ms ...matcher.M) bool {
+	for i, m := range ms {
+		if !l.accept(m) {
+			l.unreadN(i)
+			return false
+		}
+	}
+	return true
 }
 
 func (l *Lexer) acceptOneOf(ms ...matcher.M) bool {
