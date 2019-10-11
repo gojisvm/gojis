@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"strconv"
-
-	"github.com/antlr/antlr4/runtime/Go/antlr"
 )
 
 //go:generate antlr -Dlanguage=Go -visitor ECMAScript.g4
@@ -40,32 +38,6 @@ func (p *Parser) ParseFiles(paths ...string) (errs []error) {
 // If parse errors occurred, they are collected and returned
 // as a single error.
 func (p *Parser) ParseFile(path string) error {
-	input, err := antlr.NewFileStream(path)
-	if err != nil {
-		return fmt.Errorf("Error while loading file: %v", err)
-	}
-
-	_ = input
-
-	// lexer := NewECMAScriptLexer(input)
-	// lexer.RemoveErrorListeners()
-
-	// stream := antlr.NewCommonTokenStream(lexer, 0)
-	// par := NewECMAScriptParser(stream)
-	// par.RemoveErrorListeners()
-
-	// errorCollector := NewCollectingErrorListener()
-	// par.AddErrorListener(errorCollector)
-	// par.BuildParseTrees = true
-
-	// tree := par.Program()
-	// if errs, hasErrors := errorCollector.Errors(); hasErrors {
-	// 	return NewError(path, errs...)
-	// }
-
-	// // only append root if no errors occurred while parsing
-	// p.ast.AddRoot(path, tree)
-
 	panic("TODO")
 }
 
