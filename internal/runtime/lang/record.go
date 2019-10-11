@@ -29,6 +29,8 @@ func (r *Record) SetField(n string, val interface{}) {
 	r.fields[n] = val
 }
 
+// Type returns lang.TypeInternal.
 func (r *Record) Type() Type { return TypeInternal }
 
+// Value returns the Record itself.
 func (r *Record) Value() interface{} { return r }
