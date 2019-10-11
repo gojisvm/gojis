@@ -7,8 +7,8 @@ func lexIdentifierName(l *Lexer) state {
 }
 
 func lexIdentifierStart(l *Lexer) state {
-	if !l.accept(IdentifierStartPartial) {
-		if l.accept(Backslash) {
+	if !l.accept(identifierStartPartial) {
+		if l.accept(backslash) {
 			// next sequence must be a unicode escape sequence
 			errState := acceptUnicodeEscapeSequence(l)
 			if errState != nil {
@@ -20,8 +20,8 @@ func lexIdentifierStart(l *Lexer) state {
 }
 
 func lexIdentifierPart(l *Lexer) state {
-	for l.acceptMultiple(IdentifierPartPartial) >= 0 {
-		if l.accept(Backslash) {
+	for l.acceptMultiple(identifierPartPartial) >= 0 {
+		if l.accept(backslash) {
 			errState := acceptUnicodeEscapeSequence(l)
 			if errState != nil {
 				return errState

@@ -7,14 +7,14 @@ import (
 
 // Defined literals
 const (
-	Null  = "null"
-	True  = "true"
-	False = "false"
+	keywordNull  = "null"
+	keywordTrue  = "true"
+	keywordFalse = "false"
 )
 
 func lexNull(l *Lexer) state {
-	if !l.acceptWord(Null) {
-		return unexpectedWord(Null)
+	if !l.acceptWord(keywordNull) {
+		return unexpectedWord(keywordNull)
 	}
 	l.emit(token.Null)
 	return lexToken
@@ -23,12 +23,12 @@ func lexNull(l *Lexer) state {
 func lexBoolean(l *Lexer) state {
 	switch l.peek() {
 	case 't':
-		if !l.acceptWord(True) {
-			return unexpectedWord(True)
+		if !l.acceptWord(keywordTrue) {
+			return unexpectedWord(keywordTrue)
 		}
 	case 'f':
-		if !l.acceptWord(False) {
-			return unexpectedWord(False)
+		if !l.acceptWord(keywordFalse) {
+			return unexpectedWord(keywordFalse)
 		}
 	}
 	l.emit(token.Boolean)
@@ -36,7 +36,7 @@ func lexBoolean(l *Lexer) state {
 }
 
 func lexNumericLiteral(l *Lexer) state {
-	if l.accept(Zero) {
+	if l.accept(zero) {
 		// decimal starting with 0 or
 		// 0b binary or
 		// 0o octal or
@@ -54,9 +54,9 @@ func lexNumericLiteral(l *Lexer) state {
 }
 
 func lexDecimalLiteral(l *Lexer) state {
-	if l.accept(Dot) {
-		if l.acceptMultiple(DecimalDigit) < 1 {
-			return tokenMismatch(DecimalDigit)
+	if l.accept(dot) {
+		if l.acceptMultiple(decimalDigit) < 1 {
+			return tokenMismatch(decimalDigit)
 		}
 		return lexOptionalExponentPart
 	}
@@ -70,27 +70,27 @@ func lexDecimalIntegerLiteral(l *Lexer) state {
 	}
 
 	// zero has already been accepted in lexNumericLiteral
-	if !l.accept(NonZeroDigit) {
-		return tokenMismatch(NonZeroDigit)
+	if !l.accept(nonZeroDigit) {
+		return tokenMismatch(nonZeroDigit)
 	}
-	l.acceptMultiple(DecimalDigit)
+	l.acceptMultiple(decimalDigit)
 
-	if l.accept(Dot) {
-		l.acceptMultiple(DecimalDigit)
+	if l.accept(dot) {
+		l.acceptMultiple(decimalDigit)
 	}
 	return lexOptionalExponentPart
 }
 
 func lexOptionalExponentPart(l *Lexer) state {
-	if !l.accept(ExponentIndicator) {
+	if !l.accept(exponentIndicator) {
 		// no exponent, emit token
 		l.emit(token.DecimalLiteral)
 		return lexToken
 	}
 
-	l.accept(Sign) // optional sign
-	if l.acceptMultiple(DecimalDigit) < 1 {
-		return tokenMismatch(DecimalDigit)
+	l.accept(sign) // optional sign
+	if l.acceptMultiple(decimalDigit) < 1 {
+		return tokenMismatch(decimalDigit)
 	}
 
 	l.emit(token.DecimalLiteral)
@@ -98,11 +98,11 @@ func lexOptionalExponentPart(l *Lexer) state {
 }
 
 func lexBinaryIntegerLiteral(l *Lexer) state {
-	if !l.accept(BinaryIndicator) {
-		return tokenMismatch(BinaryIndicator)
+	if !l.accept(binaryIndicator) {
+		return tokenMismatch(binaryIndicator)
 	}
-	if l.acceptMultiple(BinaryDigit) < 1 {
-		return tokenMismatch(BinaryDigit)
+	if l.acceptMultiple(binaryDigit) < 1 {
+		return tokenMismatch(binaryDigit)
 	}
 
 	l.emit(token.BinaryIntegerLiteral)
@@ -110,11 +110,11 @@ func lexBinaryIntegerLiteral(l *Lexer) state {
 }
 
 func lexOctalIntegerLiteral(l *Lexer) state {
-	if !l.accept(OctalIndicator) {
-		return tokenMismatch(OctalIndicator)
+	if !l.accept(octalIndicator) {
+		return tokenMismatch(octalIndicator)
 	}
-	if l.acceptMultiple(OctalDigit) < 1 {
-		return tokenMismatch(OctalDigit)
+	if l.acceptMultiple(octalDigit) < 1 {
+		return tokenMismatch(octalDigit)
 	}
 
 	l.emit(token.OctalIntegerLiteral)
@@ -122,11 +122,11 @@ func lexOctalIntegerLiteral(l *Lexer) state {
 }
 
 func lexHexIntegerLiteral(l *Lexer) state {
-	if !l.accept(HexIndicator) {
-		return tokenMismatch(HexIndicator)
+	if !l.accept(hexIndicator) {
+		return tokenMismatch(hexIndicator)
 	}
-	if l.acceptMultiple(HexDigit) < 1 {
-		return tokenMismatch(HexDigit)
+	if l.acceptMultiple(hexDigit) < 1 {
+		return tokenMismatch(hexDigit)
 	}
 
 	l.emit(token.HexIntegerLiteral)
@@ -139,13 +139,13 @@ func lexStringLiteral(l *Lexer) state {
 
 	switch l.peek() {
 	case '"':
-		quote = DoubleQuote
-		partial = DoubleStringCharacterPartial
+		quote = doubleQuote
+		partial = doubleStringCharacterPartial
 	case '\'':
-		quote = SingleQuote
-		partial = SingleStringCharacterPartial
+		quote = singleQuote
+		partial = singleStringCharacterPartial
 	default:
-		return tokenMismatch(DoubleQuote, SingleQuote)
+		return tokenMismatch(doubleQuote, singleQuote)
 	}
 
 	if !l.accept(quote) {
@@ -153,7 +153,7 @@ func lexStringLiteral(l *Lexer) state {
 	}
 
 	for n := uint(1); n > 0; n = l.acceptMultiple(partial) {
-		if l.accept(Backslash) {
+		if l.accept(backslash) {
 			if ok, _ := l.acceptEnclosed(acceptEscapeSequence); !ok { // #71: don't swallow error state
 				if ok, _ := l.acceptEnclosed(acceptLineTerminatorSequence); !ok {
 					return errorf("'%s' is not a valid escape token", string(l.peek()))
@@ -171,16 +171,16 @@ func lexStringLiteral(l *Lexer) state {
 }
 
 func lexRegularExpressionLiteral(l *Lexer) state {
-	if !l.accept(Slash) {
-		return tokenMismatch(Slash)
+	if !l.accept(slash) {
+		return tokenMismatch(slash)
 	}
 
 	if ok, errState := l.acceptEnclosed(acceptRegularExpressionBody); !ok {
 		return errState
 	}
 
-	if !l.accept(Slash) {
-		return tokenMismatch(Slash)
+	if !l.accept(slash) {
+		return tokenMismatch(slash)
 	}
 
 	if ok, errState := l.acceptEnclosed(acceptRegularExpressionFlags); !ok {

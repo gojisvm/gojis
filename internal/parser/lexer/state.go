@@ -22,7 +22,7 @@ func lexToken(l *Lexer) state {
 		// optimization, matcher matches from here can be converted to cases if
 		// necessary.
 
-		if PunctuatorStart.Matches(r) {
+		if punctuatorStart.Matches(r) {
 			return lexPunctuator
 		}
 	}

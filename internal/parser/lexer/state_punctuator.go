@@ -64,15 +64,15 @@ func lexPunctuator(l *Lexer) state {
 		_ = l.next() // consume the rune
 		l.emit(token.Tilde)
 	}
-	return tokenMismatch(PunctuatorStart)
+	return tokenMismatch(punctuatorStart)
 }
 
 func lexPunctuatorStartingWithSlash(l *Lexer) state {
-	if !l.accept(Slash) {
-		return tokenMismatch(Slash)
+	if !l.accept(slash) {
+		return tokenMismatch(slash)
 	}
 
-	if l.accept(Assign) {
+	if l.accept(assign) {
 		l.emit(token.DivAssign)
 	} else {
 		l.emit(token.Div)
@@ -81,13 +81,13 @@ func lexPunctuatorStartingWithSlash(l *Lexer) state {
 }
 
 func lexPunctuatorStartingWithPipe(l *Lexer) state {
-	if !l.accept(Pipe) {
-		return tokenMismatch(Pipe)
+	if !l.accept(pipe) {
+		return tokenMismatch(pipe)
 	}
 
-	if l.accept(Pipe) {
+	if l.accept(pipe) {
 		l.emit(token.LogicalOr)
-	} else if l.accept(Assign) {
+	} else if l.accept(assign) {
 		l.emit(token.OrAssign)
 	} else {
 		l.emit(token.BitwiseOr)
@@ -97,13 +97,13 @@ func lexPunctuatorStartingWithPipe(l *Lexer) state {
 }
 
 func lexPunctuatorStartingWithPlus(l *Lexer) state {
-	if !l.accept(Plus) {
-		return tokenMismatch(Plus)
+	if !l.accept(plus) {
+		return tokenMismatch(plus)
 	}
 
-	if l.accept(Plus) {
+	if l.accept(plus) {
 		l.emit(token.UpdatePlus)
-	} else if l.accept(Assign) {
+	} else if l.accept(assign) {
 		l.emit(token.PlusAssign)
 	} else {
 		l.emit(token.Plus)
@@ -113,11 +113,11 @@ func lexPunctuatorStartingWithPlus(l *Lexer) state {
 }
 
 func lexPunctuatorStartingWithCaret(l *Lexer) state {
-	if !l.accept(Caret) {
-		return tokenMismatch(Caret)
+	if !l.accept(caret) {
+		return tokenMismatch(caret)
 	}
 
-	if l.accept(Assign) {
+	if l.accept(assign) {
 		l.emit(token.XorAssign)
 	} else {
 		l.emit(token.BitwiseXor)
@@ -127,11 +127,11 @@ func lexPunctuatorStartingWithCaret(l *Lexer) state {
 }
 
 func lexPunctuatorStartingWithPercent(l *Lexer) state {
-	if !l.accept(Percent) {
-		return tokenMismatch(Percent)
+	if !l.accept(percent) {
+		return tokenMismatch(percent)
 	}
 
-	if l.accept(Assign) {
+	if l.accept(assign) {
 		l.emit(token.ModuloAssign)
 	} else {
 		l.emit(token.Modulo)
@@ -141,13 +141,13 @@ func lexPunctuatorStartingWithPercent(l *Lexer) state {
 }
 
 func lexPunctuatorStartingWithAmpersand(l *Lexer) state {
-	if !l.accept(Ampersand) {
-		return tokenMismatch(Ampersand)
+	if !l.accept(ampersand) {
+		return tokenMismatch(ampersand)
 	}
 
-	if l.accept(Ampersand) {
+	if l.accept(ampersand) {
 		l.emit(token.LogicalAnd)
-	} else if l.accept(Assign) {
+	} else if l.accept(assign) {
 		l.emit(token.AndAssign)
 	} else {
 		l.emit(token.BitwiseAnd)
@@ -157,18 +157,18 @@ func lexPunctuatorStartingWithAmpersand(l *Lexer) state {
 }
 
 func lexPunctuatorStartingWithAsterisk(l *Lexer) state {
-	if !l.accept(Asterisk) {
-		return tokenMismatch(Asterisk)
+	if !l.accept(asterisk) {
+		return tokenMismatch(asterisk)
 	}
 
-	if l.accept(Asterisk) {
-		if l.accept(Assign) {
+	if l.accept(asterisk) {
+		if l.accept(assign) {
 			l.emit(token.PowerAssign)
 		} else {
 			l.emit(token.Power)
 		}
 	} else {
-		if l.accept(Assign) {
+		if l.accept(assign) {
 			l.emit(token.MultiplyAssign)
 		} else {
 			l.emit(token.Multiply)
@@ -178,12 +178,12 @@ func lexPunctuatorStartingWithAsterisk(l *Lexer) state {
 }
 
 func lexPunctuatorStartingWithExclamationMark(l *Lexer) state {
-	if !l.accept(ExclamationMark) {
-		return tokenMismatch(ExclamationMark)
+	if !l.accept(exclamationMark) {
+		return tokenMismatch(exclamationMark)
 	}
 
-	if l.accept(Assign) {
-		if l.accept(Assign) {
+	if l.accept(assign) {
+		if l.accept(assign) {
 			l.emit(token.StrictNotEquals)
 		} else {
 			l.emit(token.NotEquals)
@@ -195,12 +195,12 @@ func lexPunctuatorStartingWithExclamationMark(l *Lexer) state {
 }
 
 func lexPunctuatorStartingWithDash(l *Lexer) state {
-	if !l.accept(Dash) {
-		return tokenMismatch(Dash)
+	if !l.accept(dash) {
+		return tokenMismatch(dash)
 	}
-	if l.accept(Dash) {
+	if l.accept(dash) {
 		l.emit(token.UpdateMinus)
-	} else if l.accept(Assign) {
+	} else if l.accept(assign) {
 		l.emit(token.MinusAssign)
 	} else {
 		l.emit(token.Minus)
@@ -213,16 +213,16 @@ func lexPunctuatorStartingWithAssign(l *Lexer) state {
 	// ==
 	// =>
 	// =
-	if !l.accept(Assign) {
+	if !l.accept(assign) {
 		return unexpectedToken
 	}
-	if l.accept(Assign) {
-		if l.accept(Assign) {
+	if l.accept(assign) {
+		if l.accept(assign) {
 			l.emit(token.StrictEquals)
 		} else {
 			l.emit(token.Equals)
 		}
-	} else if l.accept(GreaterThan) {
+	} else if l.accept(greaterThan) {
 		l.emit(token.Arrow)
 	} else {
 		l.emit(token.Assign)
@@ -236,7 +236,7 @@ func lexPunctuatorStartingWithDot(l *Lexer) state {
 	if l.acceptWord("...") {
 		l.emit(token.Ellipsis)
 	}
-	if !l.accept(Dot) {
+	if !l.accept(dot) {
 		return unexpectedToken
 	} else {
 		l.emit(token.Dot)
@@ -249,17 +249,17 @@ func lexPunctuatorStartingWithLessThan(l *Lexer) state {
 	// <<
 	// <=
 	// <
-	if !l.accept(LessThan) {
+	if !l.accept(lessThan) {
 		return unexpectedToken
 	}
-	if l.accept(LessThan) {
-		if l.accept(Assign) {
+	if l.accept(lessThan) {
+		if l.accept(assign) {
 			l.emit(token.LeftShiftAssign)
 		} else {
 			l.emit(token.LeftShift)
 		}
 	} else {
-		if l.accept(Assign) {
+		if l.accept(assign) {
 			l.emit(token.LessThanOrEqualTo)
 		} else {
 			l.emit(token.LessThan)
@@ -275,12 +275,12 @@ func lexPunctuatorStartingWithGreaterThan(l *Lexer) state {
 	// >>
 	// >=
 	// >
-	if !l.accept(GreaterThan) {
+	if !l.accept(greaterThan) {
 		return unexpectedToken
 	}
-	if l.accept(GreaterThan) {
-		if l.accept(GreaterThan) {
-			if l.accept(Assign) {
+	if l.accept(greaterThan) {
+		if l.accept(greaterThan) {
+			if l.accept(assign) {
 				// >>>=
 				l.emit(token.UnsignedRightShiftAssign)
 			} else {
@@ -288,7 +288,7 @@ func lexPunctuatorStartingWithGreaterThan(l *Lexer) state {
 				l.emit(token.UnsignedRightShift)
 			}
 		} else {
-			if l.accept(Assign) {
+			if l.accept(assign) {
 				// >>=
 				l.emit(token.RightShiftAssign)
 			} else {
@@ -297,7 +297,7 @@ func lexPunctuatorStartingWithGreaterThan(l *Lexer) state {
 			}
 		}
 	} else {
-		if l.accept(Assign) {
+		if l.accept(assign) {
 			// >=
 			l.emit(token.GreaterThanOrEqualTo)
 		} else {

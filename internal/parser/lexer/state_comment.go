@@ -5,8 +5,8 @@ import (
 )
 
 func lexComment(l *Lexer) state {
-	if !l.accept(Slash) {
-		return tokenMismatch(Slash)
+	if !l.accept(slash) {
+		return tokenMismatch(slash)
 	}
 
 	switch r := l.peek(); r {
@@ -15,30 +15,30 @@ func lexComment(l *Lexer) state {
 	case '*':
 		return lexMultiLineComment
 	}
-	return tokenMismatch(Asterisk, Slash)
+	return tokenMismatch(asterisk, slash)
 }
 
 func lexSingleLineComment(l *Lexer) state {
-	if !l.accept(Slash) {
-		return tokenMismatch(Slash)
+	if !l.accept(slash) {
+		return tokenMismatch(slash)
 	}
 
-	l.acceptMultiple(SingleLineCommentChar)
+	l.acceptMultiple(singleLineCommentChar)
 	l.emit(token.SingleLineComment)
 	return lexToken
 }
 
 func lexMultiLineComment(l *Lexer) state {
-	if !l.accept(Asterisk) {
-		return tokenMismatch(Asterisk)
+	if !l.accept(asterisk) {
+		return tokenMismatch(asterisk)
 	}
 
 	for {
-		l.acceptMultiple(MultiLineNotAsteriskChar)
-		if !l.accept(Asterisk) {
-			return tokenMismatch(Asterisk)
+		l.acceptMultiple(multiLineNotAsteriskChar)
+		if !l.accept(asterisk) {
+			return tokenMismatch(asterisk)
 		}
-		if l.accept(Slash) {
+		if l.accept(slash) {
 			break
 		}
 	}

@@ -8,94 +8,94 @@ import (
 
 // Defined matchers
 var (
-	Ampersand                         = matcher.String(`&`)
-	Assign                            = matcher.String(`=`)
-	Asterisk                          = matcher.String(`*`)
-	Backslash                         = matcher.String(`\`)
-	BinaryDigit                       = matcher.String(`01`)
-	BinaryIndicator                   = matcher.String(`bB`)
-	BraceClose                        = matcher.String(`}`)
-	BraceOpen                         = matcher.String(`{`)
-	BracketClose                      = matcher.String(`]`)
-	BracketOpen                       = matcher.String(`[`)
-	Caret                             = matcher.String(`^`)
-	Dash                              = matcher.String(`-`)
-	DecimalDigit                      = matcher.String(`0123456789`)
-	Dollar                            = matcher.String(`$`)
-	Dot                               = matcher.String(`.`)
-	DoubleQuote                       = matcher.String(`"`)
-	ExclamationMark                   = matcher.String(`!`)
-	ExponentIndicator                 = matcher.String(`eE`)
-	GreaterThan                       = matcher.String(`>`)
-	HexDigit                          = matcher.String(`0123456789abcdefABCDEF`)
-	HexIndicator                      = matcher.String(`xX`)
-	LessThan                          = matcher.String(`<`)
-	LowerU                            = matcher.String(`u`)
-	LowerX                            = matcher.String(`x`)
-	NonZeroDigit                      = matcher.String(`123456789`)
-	OctalDigit                        = matcher.String(`01234567`)
-	OctalIndicator                    = matcher.String(`oO`)
-	Percent                           = matcher.String(`%`)
-	Pipe                              = matcher.String(`|`)
-	Plus                              = matcher.String(`+`)
-	PunctuatorStart                   = matcher.String(`!%&()*+,-.:;<=>?[]^{|~`)
-	RegularExpressionCharPartial      = matcher.Diff(RegularExpressionNonTerminator, matcher.String(`\/[`))
-	RegularExpressionFirstCharPartial = matcher.Diff(RegularExpressionNonTerminator, matcher.String(`*\/[`))
-	RegularExpressionNonTerminator    = matcher.Diff(SourceCharacter, LineTerminator)
-	Sign                              = matcher.String(`+-`)
-	SingleQuote                       = matcher.String(`'`)
-	Slash                             = matcher.String(`/`)
-	Underscore                        = matcher.String(`_`)
-	Zero                              = matcher.String(`0`)
+	ampersand                         = matcher.String(`&`)
+	assign                            = matcher.String(`=`)
+	asterisk                          = matcher.String(`*`)
+	backslash                         = matcher.String(`\`)
+	binaryDigit                       = matcher.String(`01`)
+	binaryIndicator                   = matcher.String(`bB`)
+	braceClose                        = matcher.String(`}`)
+	braceOpen                         = matcher.String(`{`)
+	bracketClose                      = matcher.String(`]`)
+	bracketOpen                       = matcher.String(`[`)
+	caret                             = matcher.String(`^`)
+	dash                              = matcher.String(`-`)
+	decimalDigit                      = matcher.String(`0123456789`)
+	dollar                            = matcher.String(`$`)
+	dot                               = matcher.String(`.`)
+	doubleQuote                       = matcher.String(`"`)
+	exclamationMark                   = matcher.String(`!`)
+	exponentIndicator                 = matcher.String(`eE`)
+	greaterThan                       = matcher.String(`>`)
+	hexDigit                          = matcher.String(`0123456789abcdefABCDEF`)
+	hexIndicator                      = matcher.String(`xX`)
+	lessThan                          = matcher.String(`<`)
+	lowerU                            = matcher.String(`u`)
+	lowerX                            = matcher.String(`x`)
+	nonZeroDigit                      = matcher.String(`123456789`)
+	octalDigit                        = matcher.String(`01234567`)
+	octalIndicator                    = matcher.String(`oO`)
+	percent                           = matcher.String(`%`)
+	pipe                              = matcher.String(`|`)
+	plus                              = matcher.String(`+`)
+	punctuatorStart                   = matcher.String(`!%&()*+,-.:;<=>?[]^{|~`)
+	regularExpressionCharPartial      = matcher.Diff(regularExpressionNonTerminator, matcher.String(`\/[`))
+	regularExpressionFirstCharPartial = matcher.Diff(regularExpressionNonTerminator, matcher.String(`*\/[`))
+	regularExpressionNonTerminator    = matcher.Diff(sourceCharacter, lineTerminator)
+	sign                              = matcher.String(`+-`)
+	singleQuote                       = matcher.String(`'`)
+	slash                             = matcher.String(`/`)
+	underscore                        = matcher.String(`_`)
+	zero                              = matcher.String(`0`)
 
-	SourceCharacter = matcher.New("SourceCharacter", CodePoint) // 10.1
+	sourceCharacter = matcher.New("SourceCharacter", codePoint) // 10.1
 
-	WhiteSpace            = matcher.Merge(FormFeed, NoBreakSpace, Space, HorizontalTab, UnicodeSpace, VerticalTab, ZeroWidthJoiner, ZeroWidthNoBreakSpace, ZeroWidthNonJoiner) // 11.2
-	FormFeed              = matcher.RuneWithDesc("<FF>", '\u000C')                                                                                                             // 11.2
-	NoBreakSpace          = matcher.RuneWithDesc("<NBSP>", '\u00A0')                                                                                                           // 11.2
-	Space                 = matcher.RuneWithDesc("<SP>", '\u0020')                                                                                                             // 11.2
-	HorizontalTab         = matcher.RuneWithDesc("<TAB>", '\u0009')                                                                                                            // 11.2
-	UnicodeSpace          = matcher.New("<USP>", unicode.Z)                                                                                                                    // 11.2
-	VerticalTab           = matcher.RuneWithDesc("<VT>", '\u000B')                                                                                                             // 11.2
-	ZeroWidthJoiner       = matcher.RuneWithDesc("<ZWJ>", '\u200D')                                                                                                            // 11.1
-	ZeroWidthNoBreakSpace = matcher.RuneWithDesc("<ZWNBSP>", '\uFEFF')                                                                                                         // 11.1
-	ZeroWidthNonJoiner    = matcher.RuneWithDesc("<ZWNJ>", '\u200C')                                                                                                           // 11.1
+	whiteSpace            = matcher.Merge(formFeed, noBreakSpace, space, horizontalTab, unicodeSpace, verticalTab, zeroWidthJoiner, zeroWidthNoBreakSpace, zeroWidthNonJoiner) // 11.2
+	formFeed              = matcher.RuneWithDesc("<FF>", '\u000C')                                                                                                             // 11.2
+	noBreakSpace          = matcher.RuneWithDesc("<NBSP>", '\u00A0')                                                                                                           // 11.2
+	space                 = matcher.RuneWithDesc("<SP>", '\u0020')                                                                                                             // 11.2
+	horizontalTab         = matcher.RuneWithDesc("<TAB>", '\u0009')                                                                                                            // 11.2
+	unicodeSpace          = matcher.New("<USP>", unicode.Z)                                                                                                                    // 11.2
+	verticalTab           = matcher.RuneWithDesc("<VT>", '\u000B')                                                                                                             // 11.2
+	zeroWidthJoiner       = matcher.RuneWithDesc("<ZWJ>", '\u200D')                                                                                                            // 11.1
+	zeroWidthNoBreakSpace = matcher.RuneWithDesc("<ZWNBSP>", '\uFEFF')                                                                                                         // 11.1
+	zeroWidthNonJoiner    = matcher.RuneWithDesc("<ZWNJ>", '\u200C')                                                                                                           // 11.1
 
-	LineTerminator     = matcher.Merge(LineFeed, CarriageReturn, LineSeparator, ParagraphSeparator) // 11.3
-	LineFeed           = matcher.RuneWithDesc("<LF>", '\u000A')                                     // 11.3
-	CarriageReturn     = matcher.RuneWithDesc("<CR>", '\u000D')                                     // 11.3
-	LineSeparator      = matcher.RuneWithDesc("<LS>", '\u2028')                                     // 11.3
-	ParagraphSeparator = matcher.RuneWithDesc("<PS>", '\u2029')                                     // 11.3
+	lineTerminator     = matcher.Merge(lineFeed, carriageReturn, lineSeparator, paragraphSeparator) // 11.3
+	lineFeed           = matcher.RuneWithDesc("<LF>", '\u000A')                                     // 11.3
+	carriageReturn     = matcher.RuneWithDesc("<CR>", '\u000D')                                     // 11.3
+	lineSeparator      = matcher.RuneWithDesc("<LS>", '\u2028')                                     // 11.3
+	paragraphSeparator = matcher.RuneWithDesc("<PS>", '\u2029')                                     // 11.3
 
-	SingleLineCommentChar = matcher.Diff(SourceCharacter, LineTerminator) // 11.4
+	singleLineCommentChar = matcher.Diff(sourceCharacter, lineTerminator) // 11.4
 
-	MultiLineNotAsteriskChar               = matcher.Diff(SourceCharacter, Asterisk)
-	MultiLineNotForwardSlashOrAsteriskChar = matcher.Diff(SourceCharacter, matcher.Merge(Asterisk, Slash))
+	multiLineNotAsteriskChar               = matcher.Diff(sourceCharacter, asterisk)
+	multiLineNotForwardSlashOrAsteriskChar = matcher.Diff(sourceCharacter, matcher.Merge(asterisk, slash))
 
-	UnicodeIDStart         = matcher.New("ID_Start", unicode.Other_ID_Start)
-	UnicodeIDContinue      = matcher.New("ID_Continue", IDContinue)
-	IdentifierStartPartial = matcher.Merge(UnicodeIDStart, Dollar, Underscore)
-	IdentifierStart        = matcher.Merge(UnicodeIDStart, Dollar, Underscore, Backslash)
-	IdentifierPartPartial  = matcher.Merge(UnicodeIDContinue, Dollar, ZeroWidthNonJoiner, ZeroWidthJoiner)
-	IdentifierPart         = matcher.Merge(UnicodeIDContinue, Dollar, ZeroWidthNonJoiner, ZeroWidthJoiner, Backslash)
+	unicodeIDStart         = matcher.New("ID_Start", unicode.Other_ID_Start)
+	unicodeIDContinue      = matcher.New("ID_Continue", iDContinue)
+	identifierStartPartial = matcher.Merge(unicodeIDStart, dollar, underscore)
+	identifierStart        = matcher.Merge(unicodeIDStart, dollar, underscore, backslash)
+	identifierPartPartial  = matcher.Merge(unicodeIDContinue, dollar, zeroWidthNonJoiner, zeroWidthJoiner)
+	identifierPart         = matcher.Merge(unicodeIDContinue, dollar, zeroWidthNonJoiner, zeroWidthJoiner, backslash)
 
-	DoubleStringCharacterPartial = matcher.Diff(SourceCharacter, matcher.Merge(DoubleQuote, Backslash, LineTerminator))
-	SingleStringCharacterPartial = matcher.Diff(SourceCharacter, matcher.Merge(SingleQuote, Backslash, LineTerminator))
+	doubleStringCharacterPartial = matcher.Diff(sourceCharacter, matcher.Merge(doubleQuote, backslash, lineTerminator))
+	singleStringCharacterPartial = matcher.Diff(sourceCharacter, matcher.Merge(singleQuote, backslash, lineTerminator))
 
-	SingleEscapeCharacter = matcher.String(`'"\bfnrtv`)
-	EscapeCharacter       = matcher.Merge(SingleEscapeCharacter, DecimalDigit, LowerX, LowerU)
-	NonEscapeCharacter    = matcher.Diff(SourceCharacter, matcher.Merge(EscapeCharacter, LineTerminator))
+	singleEscapeCharacter = matcher.String(`'"\bfnrtv`)
+	escapeCharacter       = matcher.Merge(singleEscapeCharacter, decimalDigit, lowerX, lowerU)
+	nonEscapeCharacter    = matcher.Diff(sourceCharacter, matcher.Merge(escapeCharacter, lineTerminator))
 )
 
 var (
-	// CodePoint contains all runes that are >=0 and <=unicode.MaxRune
-	CodePoint = &unicode.RangeTable{
+	// codePoint contains all runes that are >=0 and <=unicode.MaxRune
+	codePoint = &unicode.RangeTable{
 		R32: []unicode.Range32{
 			{0, unicode.MaxRune, 1},
 		},
 	}
-	// IDContinue contains all runes with the property [:IDContinue:]
-	IDContinue = &unicode.RangeTable{
+	// iDContinue contains all runes with the property [:IDContinue:]
+	iDContinue = &unicode.RangeTable{
 		R16: []unicode.Range16{
 			{0x0030, 0x0039, 1}, // 0-9
 			{0x0041, 0x005a, 1}, // A-Z

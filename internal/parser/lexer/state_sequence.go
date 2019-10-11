@@ -18,14 +18,14 @@ func acceptEscapeSequence(l *Lexer) state {
 	case 'x':
 		return acceptHexEscapeSequence(l)
 	default:
-		if l.accept(Zero) {
-			if DecimalDigit.Matches(l.peek()) {
+		if l.accept(zero) {
+			if decimalDigit.Matches(l.peek()) {
 				return unexpectedToken
 			}
 			return nil
 		}
 
-		if SingleEscapeCharacter.Matches(r) || NonEscapeCharacter.Matches(r) {
+		if singleEscapeCharacter.Matches(r) || nonEscapeCharacter.Matches(r) {
 			return acceptCharacterEscapeSequence(l)
 		}
 	}
@@ -44,8 +44,8 @@ func acceptEscapeSequence(l *Lexer) state {
 //
 // characterEscapeSequence is specified in 11.8.4.
 func acceptCharacterEscapeSequence(l *Lexer) state {
-	if !(l.accept(SingleEscapeCharacter) || l.accept(NonEscapeCharacter)) {
-		return tokenMismatch(SingleEscapeCharacter, NonEscapeCharacter)
+	if !(l.accept(singleEscapeCharacter) || l.accept(nonEscapeCharacter)) {
+		return tokenMismatch(singleEscapeCharacter, nonEscapeCharacter)
 	}
 	return nil
 }
@@ -62,13 +62,13 @@ func acceptCharacterEscapeSequence(l *Lexer) state {
 //
 // HexEscapeSequence is specified in 11.8.4.
 func acceptHexEscapeSequence(l *Lexer) state {
-	if !l.accept(LowerX) {
-		return tokenMismatch(LowerX)
+	if !l.accept(lowerX) {
+		return tokenMismatch(lowerX)
 	}
 
 	for i := 0; i < 2; i++ {
-		if !l.accept(HexDigit) {
-			return tokenMismatch(HexDigit)
+		if !l.accept(hexDigit) {
+			return tokenMismatch(hexDigit)
 		}
 	}
 
@@ -87,26 +87,26 @@ func acceptHexEscapeSequence(l *Lexer) state {
 //
 // UnicodeEscapeSequence is specified in 11.8.4.
 func acceptUnicodeEscapeSequence(l *Lexer) state {
-	if !l.accept(LowerU) {
-		return tokenMismatch(LowerU)
+	if !l.accept(lowerU) {
+		return tokenMismatch(lowerU)
 	}
 
-	if l.accept(BraceOpen) {
-		n := l.acceptMultiple(HexDigit)
+	if l.accept(braceOpen) {
+		n := l.acceptMultiple(hexDigit)
 		if n > 6 {
 			// actually if MV(HexDigits) > 0x10FFFF (unicode.MaxRune)
 			return errorf("Must be a code point (<= 0x10FFFF)")
 		}
-		if !l.accept(BraceClose) {
+		if !l.accept(braceClose) {
 			if n < 6 {
-				return tokenMismatch(BraceClose, HexDigit)
+				return tokenMismatch(braceClose, hexDigit)
 			}
-			return tokenMismatch(BraceClose)
+			return tokenMismatch(braceClose)
 		}
 	} else {
 		for i := 0; i < 4; i++ {
-			if !l.accept(HexDigit) {
-				return tokenMismatch(HexDigit)
+			if !l.accept(hexDigit) {
+				return tokenMismatch(hexDigit)
 			}
 		}
 	}
@@ -126,12 +126,12 @@ func acceptUnicodeEscapeSequence(l *Lexer) state {
 //
 // LineTerminatorEscapeSequence is specified in 11.8.4.
 func acceptLineTerminatorSequence(l *Lexer) state {
-	if l.accept(CarriageReturn) {
-		l.accept(LineFeed)
+	if l.accept(carriageReturn) {
+		l.accept(lineFeed)
 		return nil
 	}
-	if !l.accept(LineTerminator) {
-		return tokenMismatch(LineTerminator)
+	if !l.accept(lineTerminator) {
+		return tokenMismatch(lineTerminator)
 	}
 	return nil
 }
