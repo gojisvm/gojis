@@ -113,7 +113,7 @@ func (l *Lexer) next() rune {
 	return r
 }
 
-// unread unreads the last read rune.
+// unread unreads one rune.
 func (l *Lexer) unread() {
 	l.unreads++
 	l.pos--
