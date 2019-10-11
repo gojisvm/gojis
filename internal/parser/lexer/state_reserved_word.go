@@ -3,7 +3,7 @@ package lexer
 import "github.com/gojisvm/gojis/internal/parser/token"
 
 func lexReservedWord(l *Lexer) state {
-	for _, reservedWord := range AllReservedWords {
+	for _, reservedWord := range allReservedWords {
 		if l.acceptWord(reservedWord) {
 			// reserved word was matched
 			l.emit(token.ReservedWord)

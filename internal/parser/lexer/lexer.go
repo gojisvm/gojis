@@ -10,10 +10,10 @@ import (
 const eofRune = '\ufffd'
 
 // Lexer is a tokenizer/scanner for ECMAScript source code. It operates on a
-// byte slice and with runes. A Lexer has a token stream where it pushes all
-// tokens onto. Lexer states are defined recursively. It is recommended to
-// return to an initial state after every token, since token sequences should be
-// a responsibility of the parser.
+// rune slice, although it takes a byte slice as an input. A Lexer has a token
+// stream where it pushes all tokens onto. Lexer states are defined recursively.
+// It is recommended to return to an initial state after every token, since
+// token sequences should be a responsibility of the parser.
 type Lexer struct {
 	input []rune
 	start int
