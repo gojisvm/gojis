@@ -27,25 +27,93 @@ func parseStatementListItem(i *isolate, p param) *ast.StatementListItem {
 }
 
 func parseStatement(i *isolate, p param) *ast.Statement {
-	stmt := &ast.Statement{
-		BlockStatement:      parseBlockStatement(i, p.only(pYield|pAwait|pReturn)),
-		VariableStatement:   parseVariableStatement(i, p.only(pYield|pAwait)),
-		EmptyStatement:      parseEmptyStatement(i, 0),
-		ExpressionStatement: parseExpressionStatement(i, p.only(pYield|pAwait)),
-		IfStatement:         parseIfStatement(i, p.only(pYield|pAwait|pReturn)),
-		BreakableStatement:  parseBreakableStatement(i, p.only(pYield|pAwait|pReturn)),
-		ContinueStatement:   parseContinueStatement(i, p.only(pYield|pAwait)),
-		BreakStatement:      parseBreakStatement(i, p.only(pYield|pAwait)),
-		WithStatement:       parseWithStatement(i, p.only(pYield|pAwait|pReturn)),
-		LabelledStatement:   parseLabelledStatement(i, p.only(pYield|pAwait|pReturn)),
-		ThrowStatement:      parseThrowStatement(i, p.only(pYield|pAwait)),
-		TryStatement:        parseTryStatement(i, p.only(pYield|pAwait|pReturn)),
-		DebuggerStatement:   parseDebuggerStatement(i, 0),
+	if blockStatement := parseBlockStatement(i, p.only(pYield|pAwait|pReturn)); blockStatement != nil {
+		return &ast.Statement{
+			BlockStatement: blockStatement,
+		}
 	}
+
+	if variableStatement := parseVariableStatement(i, p.only(pYield|pAwait)); variableStatement != nil {
+		return &ast.Statement{
+			VariableStatement: variableStatement,
+		}
+	}
+
+	if emptyStatement := parseEmptyStatement(i, 0); emptyStatement != nil {
+		return &ast.Statement{
+			EmptyStatement: emptyStatement,
+		}
+	}
+
+	if expressionStatement := parseExpressionStatement(i, p.only(pYield|pAwait)); expressionStatement != nil {
+		return &ast.Statement{
+			ExpressionStatement: expressionStatement,
+		}
+	}
+
+	if ifStatement := parseIfStatement(i, p.only(pYield|pAwait|pReturn)); ifStatement != nil {
+		return &ast.Statement{
+			IfStatement: ifStatement,
+		}
+	}
+
+	if breakableStatement := parseBreakableStatement(i, p.only(pYield|pAwait|pReturn)); breakableStatement != nil {
+		return &ast.Statement{
+			BreakableStatement: breakableStatement,
+		}
+	}
+
+	if continueStatement := parseContinueStatement(i, p.only(pYield|pAwait)); continueStatement != nil {
+		return &ast.Statement{
+			ContinueStatement: continueStatement,
+		}
+	}
+
+	if breakStatement := parseBreakStatement(i, p.only(pYield|pAwait)); breakStatement != nil {
+		return &ast.Statement{
+			BreakStatement: breakStatement,
+		}
+	}
+
 	if p.is(pReturn) {
-		stmt.ReturnStatement = parseReturnStatement(i, p.only(pYield|pAwait))
+		if returnStatement := parseReturnStatement(i, p.only(pYield|pAwait)); returnStatement != nil {
+			return &ast.Statement{
+				ReturnStatement: returnStatement,
+			}
+		}
 	}
-	return stmt
+
+	if withStatement := parseWithStatement(i, p.only(pYield|pAwait|pReturn)); withStatement != nil {
+		return &ast.Statement{
+			WithStatement: withStatement,
+		}
+	}
+
+	if labelledStatement := parseLabelledStatement(i, p.only(pYield|pAwait|pReturn)); labelledStatement != nil {
+		return &ast.Statement{
+			LabelledStatement: labelledStatement,
+		}
+	}
+
+	if throwStatement := parseThrowStatement(i, p.only(pYield|pAwait)); throwStatement != nil {
+		return &ast.Statement{
+			ThrowStatement: throwStatement,
+		}
+	}
+
+	if tryStatement := parseTryStatement(i, p.only(pYield|pAwait|pReturn)); tryStatement != nil {
+		return &ast.Statement{
+			TryStatement: tryStatement,
+		}
+	}
+
+	if debuggerStatement := parseDebuggerStatement(i, 0); debuggerStatement != nil {
+		return &ast.Statement{
+			DebuggerStatement: debuggerStatement,
+		}
+	}
+
+	return nil
 }
 
 func parseBlockStatement(i *isolate, p param) *ast.BlockStatement {
@@ -184,7 +252,19 @@ func parseIfStatement(i *isolate, p param) *ast.IfStatement {
 }
 
 func parseBreakableStatement(i *isolate, p param) *ast.BreakableStatement {
+	if itStmt := parseIterationStatement(i, p.only(pYield|pAwait|pReturn)); itStmt != nil {
+		return &ast.BreakableStatement{
+			IterationStatement: itStmt,
+		}
+	}
 
+	if switchStmt := parseSwitchStatement(i, p.only(pYield|pAwait|pReturn)); switchStmt != nil {
+		return &ast.BreakableStatement{
+			IterationStatement: switchStmt,
+		}
+	}
+
+	return nil
 }
 
 func parseContinueStatement(i *isolate, p param) *ast.ContinueStatement {
@@ -269,21 +349,156 @@ func parseReturnStatement(i *isolate, p param) *ast.ReturnStatement {
 }
 
 func parseWithStatement(i *isolate, p param) *ast.WithStatement {
+	chck := i.checkpoint()
 
+	if !i.acceptTypes(token.With) {
+		i.restore(chck)
+		return nil
+	}
+
+	i.drain(token.Whitespace, token.LineTerminator)
+
+	if !i.acceptTypes(token.ParOpen) {
+		i.restore(chck)
+		return nil
+	}
+
+	i.drain(token.Whitespace, token.LineTerminator)
+
+	expr := parseExpression(i, p.only(pYield|pAwait).add(pIn))
+	if expr == nil {
+		i.restore(chck)
+		return nil
+	}
+
+	i.drain(token.Whitespace, token.LineTerminator)
+
+	if !i.acceptTypes(token.ParClose) {
+		i.restore(chck)
+		return nil
+	}
+
+	i.drain(token.Whitespace, token.LineTerminator)
+
+	stmt := parseStatement(i, p.only(pYield|pAwait|pReturn))
+	if stmt == nil {
+		i.restore(chck)
+		return nil
+	}
+
+	return &ast.WithStatement{
+		Expression: expr,
+		Statement:  stmt,
+	}
 }
 
 func parseLabelledStatement(i *isolate, p param) *ast.LabelledStatement {
+	chck := i.checkpoint()
 
+	labelIdent := parseLabelIdentifier(i, p.only(pYield|pAwait))
+	if labelIdent == nil {
+		i.restore(chck)
+		return nil
+	}
+
+	i.drain(token.Whitespace, token.LineTerminator)
+
+	if !i.acceptTypes(token.Colon) {
+		i.restore(chck)
+		return nil
+	}
+
+	i.drain(token.Whitespace, token.LineTerminator)
+
+	labelledItem := parseLabelledItem(i, p.only(pYield|pAwait|pReturn))
+	if labelledItem == nil {
+		i.restore(chck)
+		return nil
+	}
+
+	return &ast.LabelledStatement{
+		LabelIdentifier: labelIdent,
+		LabelledItem:    labelledItem,
+	}
 }
 
 func parseThrowStatement(i *isolate, p param) *ast.ThrowStatement {
+	chck := i.checkpoint()
 
+	if !i.acceptTypes(token.Throw) {
+		i.restore(chck)
+		return nil
+	}
+
+	i.drain(token.Whitespace)
+
+	expr := parseExpression(i, p.only(pYield|pAwait).add(pIn))
+	if expr == nil {
+		i.restore(chck)
+		return nil
+	}
+
+	i.drain(token.Whitespace, token.LineTerminator)
+
+	if !i.acceptTypes(token.SemiColon) {
+		i.restore(chck)
+		return nil
+	}
+
+	return &ast.ThrowStatement{
+		Expression: expr,
+	}
 }
 
 func parseTryStatement(i *isolate, p param) *ast.TryStatement {
+	chck := i.checkpoint()
 
+	if !i.acceptTypes(token.Try) {
+		i.restore(chck)
+		return nil
+	}
+
+	i.drain(token.Whitespace, token.LineTerminator)
+
+	blk := parseBlock(i, p.only(pYield|pAwait|pReturn))
+	if blk == nil {
+		i.restore(chck)
+		return nil
+	}
+
+	i.drain(token.Whitespace, token.LineTerminator)
+
+	catch := parseCatch(i, p.only(pYield|pAwait|pReturn))
+
+	i.drain(token.Whitespace, token.LineTerminator)
+
+	finally := parseFinally(i, p.only(pYield|pAwait|pReturn))
+	if finally == nil {
+		i.restore(chck)
+		return nil
+	}
+
+	return &ast.TryStatement{
+		Block:   blk,
+		Catch:   catch,
+		Finally: finally,
+	}
 }
 
 func parseDebuggerStatement(i *isolate, p param) *ast.DebuggerStatement {
+	chck := i.checkpoint()
 
+	if !i.acceptTypes(token.Debugger) {
+		i.restore(chck)
+		return nil
+	}
+
+	i.drain(token.Whitespace, token.LineTerminator)
+
+	if !i.acceptTypes(token.SemiColon) {
+		i.restore(chck)
+		return nil
+	}
+
+	return &ast.DebuggerStatement{}
 }
