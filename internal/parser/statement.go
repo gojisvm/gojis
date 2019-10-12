@@ -20,10 +20,19 @@ func parseStatementList(i *isolate, p param) *ast.StatementList {
 }
 
 func parseStatementListItem(i *isolate, p param) *ast.StatementListItem {
-	return &ast.StatementListItem{
-		Statement:   parseStatement(i, p.only(pYield|pAwait|pReturn)),
-		Declaration: parseDeclaration(i, p.only(pYield|pAwait)),
+	if statement := parseStatement(i, p.only(pYield|pAwait|pReturn)); statement != nil {
+		return &ast.StatementListItem{
+			Statement: statement,
+		}
 	}
+
+	if declaration := parseDeclaration(i, p.only(pYield|pAwait)); declaration != nil {
+		return &ast.StatementListItem{
+			Declaration: declaration,
+		}
+	}
+
+	return nil
 }
 
 func parseStatement(i *isolate, p param) *ast.Statement {
