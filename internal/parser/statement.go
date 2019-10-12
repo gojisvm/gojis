@@ -6,10 +6,19 @@ import (
 )
 
 func parseStatementList(i *isolate, p param) *ast.StatementList {
+	chck := i.checkpoint()
+
 	var items []*ast.StatementListItem
 	for {
+		i.drain(token.Whitespace, token.LineTerminator)
+
 		item := parseStatementListItem(i, p)
 		if item == nil {
+			if len(items) == 0 {
+				// if not even a single one has been parsed
+				i.restore(chck)
+				return nil
+			}
 			break
 		}
 		items = append(items, item)
