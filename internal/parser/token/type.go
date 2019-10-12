@@ -3,15 +3,6 @@ package token
 // Type is a type of a token.
 type Type uint64
 
-func (t Type) Implies(other Type) bool {
-	for _, implication := range implications[t] {
-		if implication == other {
-			return true
-		}
-	}
-	return false
-}
-
 //go:generate stringer -type=Type
 
 // Available token type.
@@ -31,7 +22,40 @@ const (
 	StringLiteral  // 11.5
 	Template       // 11.5
 
-	ReservedWord // 11.6
+	Await      // 11.6.2.1
+	Break      // 11.6.2.1
+	Case       // 11.6.2.1
+	Catch      // 11.6.2.1
+	Class      // 11.6.2.1
+	Const      // 11.6.2.1
+	Continue   // 11.6.2.1
+	Debugger   // 11.6.2.1
+	Default    // 11.6.2.1
+	Delete     // 11.6.2.1
+	Do         // 11.6.2.1
+	Else       // 11.6.2.1
+	Export     // 11.6.2.1
+	Extends    // 11.6.2.1
+	Finally    // 11.6.2.1
+	For        // 11.6.2.1
+	Function   // 11.6.2.1
+	If         // 11.6.2.1
+	Import     // 11.6.2.1
+	In         // 11.6.2.1
+	Instanceof // 11.6.2.1
+	New_       // 11.6.2.1
+	Return     // 11.6.2.1
+	Super      // 11.6.2.1
+	Switch     // 11.6.2.1
+	This       // 11.6.2.1
+	Throw      // 11.6.2.1
+	Try        // 11.6.2.1
+	Typeof     // 11.6.2.1
+	Var        // 11.6.2.1
+	Void       // 11.6.2.1
+	While      // 11.6.2.1
+	With       // 11.6.2.1
+	Yield      // 11.6.2.1
 
 	Null                 // 11.8.1
 	Boolean              // 11.8.2
@@ -42,70 +66,61 @@ const (
 
 	RegularExpressionLiteral // 11.8.5
 
-	Yield // 12.1
-	Await // 12.1
-	This  // 12.2
-
-	NewType
-	Super
 	Target
-	Delete
-	Void
-	Typeof
 
 	// punctuators
 
-	UnsignedRightShiftAssign
-	Ellipsis
-	LeftShiftAssign
-	UnsignedRightShift
-	RightShiftAssign
-	StrictEquals
-	StrictNotEquals
-	PowerAssign
-	LeftShift
-	LessThanOrEqualTo
-	RightShift
-	GreaterThanOrEqualTo
-	Equals
-	NotEquals
-	UpdatePlus
-	UpdateMinus
-	Power
-	LogicalAnd
-	LogicalOr
-	PlusAssign
-	MinusAssign
-	MultiplyAssign
-	ModuloAssign
 	AndAssign
-	OrAssign
-	XorAssign
 	Arrow
-	GreaterThan
-	Dot
-	SemiColon
-	Comma
-	Tilde
-	LessThan
-	ParOpen
-	ParClose
-	BraceOpen
-	BraceClose
-	BracketOpen
-	BracketClose
-	LogicalNot
-	Plus
-	Minus
-	Multiply
-	Modulo
+	Assign
 	BitwiseAnd
+	BitwiseNot
 	BitwiseOr
 	BitwiseXor
-	BitwiseNot
-	QuestionMark
+	BraceClose
+	BraceOpen
+	BracketClose
+	BracketOpen
 	Colon
-	Assign
-	DivAssign
+	Comma
 	Div
+	DivAssign
+	Dot
+	Ellipsis
+	Equals
+	GreaterThan
+	GreaterThanOrEqualTo
+	LeftShift
+	LeftShiftAssign
+	LessThan
+	LessThanOrEqualTo
+	LogicalAnd
+	LogicalNot
+	LogicalOr
+	Minus
+	MinusAssign
+	Modulo
+	ModuloAssign
+	Multiply
+	MultiplyAssign
+	NotEquals
+	OrAssign
+	ParClose
+	ParOpen
+	Plus
+	PlusAssign
+	Power
+	PowerAssign
+	QuestionMark
+	RightShift
+	RightShiftAssign
+	SemiColon
+	StrictEquals
+	StrictNotEquals
+	Tilde
+	UnsignedRightShift
+	UnsignedRightShiftAssign
+	UpdateMinus
+	UpdatePlus
+	XorAssign
 )

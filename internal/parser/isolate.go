@@ -12,10 +12,8 @@ type isolate struct {
 	sourceName string
 	lx         *lexer.Lexer
 
-	tokens *token.Stream
-	cached bool
-	cache  token.Token
-	done   bool
+	tokens []token.Token
+	pos    int
 }
 
 func newIsolate(sourceName string, input []byte) *isolate {
@@ -23,7 +21,6 @@ func newIsolate(sourceName string, input []byte) *isolate {
 	return &isolate{
 		sourceName: sourceName,
 		lx:         lx,
-		tokens:     lx.TokenStream(),
 	}
 }
 
@@ -37,44 +34,65 @@ func (i *isolate) fatal(msg string) {
 	})
 }
 
-func (i *isolate) peek() token.Token {
-	i.ensureCache()
-	return i.cache
+func (i *isolate) done() bool {
+	return i.pos >= len(i.tokens)
 }
 
-func (i *isolate) next() token.Token {
-	i.ensureCache()
-	i.cached = false
-	return i.cache
+func (i *isolate) next() (token.Token, bool) {
+	if i.done() {
+		return token.Token{}, false
+	}
+
+	t := i.tokens[i.pos]
+	i.pos++
+	return t, true
 }
 
 func (i *isolate) unread() {
-	i.cached = true
-}
-
-func (i *isolate) ensureCache() {
-	if i.cached {
-		// noop if there's a token in cache
+	if i.pos-1 < 0 {
+		// noop, cannot unread
 		return
 	}
 
-	token, ok := i.tokens.Next()
-	if !ok {
-		i.done = true
-		return
-	}
-
-	i.cached = true
-	i.cache = token
+	i.pos--
 }
 
-func (i *isolate) accept(t token.Type) bool {
-	next := i.next()
-	if next.Type == t {
-		return true
+func (i *isolate) drain(t ...token.Type) {
+	for i.acceptTypes(t...) {
 	}
-	i.unread()
+}
+
+func (i *isolate) accept(t token.Type) (token.Token, bool) {
+	next, ok := i.next()
+	if !ok || next.Type != t {
+		i.unread()
+		return token.Token{}, false
+	}
+	return next, true
+}
+
+func (i *isolate) acceptTypes(ts ...token.Type) bool {
+	for _, t := range ts {
+		_, ok := i.accept(t)
+		if ok {
+			return true
+		}
+	}
 	return false
+}
+
+type checkpoint struct {
+	pos int
+}
+
+func (i *isolate) checkpoint() checkpoint {
+	return checkpoint{
+		pos: i.pos,
+	}
+}
+
+func (i *isolate) restore(chck checkpoint) {
+	i.pos = chck.pos
 }
 
 // actual parsing including all rules starts here
@@ -96,6 +114,10 @@ func (i *isolate) parse() (script *ast.Script, err error) {
 			i.fatalf("Lexer failed: %v", err)
 		}
 	}()
+
+	for t := range i.lx.TokenStream().Tokens() {
+		i.tokens = append(i.tokens, t)
+	}
 
 	script = i.parseScript()
 	return
