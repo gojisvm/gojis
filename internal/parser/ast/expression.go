@@ -5,14 +5,14 @@ type Expression struct {
 }
 
 type AssignmentExpression struct {
-	ConditionalExpression        *ConditionalExpression
-	YieldExpression              *YieldExpression
-	ArrowExpression              *ArrowExpression
-	AsyncArrowExpression         *AsyncArrowExpression
-	LeftHandSideExpression       *LeftHandSideExpression
-	Assign                       bool
-	AssignmentOperatorExpression *AssignmentOperatorExpression
-	AssignmentExpression         *AssignmentExpression
+	ConditionalExpression  *ConditionalExpression
+	YieldExpression        *YieldExpression
+	ArrowFunction          *ArrowFunction
+	AsyncArrowFunction     *AsyncArrowFunction
+	LeftHandSideExpression *LeftHandSideExpression
+	Assign                 bool
+	AssignmentOperator     string
+	AssignmentExpression   *AssignmentExpression
 }
 
 type ConditionalExpression struct {
@@ -136,7 +136,7 @@ type MemberExpression struct {
 	PrimaryExpression *PrimaryExpression
 	MemberExpression  *MemberExpression
 	Expression        *Expression
-	IdentifierName    *IdentifierName
+	IdentifierName    string
 	TemplateLiteral   *TemplateLiteral
 	SuperProperty     *SuperProperty
 	MetaProperty      *MetaProperty
@@ -154,7 +154,72 @@ type PrimaryExpression struct {
 	GeneratorExpression                               *GeneratorExpression
 	AsyncFunctionExpression                           *AsyncFunctionExpression
 	AsyncGeneratorExpression                          *AsyncGeneratorExpression
-	RegularExpressionLiteral                          *RegularExpressionLiteral
+	RegularExpressionLiteral                          string
 	TemplateLiteral                                   *TemplateLiteral
 	CoverParenthesizedExpressionAndArrowParameterList *CoverParenthesizedExpressionAndArrowParameterList
+}
+
+type FunctionExpression struct {
+	BindingIdentifier *BindingIdentifier
+	FormalParameters  *FormalParameters
+	FunctionBody      *FunctionBody
+}
+
+type ClassExpression struct {
+	BindingIdentifier *BindingIdentifier
+	ClassTail         *ClassTail
+}
+
+type ClassTail struct {
+	ClassHeritage *ClassHeritage
+	ClassBody     *ClassBody
+}
+
+type ClassHeritage struct {
+	LeftHandSideExpression *LeftHandSideExpression
+}
+
+type ClassBody struct {
+	ClassElementList *ClassElementList
+}
+
+type ClassElementList struct {
+	ClassElements []*ClassElement
+}
+
+type ClassElement struct {
+	MethodDefinition *MethodDefinition
+	Static           bool
+}
+
+type GeneratorExpression struct {
+	BindingIdentifier *BindingIdentifier
+	FormalParameters  *FormalParameters
+	GeneratorBody     *GeneratorBody
+}
+
+type AsyncFunctionExpression struct {
+	FormalParameters  *FormalParameters
+	AsyncFunctionBody *AsyncFunctionBody
+	BindingIdentifier *BindingIdentifier
+}
+
+type AsyncGeneratorExpression struct {
+	BindingIdentifier  *BindingIdentifier
+	FormalParameters   *FormalParameters
+	AsyncGeneratorBody *AsyncGeneratorBody
+}
+
+type CallExpression struct {
+	CoverCallExpressionAndAsyncArrowHead
+	SuperCall       *SuperCall
+	CallExpression  *CallExpression
+	Arguments       *Arguments
+	Expression      *Expression
+	IdentifierName  string
+	TemplateLiteral *TemplateLiteral
+}
+
+type SuperCall struct {
+	Arguments *Arguments
 }

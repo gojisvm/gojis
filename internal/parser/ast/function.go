@@ -52,3 +52,69 @@ type CoverParenthesizedExpressionAndArrowParameterList struct {
 	Comma             bool
 	Ellipsis          bool
 }
+
+type MethodDefinition struct {
+	PropertyName             *PropertyName
+	UniqueFormalPatameters   *UniqueFormalParameters
+	FunctionBody             *FunctionBody
+	GeneratorMethod          *GeneratorMethod
+	AsyncMethod              *AsyncMethod
+	AsyncGeneratorMethod     *AsyncGeneratorMethod
+	PropertySetParameterList *PropertySetParameterList
+	Get                      bool
+	Set                      bool
+}
+
+type PropertySetParameterList struct {
+	FormalParameter *FormalParameter
+}
+
+type UniqueFormalParameters struct {
+	FormalParameters *FormalParameters
+}
+
+type GeneratorMethod struct {
+	PropertyName           *PropertyName
+	UniqueFormalParameters *UniqueFormalParameters
+	GeneratorBody          *GeneratorBody
+}
+
+type AsyncMethod struct {
+	PropertyName           *PropertyName
+	UniqueFormalParameters *UniqueFormalParameters
+	AsyncFunctionBody      *AsyncFunctionBody
+}
+
+type AsyncFunctionBody struct {
+	FunctionBody *FunctionBody
+}
+
+type AsyncGeneratorMethod struct {
+	PropertyName           *PropertyName
+	UniqueFormalParameters *UniqueFormalParameters
+	AsyncGeneratorBody     *AsyncGeneratorBody
+}
+
+type AsyncGeneratorBody struct {
+	FunctionBody *FunctionBody
+}
+
+type AsyncArrowFunction struct {
+	AsyncArrowBindingIdentifier          *AsyncArrowBindingIdentifier
+	AsyncConciseBody                     *AsyncConciseBody
+	CoverCallExpressionAndAsyncArrowHead *CoverCallExpressionAndAsyncArrowHead
+}
+
+type AsyncConciseBody struct {
+	AssignmentExpression *AssignmentExpression
+	AsyncFunctionBody    *AsyncFunctionBody
+}
+
+type AsyncArrowBindingIdentifier struct {
+	BindingIdentifier *BindingIdentifier
+}
+
+type CoverCallExpressionAndAsyncArrowHead struct {
+	MemberExpression *MemberExpression
+	Arguments        *Arguments
+}

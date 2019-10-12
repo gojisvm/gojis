@@ -56,3 +56,18 @@ type BindingProperty struct {
 	PropertyName      *PropertyName
 	BindingElement    *BindingElement
 }
+
+type ForBinding struct {
+	BindingIdentifier *BindingIdentifier
+	BindingPattern    *BindingPattern
+}
+
+type BindingList struct {
+	LexicalBindings []*LexicalBinding
+}
+
+type LexicalBinding struct {
+	BindingIdentifier *BindingIdentifier
+	BindingPattern    *BindingPattern
+	Initializer       *Initializer
+}

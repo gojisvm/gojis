@@ -25,14 +25,39 @@ type GeneratorDeclaration struct {
 	GeneratorBody     *GeneratorBody
 }
 
-type AsyncFunctionDeclaration struct {
+type VariableDeclarationList struct {
+	VariableDeclarations []*VariableDeclaration
 }
 
-type AsyncGeneratorDeclaration struct {
+type VariableDeclaration struct {
+	BindingIdentifier *BindingIdentifier
+	BindingPattern    *BindingPattern
+	Initializer       *Initializer
 }
 
-type ClassDeclaration struct {
+type ForDeclaration struct {
+	LetOrConst string
+	ForBinding *ForBinding
 }
 
 type LexicalDeclaration struct {
+	LetOrConst  string
+	BindingList *BindingList
+}
+
+type ClassDeclaration struct {
+	BindingIdentifier *BindingIdentifier
+	ClassTail         *ClassTail
+}
+
+type AsyncFunctionDeclaration struct {
+	BindingIdentifier *BindingIdentifier
+	AsyncFunctionBody *AsyncFunctionBody
+	FormalParameters  *FormalParameters
+}
+
+type AsyncGeneratorDeclaration struct {
+	BindingIdentifier  *BindingIdentifier
+	AsyncGeneratorBody *AsyncGeneratorBody
+	FormalParameters   *FormalParameters
 }
