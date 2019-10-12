@@ -1,22 +1,15 @@
 package runtime
 
-import (
-	"github.com/rs/zerolog"
-)
-
-// Runtime is an object that will evaluate
-// an AST.
 type Runtime struct {
-	log zerolog.Logger
-
-	ast interface{}
+	sourceText string
 }
 
-// New creates a new runtime using the given logger and
-// evaluating the given AST.
-func New(log zerolog.Logger, ast interface{}) *Runtime {
-	r := new(Runtime)
-	r.log = log
-	r.ast = ast
-	return r
+func New(sourceText string) *Runtime {
+	return &Runtime{
+		sourceText: sourceText,
+	}
+}
+
+func (r *Runtime) Evaluate() error {
+	panic("TODO")
 }
