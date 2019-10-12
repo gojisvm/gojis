@@ -1,85 +1,53 @@
 package parser
 
 import (
-	"bytes"
 	"fmt"
-	"strconv"
-)
+	"io"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 
-//go:generate antlr -Dlanguage=Go -visitor ECMAScript.g4
+	"github.com/gojisvm/gojis/internal/parser/ast"
+)
 
 // Parser parses ECMAScript code and generates an AST
 // that can be evaluated by the runtime.
 type Parser struct {
-	ast interface{}
 }
 
-// New creates a new ready-to-use parser.
 func New() *Parser {
-	p := new(Parser)
-	// p.ast = NewEmptyAst()
-	return p
+	return &Parser{}
 }
 
-// ParseFiles parses all given files and merges the produced ASTs.
-// ParseFiles can produce one error per file, but these errors
-// may be collections of multiple parse errors in a file.
-func (p *Parser) ParseFiles(paths ...string) (errs []error) {
+func (p *Parser) ParseFiles(paths ...string) (*ast.Script, error) {
+	var asts []*ast.Script
 	for _, path := range paths {
-		err := p.ParseFile(path)
+		ast, err := p.ParseFile(path)
 		if err != nil {
-			errs = append(errs, err)
+			return nil, err
 		}
+		asts = append(asts, ast)
 	}
-	return
+	return ast.Merge(asts...), nil
 }
 
-// ParseFile parses the file at the given path.
-// If parse errors occurred, they are collected and returned
-// as a single error.
-func (p *Parser) ParseFile(path string) error {
-	panic("TODO")
-}
-
-// AST returns the AST of all files that the parser has parsed.
-func (p *Parser) AST() interface{} {
-	return p.ast
-}
-
-// Error summarizes all parse errors of a single file
-// and associates these errors with the parsed file.
-type Error struct {
-	file string
-	errs []error
-}
-
-// NewError creates a new parser error with the given file and errors.
-func NewError(file string, errs ...error) Error {
-	return Error{
-		file: file,
-		errs: errs,
-	}
-}
-
-func (e Error) Error() string {
-	if len(e.errs) == 0 {
-		return ""
-	}
-
-	var buf bytes.Buffer
-	_, err := buf.WriteString(fmt.Sprintf("Errors while parsing '%v':", e.file))
+func (p *Parser) ParseFile(path string) (*ast.Script, error) {
+	f, err := os.Open(filepath.Clean(path))
 	if err != nil {
-		// this cannot happen as we use a bytes.Buffer, which never returns an error
-		panic(err)
+		return nil, fmt.Errorf("cannot open file: %v", err)
 	}
+	return p.Parse(path, f)
+}
 
-	for i, err := range e.errs {
-		_, err := buf.WriteString("\n\t" + strconv.Itoa(i+1) + ") " + err.Error())
-		if err != nil {
-			// this cannot happen as we use a bytes.Buffer, which never returns an error
-			panic(err)
-		}
+func (p *Parser) Parse(srcName string, r io.Reader) (*ast.Script, error) {
+	data, err := ioutil.ReadAll(r)
+	if err != nil {
+		return nil, fmt.Errorf("read all: %v", err)
 	}
+	return p.parse(srcName, data)
+}
 
-	return buf.String()
+func (p *Parser) parse(srcName string, input []byte) (*ast.Script, error) {
+	i := newIsolate(srcName, input)
+	return i.parse()
 }
