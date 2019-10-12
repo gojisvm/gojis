@@ -22,6 +22,9 @@ const (
 	StringLiteral  // 11.5
 	Template       // 11.5
 
+	Async
+	Let
+
 	Await      // 11.6.2.1
 	Break      // 11.6.2.1
 	Case       // 11.6.2.1

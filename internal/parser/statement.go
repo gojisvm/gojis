@@ -86,11 +86,101 @@ func parseEmptyStatement(i *isolate, p param) *ast.EmptyStatement {
 }
 
 func parseExpressionStatement(i *isolate, p param) *ast.ExpressionStatement {
+	chck := i.checkpoint()
 
+	// neagtive lookaheads
+	if i.acceptTypes(token.BraceOpen, token.Function, token.Class) {
+		i.restore(chck)
+		return nil
+	}
+
+	// more negative lookaheads
+	if i.acceptTypes(token.Async) {
+		i.drain(token.Whitespace)
+		if i.acceptTypes(token.Function) {
+			i.restore(chck)
+			return nil
+		}
+	}
+	if i.acceptTypes(token.Let) {
+		i.drain(token.Whitespace, token.LineTerminator)
+		if i.acceptTypes(token.BracketOpen) {
+			i.restore(chck)
+			return nil
+		}
+	}
+
+	// actual parsing
+
+	// restore checkpoint to make sure lookaheads didn't move position marker
+	i.restore(chck)
+
+	expr := parseExpression(i, p.only(pYield|pAwait).add(pIn))
+
+	if !i.acceptTypes(token.SemiColon) {
+		i.restore(chck)
+		return nil
+	}
+
+	return &ast.ExpressionStatement{
+		Expression: expr,
+	}
 }
 
 func parseIfStatement(i *isolate, p param) *ast.IfStatement {
+	chck := i.checkpoint()
 
+	if !i.acceptTypes(token.If) {
+		i.restore(chck)
+		return nil
+	}
+
+	i.drain(token.Whitespace, token.LineTerminator)
+
+	if !i.acceptTypes(token.ParOpen) {
+		i.restore(chck)
+		return nil
+	}
+
+	i.drain(token.Whitespace, token.LineTerminator)
+
+	expr := parseExpression(i, p.only(pYield|pAwait).add(pIn))
+
+	i.drain(token.Whitespace, token.LineTerminator)
+
+	if !i.acceptTypes(token.ParClose) {
+		i.restore(chck)
+		return nil
+	}
+
+	i.drain(token.Whitespace, token.LineTerminator)
+
+	stmt := parseStatement(i, p.only(pYield|pAwait|pReturn))
+
+	chckBeforeWhitespace := i.checkpoint()
+	i.drain(token.Whitespace, token.LineTerminator)
+
+	// optional else part
+	if i.acceptTypes(token.Else) {
+		i.drain(token.Whitespace, token.LineTerminator)
+		elseStmt := parseStatement(i, p.only(pYield|pAwait|pReturn))
+		if elseStmt == nil {
+			i.restore(chck)
+			return nil
+		}
+		return &ast.IfStatement{
+			Expression:    expr,
+			Statement:     stmt,
+			ElseStatement: elseStmt,
+		}
+	}
+
+	i.restore(chckBeforeWhitespace)
+
+	return &ast.IfStatement{
+		Expression: expr,
+		Statement:  stmt,
+	}
 }
 
 func parseBreakableStatement(i *isolate, p param) *ast.BreakableStatement {
