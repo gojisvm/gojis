@@ -1,5 +1,5 @@
 # Versioning
-This article describes the versioning and release process for gojis.
+This article describes the versioning and release process for gojis (which is basically git-flow).
 
 ## Versions
 We use different version patterns for different kinds of releases.
@@ -32,7 +32,7 @@ The naming scheme is `v1.0.0-rc1`, which is the first release candidate for the 
 
 Release candidates are intended for public use, which means, that the documentation has to be complete and the API has to be stable until the actual release.
 
-Release candidates are developed on a separate branch `release/1.0.0`. On this branch, only bug fixes must be merged. Once the release candidate is considered stable enough, the branch will be merged back into develop and master. The actual release is then created from the master branch, including all fixes to the release candidate.
+Release candidates are developed on a separate branch `release/1.0.0`. On this branch, only bug fixes must be merged. Every fix must also be merged into develop. Once the release candidate is considered stable enough, the branch will be merged back into master. The actual release is then created from the master branch, including all fixes to the release candidate.
 
 ### Releases
 Releases are Github releases, intended for public use and prod ready.
