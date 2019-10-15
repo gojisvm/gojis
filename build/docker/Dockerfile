@@ -10,7 +10,7 @@ WORKDIR /var/build
 
 COPY . .
 
-RUN go build -v -o /bin/gojis ./cmd/gojis
+RUN go build -o /bin/gojis ./cmd/gojis
 
 #################
 ## FINAL IMAGE ##
