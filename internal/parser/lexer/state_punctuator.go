@@ -238,9 +238,8 @@ func lexPunctuatorStartingWithDot(l *Lexer) state {
 	}
 	if !l.accept(dot) {
 		return unexpectedToken
-	} else {
-		l.emit(token.Dot)
 	}
+	l.emit(token.Dot)
 	return lexToken
 }
 
