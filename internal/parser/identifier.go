@@ -6,12 +6,12 @@ import (
 )
 
 func parseLabelIdentifier(i *isolate, p param) *ast.LabelIdentifier {
-	if !p.is(pYield) && i.acceptType(token.Yield) {
+	if !p.is(pYield) && i.acceptTypes(token.Yield) {
 		return &ast.LabelIdentifier{
 			Yield: true,
 		}
 	}
-	if !p.is(pAwait) && i.acceptType(token.Await) {
+	if !p.is(pAwait) && i.acceptTypes(token.Await) {
 		return &ast.LabelIdentifier{
 			Await: true,
 		}
