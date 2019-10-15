@@ -60,6 +60,14 @@ const (
 	With       // 11.6.2.1
 	Yield      // 11.6.2.1
 
+	Enum
+	Implements
+	Package
+	Protected
+	Interface
+	Private
+	Public
+
 	Null                 // 11.8.1
 	Boolean              // 11.8.2
 	DecimalLiteral       // 11.8.3
