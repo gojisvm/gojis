@@ -19,7 +19,9 @@ The Gojis VM can be run as a standalone, or you can embed it into your Go applic
 ```bash
 go get -u github.com/gojisvm/gojis
 ```
-and start using it with
+
+### Use the Go API
+
 ```go
 // FIXME: the API is in draft mode, this is subject to change at any time
 
@@ -35,6 +37,31 @@ vm.Eval(`greet();`)
     prints:
     Hello World!
 */
+```
+
+### Use the CLI
+
+```console
+$ gojis test.js
+Hello, World!
+```
+
+```console
+$ gojis ./src
+Hello, World! from test1
+Hello, World! from test2
+Hello, World! from test3
+Hello, World! from test4
+```
+
+### Use the Docker image
+
+```console
+$ docker run -d -v ./src:/src gojisvm/gojis:latest
+Hello, World! from test1
+Hello, World! from test2
+Hello, World! from test3
+Hello, World! from test4
 ```
 
 For more documentation, please have a look at the [API documentation](https://gojisvm.github.io/api.html).

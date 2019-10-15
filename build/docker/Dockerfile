@@ -6,6 +6,8 @@ FROM golang:alpine AS builder
 
 RUN apk update && apk add --no-cache git
 
+RUN adduser -D -g '' matt
+
 WORKDIR /var/build
 
 COPY . .
