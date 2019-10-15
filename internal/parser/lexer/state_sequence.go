@@ -201,7 +201,7 @@ func acceptNotEscapeSequence(l *Lexer) state {
 		return nil
 	}
 
-	if l.negativeLookahead(3, hexDigit) && // #79: look ahead of NotCodePoint
+	if l.negativeLookahead(3, hexDigit) &&
 		l.acceptSequence(lowerU, braceOpen) {
 		if ok, errState := l.acceptEnclosed(acceptNotCodePoint); !ok {
 			return errState
@@ -209,7 +209,7 @@ func acceptNotEscapeSequence(l *Lexer) state {
 		return nil
 	}
 
-	if l.negativeLookahead(3, hexDigit) && l.negativeLookahead(3, braceClose) && // #79: look ahead of CodePoint
+	if l.negativeLookahead(3, hexDigit) && l.negativeLookahead(3, braceClose) &&
 		l.acceptSequence(lowerU, braceOpen) {
 		if ok, errState := l.acceptEnclosed(acceptCodePoint); !ok {
 			return errState
