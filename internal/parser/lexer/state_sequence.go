@@ -42,7 +42,7 @@ func acceptEscapeSequence(l *Lexer) state {
 //		return errState
 //	}
 //
-// characterEscapeSequence is specified in 11.8.4.
+// CharacterEscapeSequence is specified in 11.8.4.
 func acceptCharacterEscapeSequence(l *Lexer) state {
 	if !(l.accept(singleEscapeCharacter) || l.accept(nonEscapeCharacter)) {
 		return tokenMismatch(singleEscapeCharacter, nonEscapeCharacter)
