@@ -140,6 +140,12 @@ func parseBlockStatement(i *isolate, p param) *ast.BlockStatement {
 	}
 }
 
+func parseBlock(i *isolate, p param) *ast.Block {
+	return &ast.Block{
+		StatementList: parseStatementList(i, p.only(pYield|pAwait|pReturn)),
+	}
+}
+
 func parseVariableStatement(i *isolate, p param) *ast.VariableStatement {
 	chck := i.checkpoint()
 

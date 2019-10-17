@@ -2,6 +2,8 @@ package parser
 
 type param uint8
 
+//go:generate stringer -type=param
+
 const (
 	pUnknown       = 0
 	pAwait   param = 1 << iota

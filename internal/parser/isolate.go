@@ -71,7 +71,23 @@ func (i *isolate) accept(t token.Type) (token.Token, bool) {
 	return next, true
 }
 
-func (i *isolate) acceptTypes(ts ...token.Type) bool {
+func (i *isolate) acceptOneOf(ts ...token.Type) (token.Token, bool) {
+	next, ok := i.next()
+	if !ok {
+		return token.Token{}, false
+	}
+
+	for _, t := range ts {
+		if next.Type == t {
+			return next, true
+		}
+	}
+
+	i.unread()
+	return token.Token{}, false
+}
+
+func (i *isolate) acceptOneOfTypes(ts ...token.Type) bool {
 	for _, t := range ts {
 		_, ok := i.accept(t)
 		if ok {

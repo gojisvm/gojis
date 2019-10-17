@@ -30,3 +30,25 @@ func parseIdentifier(i *isolate, p param) *ast.Identifier {
 	}
 	return nil
 }
+
+func parseBindingIdentifier(i *isolate, p param) *ast.BindingIdentifier {
+	if ident := parseIdentifier(i, 0); ident != nil {
+		return &ast.BindingIdentifier{
+			Identifier: ident,
+		}
+	}
+
+	if i.acceptTypes(token.Yield) {
+		return &ast.BindingIdentifier{
+			Yield: true,
+		}
+	}
+
+	if i.acceptTypes(token.Await) {
+		return &ast.BindingIdentifier{
+			Await: true,
+		}
+	}
+
+	return nil
+}
