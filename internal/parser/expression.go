@@ -93,3 +93,94 @@ func parseAssignmentExpression(i *isolate, p param) *ast.AssignmentExpression {
 	i.restore(chck)
 	return nil
 }
+
+func parseLeftHandSideExpression(i *isolate, p param) *ast.LeftHandSideExpression {
+	if newExpression := parseNewExpression(i, p.only(pYield|pAwait)); newExpression != nil {
+		return &ast.LeftHandSideExpression{
+			NewExpression: newExpression,
+		}
+	}
+
+	if callExpression := parseCallExpression(i, p.only(pYield|pAwait)); callExpression != nil {
+		return &ast.LeftHandSideExpression{
+			CallExpression: callExpression,
+		}
+	}
+
+	return nil
+}
+
+func parseNewExpression(i *isolate, p param) *ast.NewExpression {
+	chck := i.checkpoint()
+
+	if memberExpression := parseMemberExpression(i, p.only(pYield|pAwait)); memberExpression != nil {
+		return &ast.NewExpression{
+			MemberExpression: memberExpression,
+		}
+	}
+
+	if !i.acceptOneOfTypes(token.New_) {
+		i.restore(chck)
+		return nil
+	}
+
+	i.drain(token.Whitespace, token.LineTerminator)
+
+	if newExpression := parseNewExpression(i, p.only(pYield|pAwait)); newExpression != nil {
+		return &ast.NewExpression{
+			NewExpression: newExpression,
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseCallExpression(i *isolate, p param) *ast.CallExpression {
+	chck := i.checkpoint()
+
+	if coverCallExpressionAndAsyncArrowHead := parseCoverCallExpressionAndAsyncArrowHead(i, p.only(pYield|pAwait)); coverCallExpressionAndAsyncArrowHead != nil {
+		return &ast.CallExpression{
+			CoverCallExpressionAndAsyncArrowHead: coverCallExpressionAndAsyncArrowHead,
+		}
+	}
+
+	if superCall := parseSuperCall(i, p.only(pYield|pAwait)); superCall != nil {
+		return &ast.CallExpression{
+			SuperCall: superCall,
+		}
+	}
+
+	if callExpression := parseCallExpression(i, p.only(pYield|pAwait)); callExpression != nil {
+		if arguments := parseArguments(i, p.only(pYield|pAwait)); arguments != nil {
+			return &ast.CallExpression{
+				CallExpression: callExpression,
+				Arguments:      arguments,
+			}
+		} else if i.acceptOneOfTypes(token.BracketOpen) {
+			if expr := parseExpression(i, p.only(pYield|pAwait).add(pIn)); expr != nil {
+				if i.acceptOneOfTypes(token.BracketClose) {
+					return &ast.CallExpression{
+						CallExpression: callExpression,
+						Expression:     expr,
+					}
+				}
+			}
+		} else if i.acceptOneOfTypes(token.Dot) {
+			if ident, ok := i.accept(token.IdentifierName); ok {
+				return &ast.CallExpression{
+					CallExpression: callExpression,
+					IdentifierName: ident.Value,
+				}
+			}
+		} else if templateLiteral := parseTemplateLiteral(i, p.only(pYield|pAwait).add(pTagged)); templateLiteral != nil {
+			return &ast.CallExpression{
+				CallExpression:  callExpression,
+				TemplateLiteral: templateLiteral,
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}

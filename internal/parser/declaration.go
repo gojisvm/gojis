@@ -69,7 +69,7 @@ func parseVariableDeclarationList(i *isolate, p param) *ast.VariableDeclarationL
 	for { // parse until there are no more variable declarations parsable
 		beforeComma := i.checkpoint()
 
-		if !i.acceptTypes(token.Comma) {
+		if !i.acceptOneOfTypes(token.Comma) {
 			i.restore(chck)
 			return nil
 		}
@@ -114,4 +114,121 @@ func parseVariableDeclaration(i *isolate, p param) *ast.VariableDeclaration {
 		BindingPattern: bp,
 		Initializer:    in,
 	}
+}
+
+func parseClassDeclaration(i *isolate, p param) *ast.ClassDeclaration {
+	chck := i.checkpoint()
+
+	if !i.acceptOneOfTypes(token.Class) {
+		i.restore(chck)
+		return nil
+	}
+
+	if p.is(pDefault) {
+		if classTail := parseClassTail(i, p.only(pYield|pAwait)); classTail != nil {
+			return &ast.ClassDeclaration{
+				ClassTail: classTail,
+			}
+		}
+	}
+
+	if bindingIdentifier := parseBindingIdentifier(i, p.only(pYield|pAwait)); bindingIdentifier != nil {
+		if classTail := parseClassTail(i, p.only(pYield|pAwait)); classTail != nil {
+			return &ast.ClassDeclaration{
+				BindingIdentifier: bindingIdentifier,
+				ClassTail:         classTail,
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseClassTail(i *isolate, p param) *ast.ClassTail {
+	chck := i.checkpoint()
+
+	classHeritage := parseClassHeritage(i, p.only(pYield|pAwait))
+
+	if !i.acceptOneOfTypes(token.BraceOpen) {
+		i.restore(chck)
+		return nil
+	}
+
+	classBody := parseClassBody(i, p.only(pYield|pAwait))
+
+	if !i.acceptOneOfTypes(token.BraceClose) {
+		i.restore(chck)
+		return nil
+	}
+
+	return &ast.ClassTail{
+		ClassHeritage: classHeritage,
+		ClassBody:     classBody,
+	}
+}
+
+func parseClassHeritage(i *isolate, p param) *ast.ClassHeritage {
+	chck := i.checkpoint()
+
+	if !i.acceptOneOfTypes(token.Extends) {
+		i.restore(chck)
+		return nil
+	}
+
+	if leftHandSideExpression := parseLeftHandSideExpression(i, p.only(pYield|pAwait)); leftHandSideExpression != nil {
+		return &ast.ClassHeritage{
+			LeftHandSideExpression: leftHandSideExpression,
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseClassBody(i *isolate, p param) *ast.ClassBody {
+	return &ast.ClassBody{
+		ClassElementList: parseClassElementList(i, p.only(pYield|pAwait)),
+	}
+}
+
+func parseClassElementList(i *isolate, p param) *ast.ClassElementList {
+	var decls []*ast.ClassElement
+
+	first := parseClassElement(i, p.only(pYield|pAwait))
+	if first == nil {
+		return nil
+	}
+	decls = append(decls, first)
+
+	for {
+		next := parseClassElement(i, p.only(pYield|pAwait))
+		if next == nil {
+			break
+		}
+		decls = append(decls, next)
+	}
+
+	return &ast.ClassElementList{
+		ClassElements: decls,
+	}
+}
+
+func parseClassElement(i *isolate, p param) *ast.ClassElement {
+	chck := i.checkpoint()
+
+	if i.acceptOneOfTypes(token.SemiColon) {
+		return &ast.ClassElement{}
+	}
+
+	static := i.acceptOneOfTypes(token.Static)
+	if methodDefinition := parseMethodDefinition(i, p.only(pYield|pAwait)); methodDefinition != nil {
+		return &ast.ClassElement{
+			Static:           static,
+			MethodDefinition: methodDefinition,
+		}
+	}
+
+	i.restore(chck)
+	return nil
 }

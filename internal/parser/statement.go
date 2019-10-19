@@ -149,7 +149,7 @@ func parseBlock(i *isolate, p param) *ast.Block {
 func parseVariableStatement(i *isolate, p param) *ast.VariableStatement {
 	chck := i.checkpoint()
 
-	if !i.acceptTypes(token.Var) {
+	if !i.acceptOneOfTypes(token.Var) {
 		i.restore(chck)
 		return nil
 	}
@@ -160,7 +160,7 @@ func parseVariableStatement(i *isolate, p param) *ast.VariableStatement {
 		return nil
 	}
 
-	if !i.acceptTypes(token.SemiColon) {
+	if !i.acceptOneOfTypes(token.SemiColon) {
 		i.restore(chck)
 		return nil
 	}
@@ -181,22 +181,22 @@ func parseExpressionStatement(i *isolate, p param) *ast.ExpressionStatement {
 	chck := i.checkpoint()
 
 	// neagtive lookaheads
-	if i.acceptTypes(token.BraceOpen, token.Function, token.Class) {
+	if i.acceptOneOfTypes(token.BraceOpen, token.Function, token.Class) {
 		i.restore(chck)
 		return nil
 	}
 
 	// more negative lookaheads
-	if i.acceptTypes(token.Async) {
+	if i.acceptOneOfTypes(token.Async) {
 		i.drain(token.Whitespace)
-		if i.acceptTypes(token.Function) {
+		if i.acceptOneOfTypes(token.Function) {
 			i.restore(chck)
 			return nil
 		}
 	}
-	if i.acceptTypes(token.Let) {
+	if i.acceptOneOfTypes(token.Let) {
 		i.drain(token.Whitespace, token.LineTerminator)
-		if i.acceptTypes(token.BracketOpen) {
+		if i.acceptOneOfTypes(token.BracketOpen) {
 			i.restore(chck)
 			return nil
 		}
@@ -209,7 +209,7 @@ func parseExpressionStatement(i *isolate, p param) *ast.ExpressionStatement {
 
 	expr := parseExpression(i, p.only(pYield|pAwait).add(pIn))
 
-	if !i.acceptTypes(token.SemiColon) {
+	if !i.acceptOneOfTypes(token.SemiColon) {
 		i.restore(chck)
 		return nil
 	}
@@ -222,14 +222,14 @@ func parseExpressionStatement(i *isolate, p param) *ast.ExpressionStatement {
 func parseIfStatement(i *isolate, p param) *ast.IfStatement {
 	chck := i.checkpoint()
 
-	if !i.acceptTypes(token.If) {
+	if !i.acceptOneOfTypes(token.If) {
 		i.restore(chck)
 		return nil
 	}
 
 	i.drain(token.Whitespace, token.LineTerminator)
 
-	if !i.acceptTypes(token.ParOpen) {
+	if !i.acceptOneOfTypes(token.ParOpen) {
 		i.restore(chck)
 		return nil
 	}
@@ -240,7 +240,7 @@ func parseIfStatement(i *isolate, p param) *ast.IfStatement {
 
 	i.drain(token.Whitespace, token.LineTerminator)
 
-	if !i.acceptTypes(token.ParClose) {
+	if !i.acceptOneOfTypes(token.ParClose) {
 		i.restore(chck)
 		return nil
 	}
@@ -253,7 +253,7 @@ func parseIfStatement(i *isolate, p param) *ast.IfStatement {
 	i.drain(token.Whitespace, token.LineTerminator)
 
 	// optional else part
-	if i.acceptTypes(token.Else) {
+	if i.acceptOneOfTypes(token.Else) {
 		i.drain(token.Whitespace, token.LineTerminator)
 		elseStmt := parseStatement(i, p.only(pYield|pAwait|pReturn))
 		if elseStmt == nil {
@@ -294,7 +294,7 @@ func parseBreakableStatement(i *isolate, p param) *ast.BreakableStatement {
 func parseContinueStatement(i *isolate, p param) *ast.ContinueStatement {
 	chck := i.checkpoint()
 
-	if !i.acceptTypes(token.Continue) {
+	if !i.acceptOneOfTypes(token.Continue) {
 		i.restore(chck)
 		return nil
 	}
@@ -302,13 +302,13 @@ func parseContinueStatement(i *isolate, p param) *ast.ContinueStatement {
 	var labelIdent *ast.LabelIdentifier
 
 	i.drain(token.Whitespace)
-	if i.acceptTypes(token.LineTerminator) {
+	if i.acceptOneOfTypes(token.LineTerminator) {
 		i.drain(token.Whitespace, token.LineTerminator)
 	} else {
 		labelIdent = parseLabelIdentifier(i, p.only(pYield|pAwait))
 	}
 
-	if !i.acceptTypes(token.SemiColon) {
+	if !i.acceptOneOfTypes(token.SemiColon) {
 		i.restore(chck)
 		return nil
 	}
@@ -321,7 +321,7 @@ func parseContinueStatement(i *isolate, p param) *ast.ContinueStatement {
 func parseBreakStatement(i *isolate, p param) *ast.BreakStatement {
 	chck := i.checkpoint()
 
-	if !i.acceptTypes(token.Break) {
+	if !i.acceptOneOfTypes(token.Break) {
 		i.restore(chck)
 		return nil
 	}
@@ -329,13 +329,13 @@ func parseBreakStatement(i *isolate, p param) *ast.BreakStatement {
 	var labelIdent *ast.LabelIdentifier
 
 	i.drain(token.Whitespace)
-	if i.acceptTypes(token.LineTerminator) {
+	if i.acceptOneOfTypes(token.LineTerminator) {
 		i.drain(token.Whitespace, token.LineTerminator)
 	} else {
 		labelIdent = parseLabelIdentifier(i, p.only(pYield|pAwait))
 	}
 
-	if !i.acceptTypes(token.SemiColon) {
+	if !i.acceptOneOfTypes(token.SemiColon) {
 		i.restore(chck)
 		return nil
 	}
@@ -348,7 +348,7 @@ func parseBreakStatement(i *isolate, p param) *ast.BreakStatement {
 func parseReturnStatement(i *isolate, p param) *ast.ReturnStatement {
 	chck := i.checkpoint()
 
-	if !i.acceptTypes(token.Return) {
+	if !i.acceptOneOfTypes(token.Return) {
 		i.restore(chck)
 		return nil
 	}
@@ -356,13 +356,13 @@ func parseReturnStatement(i *isolate, p param) *ast.ReturnStatement {
 	var expr *ast.Expression
 
 	i.drain(token.Whitespace)
-	if i.acceptTypes(token.LineTerminator) {
+	if i.acceptOneOfTypes(token.LineTerminator) {
 		i.drain(token.Whitespace, token.LineTerminator)
 	} else {
 		expr = parseExpression(i, p.only(pYield|pAwait).add(pIn))
 	}
 
-	if !i.acceptTypes(token.SemiColon) {
+	if !i.acceptOneOfTypes(token.SemiColon) {
 		i.restore(chck)
 		return nil
 	}
@@ -375,14 +375,14 @@ func parseReturnStatement(i *isolate, p param) *ast.ReturnStatement {
 func parseWithStatement(i *isolate, p param) *ast.WithStatement {
 	chck := i.checkpoint()
 
-	if !i.acceptTypes(token.With) {
+	if !i.acceptOneOfTypes(token.With) {
 		i.restore(chck)
 		return nil
 	}
 
 	i.drain(token.Whitespace, token.LineTerminator)
 
-	if !i.acceptTypes(token.ParOpen) {
+	if !i.acceptOneOfTypes(token.ParOpen) {
 		i.restore(chck)
 		return nil
 	}
@@ -397,7 +397,7 @@ func parseWithStatement(i *isolate, p param) *ast.WithStatement {
 
 	i.drain(token.Whitespace, token.LineTerminator)
 
-	if !i.acceptTypes(token.ParClose) {
+	if !i.acceptOneOfTypes(token.ParClose) {
 		i.restore(chck)
 		return nil
 	}
@@ -427,7 +427,7 @@ func parseLabelledStatement(i *isolate, p param) *ast.LabelledStatement {
 
 	i.drain(token.Whitespace, token.LineTerminator)
 
-	if !i.acceptTypes(token.Colon) {
+	if !i.acceptOneOfTypes(token.Colon) {
 		i.restore(chck)
 		return nil
 	}
@@ -449,7 +449,7 @@ func parseLabelledStatement(i *isolate, p param) *ast.LabelledStatement {
 func parseThrowStatement(i *isolate, p param) *ast.ThrowStatement {
 	chck := i.checkpoint()
 
-	if !i.acceptTypes(token.Throw) {
+	if !i.acceptOneOfTypes(token.Throw) {
 		i.restore(chck)
 		return nil
 	}
@@ -464,7 +464,7 @@ func parseThrowStatement(i *isolate, p param) *ast.ThrowStatement {
 
 	i.drain(token.Whitespace, token.LineTerminator)
 
-	if !i.acceptTypes(token.SemiColon) {
+	if !i.acceptOneOfTypes(token.SemiColon) {
 		i.restore(chck)
 		return nil
 	}
@@ -477,7 +477,7 @@ func parseThrowStatement(i *isolate, p param) *ast.ThrowStatement {
 func parseTryStatement(i *isolate, p param) *ast.TryStatement {
 	chck := i.checkpoint()
 
-	if !i.acceptTypes(token.Try) {
+	if !i.acceptOneOfTypes(token.Try) {
 		i.restore(chck)
 		return nil
 	}
@@ -512,14 +512,14 @@ func parseTryStatement(i *isolate, p param) *ast.TryStatement {
 func parseDebuggerStatement(i *isolate, p param) *ast.DebuggerStatement {
 	chck := i.checkpoint()
 
-	if !i.acceptTypes(token.Debugger) {
+	if !i.acceptOneOfTypes(token.Debugger) {
 		i.restore(chck)
 		return nil
 	}
 
 	i.drain(token.Whitespace, token.LineTerminator)
 
-	if !i.acceptTypes(token.SemiColon) {
+	if !i.acceptOneOfTypes(token.SemiColon) {
 		i.restore(chck)
 		return nil
 	}

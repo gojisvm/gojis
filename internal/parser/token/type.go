@@ -48,17 +48,18 @@ const (
 	Instanceof // 11.6.2.1
 	New_       // 11.6.2.1
 	Return     // 11.6.2.1
-	Super      // 11.6.2.1
-	Switch     // 11.6.2.1
-	This       // 11.6.2.1
-	Throw      // 11.6.2.1
-	Try        // 11.6.2.1
-	Typeof     // 11.6.2.1
-	Var        // 11.6.2.1
-	Void       // 11.6.2.1
-	While      // 11.6.2.1
-	With       // 11.6.2.1
-	Yield      // 11.6.2.1
+	Static
+	Super  // 11.6.2.1
+	Switch // 11.6.2.1
+	This   // 11.6.2.1
+	Throw  // 11.6.2.1
+	Try    // 11.6.2.1
+	Typeof // 11.6.2.1
+	Var    // 11.6.2.1
+	Void   // 11.6.2.1
+	While  // 11.6.2.1
+	With   // 11.6.2.1
+	Yield  // 11.6.2.1
 
 	Enum
 	Implements

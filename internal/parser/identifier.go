@@ -6,12 +6,12 @@ import (
 )
 
 func parseLabelIdentifier(i *isolate, p param) *ast.LabelIdentifier {
-	if !p.is(pYield) && i.acceptTypes(token.Yield) {
+	if !p.is(pYield) && i.acceptOneOfTypes(token.Yield) {
 		return &ast.LabelIdentifier{
 			Yield: true,
 		}
 	}
-	if !p.is(pAwait) && i.acceptTypes(token.Await) {
+	if !p.is(pAwait) && i.acceptOneOfTypes(token.Await) {
 		return &ast.LabelIdentifier{
 			Await: true,
 		}
@@ -38,13 +38,13 @@ func parseBindingIdentifier(i *isolate, p param) *ast.BindingIdentifier {
 		}
 	}
 
-	if i.acceptTypes(token.Yield) {
+	if i.acceptOneOfTypes(token.Yield) {
 		return &ast.BindingIdentifier{
 			Yield: true,
 		}
 	}
 
-	if i.acceptTypes(token.Await) {
+	if i.acceptOneOfTypes(token.Await) {
 		return &ast.BindingIdentifier{
 			Await: true,
 		}

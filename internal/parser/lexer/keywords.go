@@ -29,6 +29,7 @@ const (
 	KeywordInstanceof = "instanceof"
 	KeywordNew        = "new"
 	KeywordReturn     = "return"
+	KeywordStatic     = "static"
 	KeywordSuper      = "super"
 	KeywordSwitch     = "switch"
 	KeywordThis       = "this"
@@ -79,6 +80,7 @@ var (
 		KeywordInstanceof:      token.Instanceof,
 		KeywordNew:             token.New_,
 		KeywordReturn:          token.Return,
+		KeywordStatic:          token.Static,
 		KeywordSuper:           token.Super,
 		KeywordSwitch:          token.Switch,
 		KeywordThis:            token.This,

@@ -58,7 +58,7 @@ func (i *isolate) unread() {
 }
 
 func (i *isolate) drain(t ...token.Type) {
-	for i.acceptTypes(t...) {
+	for i.acceptOneOfTypes(t...) {
 	}
 }
 
