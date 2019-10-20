@@ -20,7 +20,9 @@ const (
 	Punctuator     // 11.5, 11.7
 	NumericLiteral // 11.5
 	StringLiteral  // 11.5
-	Template       // 11.5
+	// Template       // 11.5
+	TemplateHead
+	NoSubstitutionTemplate
 
 	Async
 	Let
