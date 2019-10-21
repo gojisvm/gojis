@@ -20,4 +20,5 @@ jobs:
     - name: Analyze
       run: |
         go get github.com/securego/gosec/cmd/gosec
+        go install github.com/securego/gosec/cmd/gosec
         gosec -quite ./...
