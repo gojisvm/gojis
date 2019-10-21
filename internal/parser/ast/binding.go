@@ -2,6 +2,8 @@ package ast
 
 type BindingElement struct {
 	SingleNameBinding *SingleNameBinding
+	BindingPattern    *BindingPattern
+	Initializer       *Initializer
 }
 
 type SingleNameBinding struct {
@@ -37,8 +39,7 @@ type BindingRestProperty struct {
 }
 
 type BindingElementList struct {
-	BindingElisionElement *BindingElisionElement
-	BindingElementList    *BindingElementList
+	BindingElisionElement []*BindingElisionElement
 	Comma                 bool
 }
 

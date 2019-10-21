@@ -18,8 +18,8 @@ const (
 	CommonToken    // 11.5
 	IdentifierName // 11.5, 11.6
 	Punctuator     // 11.5, 11.7
-	NumericLiteral // 11.5
-	StringLiteral  // 11.5
+	// NumericLiteral // 11.5
+	StringLiteral // 11.5
 	// Template       // 11.5
 	TemplateHead
 	NoSubstitutionTemplate

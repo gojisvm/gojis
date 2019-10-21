@@ -54,3 +54,28 @@ func parseSubstitutionTemplate(i *isolate, p param) *ast.SubstitutionTemplate {
 		TemplateSpans: templateSpans,
 	}
 }
+
+func parseNumericLiteral(i *isolate, p param) *ast.NumericLiteral {
+	chck := i.checkpoint()
+
+	if t, ok := i.accept(token.DecimalLiteral); ok {
+		return &ast.NumericLiteral{
+			DecimalLiteral: t.Value,
+		}
+	} else if t, ok := i.accept(token.BinaryIntegerLiteral); ok {
+		return &ast.NumericLiteral{
+			BinaryIntegerLiteral: t.Value,
+		}
+	} else if t, ok := i.accept(token.OctalIntegerLiteral); ok {
+		return &ast.NumericLiteral{
+			OctalIntegerLiteral: t.Value,
+		}
+	} else if t, ok := i.accept(token.HexIntegerLiteral); ok {
+		return &ast.NumericLiteral{
+			HexIntegerLiteral: t.Value,
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}

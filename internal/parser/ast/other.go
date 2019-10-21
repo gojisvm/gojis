@@ -5,7 +5,7 @@ type Initializer struct {
 }
 
 type Elision struct {
-	Elision *Elision
+	Commas int
 }
 
 type SuperProperty struct {
