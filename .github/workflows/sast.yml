@@ -17,9 +17,7 @@ jobs:
       id: go
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
-    - name: Install tools
+    - name: Analyze
       run: |
         go get github.com/securego/gosec/cmd/gosec
-    - name: Test
-      run: |
         gosec -quite ./...
