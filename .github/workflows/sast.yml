@@ -1,0 +1,25 @@
+name: Go
+on: [push, pull_request]
+jobs:
+
+  sast:
+    name: SAST on ${{ matrix.os }} with Go ${{ matrix.go_version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go_version: [1.13]
+        os: [ubuntu-latest]
+    steps:
+    - name: Set up Go ${{ matrix.go_version }}
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go_version }}
+      id: go
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v1
+    - name: Install tools
+      run: |
+        go get github.com/securego/gosec/cmd/gosec
+    - name: Test
+      run: |
+        gosec -quite ./...
