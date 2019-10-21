@@ -184,3 +184,48 @@ func parseCallExpression(i *isolate, p param) *ast.CallExpression {
 	i.restore(chck)
 	return nil
 }
+
+func parseMemberExpression(i *isolate, p param) *ast.MemberExpression {
+	chck := i.checkpoint()
+
+	if primaryExpression := parsePrimaryExpression(i, p.only(pYield|pAwait)); primaryExpression != nil {
+		return &ast.MemberExpression{
+			PrimaryExpression: primaryExpression,
+		}
+	}
+
+	if memberExpression := parseMemberExpression(i, p.only(pYield|pAwait)); memberExpression != nil {
+		if i.acceptOneOfTypes(token.BracketOpen) {
+			if expr := parseExpression(i, p.only(pYield|pAwait).add(pIn)); expr != nil {
+				if i.acceptOneOfTypes(token.BracketClose) {
+					return &ast.MemberExpression{
+						MemberExpression: memberExpression,
+						Expression:       expr,
+					}
+				}
+			}
+		} else if i.acceptOneOfTypes(token.Dot) {
+			if t, ok := i.accept(token.IdentifierName); ok {
+				return &ast.MemberExpression{
+					MemberExpression: memberExpression,
+					IdentifierName:   t.Value,
+				}
+			}
+		} else {
+			if templateLiteral := parseTemplateLiteral(i, p.only(pYield|pAwait).add(pTagged)); templateLiteral != nil {
+				return &ast.MemberExpression{
+					MemberExpression: memberExpression,
+					TemplateLiteral:  templateLiteral,
+				}
+			}
+		}
+
+		panic("TODO")
+
+		i.restore(chck)
+		return nil
+	}
+
+	i.restore(chck)
+	return nil
+}
