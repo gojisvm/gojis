@@ -44,6 +44,34 @@ func parseArguments(i *isolate, p param) *ast.Arguments {
 	}
 }
 
+func parseArgumentList(i *isolate, p param) *ast.ArgumentList {
+	chck := i.checkpoint()
+
+	ellipsis := i.acceptOneOfTypes(token.Ellipsis) // ellipsis is optional
+	if assignmentExpr := parseAssignmentExpression(i, p.only(pYield|pAwait).add(pIn)); assignmentExpr != nil {
+		return &ast.ArgumentList{
+			AssignmentExpression: assignmentExpr,
+			Ellipsis:             true,
+		}
+	} else if !ellipsis { // of no assignment expression could be parsed, there musn't be an ellipsis before the recursive argument list
+		if argList := parseArgumentList(i, p.only(pYield|pAwait)); argList != nil {
+			if i.acceptOneOfTypes(token.Comma) {
+				i.acceptOneOfTypes(token.Ellipsis) // ellipsis is optional
+				if assignmentExpr := parseAssignmentExpression(i, p.only(pYield|pAwait).add(pIn)); assignmentExpr != nil {
+					return &ast.ArgumentList{
+						ArgumentList:         argList,
+						AssignmentExpression: assignmentExpr,
+						Ellipsis:             true,
+					}
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
 func parseElision(i *isolate, p param) *ast.Elision {
 	elision := new(ast.Elision)
 
@@ -100,6 +128,23 @@ func parseLiteralPropertyName(i *isolate, p param) *ast.LiteralPropertyName {
 	} else if numericLiteral := parseNumericLiteral(i, 0); numericLiteral != nil {
 		return &ast.LiteralPropertyName{
 			NumericLiteral: numericLiteral,
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseComputedPropertyName(i *isolate, p param) *ast.ComputedPropertyName {
+	chck := i.checkpoint()
+
+	if i.acceptOneOfTypes(token.BracketOpen) {
+		if assignmentExpr := parseAssignmentExpression(i, p.only(pYield|pAwait).add(pIn)); assignmentExpr != nil {
+			if i.acceptOneOfTypes(token.BracketClose) {
+				return &ast.ComputedPropertyName{
+					AssignmentExpression: assignmentExpr,
+				}
+			}
 		}
 	}
 

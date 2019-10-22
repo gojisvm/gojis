@@ -232,3 +232,37 @@ func parseClassElement(i *isolate, p param) *ast.ClassElement {
 	i.restore(chck)
 	return nil
 }
+
+func parseFunctionDeclaration(i *isolate, p param) *ast.FunctionDeclaration {
+	chck := i.checkpoint()
+
+	if !i.acceptOneOfTypes(token.Function) {
+		i.restore(chck)
+		return nil
+	}
+
+	var bindingIdentifier *ast.BindingIdentifier
+	if p.is(pDefault) {
+		bindingIdentifier = parseBindingIdentifier(i, p.only(pYield|pAwait))
+	}
+
+	if i.acceptOneOfTypes(token.ParOpen) {
+		if formalParameters := parseFormalParameters(i, 0); formalParameters != nil {
+			if i.acceptOneOfTypes(token.ParClose) &&
+				i.acceptOneOfTypes(token.BraceOpen) {
+				if functionBody := parseFunctionBody(i, 0); functionBody != nil {
+					if i.acceptOneOfTypes(token.BraceClose) {
+						return &ast.FunctionDeclaration{
+							BindingIdentifier: bindingIdentifier,
+							FormalParameters:  formalParameters,
+							FunctionBody:      functionBody,
+						}
+					}
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}

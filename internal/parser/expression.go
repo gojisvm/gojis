@@ -411,3 +411,49 @@ func parseCoverParenthesizedExpressionAndArrowParameterList(i *isolate, p param)
 	i.restore(chck)
 	return nil
 }
+
+func parseFunctionExpression(i *isolate, p param) *ast.FunctionExpression {
+	chck := i.checkpoint()
+
+	if !i.acceptOneOfTypes(token.Function) {
+		i.restore(chck)
+		return nil
+	}
+
+	bindingIdentifier := parseBindingIdentifier(i, 0) // bindingIdentifier is optional
+
+	if i.acceptOneOfTypes(token.ParOpen) {
+		if formalParameters := parseFormalParameters(i, 0); formalParameters != nil {
+			if i.acceptOneOfTypes(token.ParClose) &&
+				i.acceptOneOfTypes(token.BraceOpen) {
+				if functionBody := parseFunctionBody(i, 0); functionBody != nil {
+					if i.acceptOneOfTypes(token.BraceClose) {
+						return &ast.FunctionExpression{
+							BindingIdentifier: bindingIdentifier,
+							FormalParameters:  formalParameters,
+							FunctionBody:      functionBody,
+						}
+					}
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseFunctionBody(i *isolate, p param) *ast.FunctionBody {
+	if functionStmtList := parseFunctionStatementList(i, p.only(pYield|pAwait)); functionStmtList != nil {
+		return &ast.FunctionBody{
+			FunctionStatementList: functionStmtList,
+		}
+	}
+	return nil
+}
+
+func parseFunctionStatementList(i *isolate, p param) *ast.FunctionStatementList {
+	return &ast.FunctionStatementList{
+		StatementList: parseStatementList(i, p.only(pYield|pAwait).add(pReturn)),
+	}
+}

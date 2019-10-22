@@ -526,3 +526,20 @@ func parseDebuggerStatement(i *isolate, p param) *ast.DebuggerStatement {
 
 	return &ast.DebuggerStatement{}
 }
+
+func parseLabelledItem(i *isolate, p param) *ast.LabelledItem {
+	chck := i.checkpoint()
+
+	if stmt := parseStatement(i, p.only(pYield|pAwait|pReturn)); stmt != nil {
+		return &ast.LabelledItem{
+			Statement: stmt,
+		}
+	} else if functionDeclaration := parseFunctionDeclaration(i, p.only(pYield|pAwait)); functionDeclaration != nil {
+		return &ast.LabelledItem{
+			FunctionDeclaration: functionDeclaration,
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}

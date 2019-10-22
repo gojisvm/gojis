@@ -79,3 +79,46 @@ func parseNumericLiteral(i *isolate, p param) *ast.NumericLiteral {
 	i.restore(chck)
 	return nil
 }
+
+func parseTemplateSpans(i *isolate, p param) *ast.TemplateSpans {
+	chck := i.checkpoint()
+
+	templateMiddleList := parseTemplateMiddleList(i, p.only(pYield|pAwait|pTagged)) // templateMiddleList is optional
+
+	if t, ok := i.accept(token.TemplateTail); ok {
+		return &ast.TemplateSpans{
+			TemplateMiddleList: templateMiddleList,
+			TemplateTail:       t.Value,
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseTemplateMiddleList(i *isolate, p param) *ast.TemplateMiddleList {
+	chck := i.checkpoint()
+
+	if t, ok := i.accept(token.TemplateMiddle); ok {
+		if expr := parseExpression(i, p.only(pYield|pAwait).add(pIn)); expr != nil {
+			return &ast.TemplateMiddleList{
+				TemplateMiddle: t.Value,
+				Expression:     expr,
+			}
+		}
+	} else {
+		templateMiddleList := parseTemplateMiddleList(i, p.only(pYield|pAwait|pTagged)) // templateMiddleList is optional
+		if t, ok := i.accept(token.TemplateMiddle); ok {
+			if expr := parseExpression(i, p.only(pYield|pAwait).add(pIn)); expr != nil {
+				return &ast.TemplateMiddleList{
+					TemplateMiddleList: templateMiddleList,
+					TemplateMiddle:     t.Value,
+					Expression:         expr,
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}

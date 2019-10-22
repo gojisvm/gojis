@@ -22,6 +22,8 @@ const (
 	StringLiteral // 11.5
 	// Template       // 11.5
 	TemplateHead
+	TemplateMiddle
+	TemplateTail
 	NoSubstitutionTemplate
 
 	Async

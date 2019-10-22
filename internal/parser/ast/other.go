@@ -28,7 +28,7 @@ type Arguments struct {
 
 type ArgumentList struct {
 	AssignmentExpression *AssignmentExpression
-	Spread               bool
+	Ellipsis             bool
 	ArgumentList         *ArgumentList
 	Comma                bool
 }
