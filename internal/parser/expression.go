@@ -486,12 +486,12 @@ func parseYieldExpression(i *isolate, p param) *ast.YieldExpression {
 	chck := i.checkpoint()
 
 	if i.acceptOneOfTypes(token.Yield) {
+		// ensure that no line terminator ahead
 		if i.acceptOneOfTypes(token.LineTerminator) {
 			i.unread()
 			return &ast.YieldExpression{}
 		}
 
-		// no line terminator ahead
 		_, asterisk := i.accept(token.Asterisk)
 		if assignmentExpr := parseAssignmentExpression(i, p.only(pIn|pAwait).add(pYield)); assignmentExpr != nil {
 			return &ast.YieldExpression{
