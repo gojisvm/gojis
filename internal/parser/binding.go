@@ -38,7 +38,7 @@ func parseObjectBindingPattern(i *isolate, p param) *ast.ObjectBindingPattern {
 	} else if bindingPropertyList := parseBindingPropertyList(i, p.only(pYield|pAwait)); bindingPropertyList != nil {
 		if i.acceptOneOfTypes(token.BraceClose) {
 			return &ast.ObjectBindingPattern{
-				BindingRestProperty: bindingPropertyList,
+				BindingPropertyList: bindingPropertyList,
 			}
 		} else if i.acceptOneOfTypes(token.Comma) {
 			bindingRestProperty := parseBindingRestProperty(i, p.only(pYield|pAwait)) // bindingRestProperty is optional
