@@ -83,9 +83,8 @@ type SwitchStatement struct {
 }
 
 type CaseBlock struct {
-	CaseClausesPre  []*CaseClause
-	DefaultClause   *DefaultClause
-	CaseClausesPost []*CaseClause
+	CaseClauses   []*CaseClause
+	DefaultClause *DefaultClause
 }
 
 type CaseClause struct {

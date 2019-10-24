@@ -36,12 +36,12 @@ type VariableDeclaration struct {
 }
 
 type ForDeclaration struct {
-	LetOrConst string
+	LetOrConst *LetOrConst
 	ForBinding *ForBinding
 }
 
 type LexicalDeclaration struct {
-	LetOrConst  string
+	LetOrConst  *LetOrConst
 	BindingList *BindingList
 }
 

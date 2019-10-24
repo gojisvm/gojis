@@ -32,3 +32,8 @@ type ArgumentList struct {
 	ArgumentList         *ArgumentList
 	Comma                bool
 }
+
+type LetOrConst struct {
+	Let   bool
+	Const bool
+}

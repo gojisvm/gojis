@@ -124,8 +124,6 @@ func parseNewExpression(i *isolate, p param) *ast.NewExpression {
 		return nil
 	}
 
-	i.drain(token.Whitespace, token.LineTerminator)
-
 	if newExpression := parseNewExpression(i, p.only(pYield|pAwait)); newExpression != nil {
 		return &ast.NewExpression{
 			NewExpression: newExpression,
@@ -456,4 +454,53 @@ func parseFunctionStatementList(i *isolate, p param) *ast.FunctionStatementList 
 	return &ast.FunctionStatementList{
 		StatementList: parseStatementList(i, p.only(pYield|pAwait).add(pReturn)),
 	}
+}
+
+func parseGeneratorExpression(i *isolate, p param) *ast.GeneratorExpression {
+	chck := i.checkpoint()
+
+	if i.acceptOneOfTypes(token.Function) &&
+		i.acceptOneOfTypes(token.Asterisk) {
+		bindingIdent := parseBindingIdentifier(i, pYield) // binding identifier is optional
+		if i.acceptOneOfTypes(token.ParOpen) {
+			if formalParameters := parseFormalParameters(i, pYield); formalParameters != nil {
+				if i.acceptOneOfTypes(token.ParClose) &&
+					i.acceptOneOfTypes(token.BraceOpen) {
+					if generatorBody := parseGeneratorBody(i, 0); generatorBody != nil {
+						return &ast.GeneratorExpression{
+							BindingIdentifier: bindingIdent,
+							FormalParameters:  formalParameters,
+							GeneratorBody:     generatorBody,
+						}
+					}
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseYieldExpression(i *isolate, p param) *ast.YieldExpression {
+	chck := i.checkpoint()
+
+	if i.acceptOneOfTypes(token.Yield) {
+		if i.acceptOneOfTypes(token.LineTerminator) {
+			i.unread()
+			return &ast.YieldExpression{}
+		}
+
+		// no line terminator ahead
+		_, asterisk := i.accept(token.Asterisk)
+		if assignmentExpr := parseAssignmentExpression(i, p.only(pIn|pAwait).add(pYield)); assignmentExpr != nil {
+			return &ast.YieldExpression{
+				Asterisk:             asterisk,
+				AssignmentExpression: assignmentExpr,
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
 }

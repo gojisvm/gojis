@@ -294,3 +294,57 @@ func parseSingleNameBinding(i *isolate, p param) *ast.SingleNameBinding {
 	i.restore(chck)
 	return nil
 }
+
+func parseBindingList(i *isolate, p param) *ast.BindingList {
+	chck := i.checkpoint()
+
+	var bindings []*ast.LexicalBinding
+
+	first := parseLexicalBinding(i, p.only(pIn|pYield|pAwait))
+	if first == nil {
+		return nil
+	}
+	bindings = append(bindings, first)
+
+	for {
+		beforeComma := i.checkpoint()
+
+		if !i.acceptOneOfTypes(token.Comma) {
+			i.restore(chck)
+			return nil
+		}
+
+		next := parseLexicalBinding(i, p.only(pIn|pYield|pAwait))
+		if next == nil {
+			i.restore(beforeComma)
+			break
+		}
+		bindings = append(bindings, next)
+	}
+
+	return &ast.BindingList{
+		LexicalBindings: bindings,
+	}
+}
+
+func parseLexicalBinding(i *isolate, p param) *ast.LexicalBinding {
+	chck := i.checkpoint()
+
+	if bindingIdent := parseBindingIdentifier(i, p.only(pYield|pAwait)); bindingIdent != nil {
+		initializer := parseInitializer(i, p.only(pIn|pYield|pAwait)) // initializer is optional
+		return &ast.LexicalBinding{
+			BindingIdentifier: bindingIdent,
+			Initializer:       initializer,
+		}
+	} else if bindingPattern := parseBindingPattern(i, p.only(pYield|pAwait)); bindingPattern != nil {
+		if initializer := parseInitializer(i, p.only(pIn|pYield|pAwait)); initializer != nil {
+			return &ast.LexicalBinding{
+				BindingPattern: bindingPattern,
+				Initializer:    initializer,
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}

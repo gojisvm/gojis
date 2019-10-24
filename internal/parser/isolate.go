@@ -57,11 +57,6 @@ func (i *isolate) unread() {
 	i.pos--
 }
 
-func (i *isolate) drain(t ...token.Type) {
-	for i.acceptOneOfTypes(t...) {
-	}
-}
-
 func (i *isolate) accept(t token.Type) (token.Token, bool) {
 	next, ok := i.next()
 	if !ok || next.Type != t {

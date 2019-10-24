@@ -266,3 +266,198 @@ func parseFunctionDeclaration(i *isolate, p param) *ast.FunctionDeclaration {
 	i.restore(chck)
 	return nil
 }
+
+func parseLexicalDeclaration(i *isolate, p param) *ast.LexicalDeclaration {
+	chck := i.checkpoint()
+
+	if letOrConst := parseLetOrConst(i, 0); letOrConst != nil {
+		if bindingList := parseBindingList(i, p.only(pIn|pYield|pAwait)); bindingList != nil {
+			if i.acceptOneOfTypes(token.SemiColon) {
+				return &ast.LexicalDeclaration{
+					LetOrConst:  letOrConst,
+					BindingList: bindingList,
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseLetOrConst(i *isolate, p param) *ast.LetOrConst {
+	if i.acceptOneOfTypes(token.Let) {
+		return &ast.LetOrConst{
+			Let: true,
+		}
+	} else if i.acceptOneOfTypes(token.Const) {
+		return &ast.LetOrConst{
+			Const: true,
+		}
+	}
+
+	return nil
+}
+
+func parseMethodDefinition(i *isolate, p param) *ast.MethodDefinition {
+	chck := i.checkpoint()
+
+	if propertyName := parsePropertyName(i, p.only(pYield|pAwait)); propertyName != nil {
+		if i.acceptOneOfTypes(token.ParOpen) {
+			if uniqueFormalParameters := parseUniqueFormalParameters(i, 0); uniqueFormalParameters != nil {
+				if i.acceptOneOfTypes(token.ParClose) &&
+					i.acceptOneOfTypes(token.BraceOpen) {
+					if functionBody := parseFunctionBody(i, 0); functionBody != nil {
+						return &ast.MethodDefinition{
+							PropertyName:           propertyName,
+							UniqueFormalPatameters: uniqueFormalParameters,
+							FunctionBody:           functionBody,
+						}
+					}
+				}
+			}
+		}
+	} else if generatorMethod := parseGeneratorMethod(i, p.only(pYield|pAwait)); generatorMethod != nil {
+		return &ast.MethodDefinition{
+			GeneratorMethod: generatorMethod,
+		}
+	} else if asyncMethod := parseAsyncMethod(i, p.only(pYield|pAwait)); asyncMethod != nil {
+		return &ast.MethodDefinition{
+			AsyncMethod: asyncMethod,
+		}
+	} else if asyncGeneratorMethod := parseAsyncGeneratorMethod(i, p.only(pYield|pAwait)); asyncGeneratorMethod != nil {
+		return &ast.MethodDefinition{
+			AsyncGeneratorMethod: asyncGeneratorMethod,
+		}
+	} else if i.acceptOneOfTypes(token.Get) {
+		if propertyName := parsePropertyName(i, p.only(pYield|pAwait)); propertyName != nil {
+			if i.acceptOneOfTypes(token.ParOpen) &&
+				i.acceptOneOfTypes(token.ParClose) &&
+				i.acceptOneOfTypes(token.BraceOpen) {
+				if functionBody := parseFunctionBody(i, 0); functionBody != nil {
+					if i.acceptOneOfTypes(token.BraceClose) {
+						return &ast.MethodDefinition{
+							PropertyName: propertyName,
+							FunctionBody: functionBody,
+						}
+					}
+				}
+			}
+		}
+	} else if i.acceptOneOfTypes(token.Set) {
+		if propertyName := parsePropertyName(i, p.only(pYield|pAwait)); propertyName != nil {
+			if i.acceptOneOfTypes(token.ParOpen) {
+				if propertySetParameterList := parsePropertySetParameterList(i, 0); propertySetParameterList != nil {
+					if i.acceptOneOfTypes(token.ParClose) &&
+						i.acceptOneOfTypes(token.BraceOpen) {
+						if functionBody := parseFunctionBody(i, 0); functionBody != nil {
+							if i.acceptOneOfTypes(token.BraceClose) {
+								return &ast.MethodDefinition{
+									PropertyName:             propertyName,
+									PropertySetParameterList: propertySetParameterList,
+									FunctionBody:             functionBody,
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseUniqueFormalParameters(i *isolate, p param) *ast.UniqueFormalParameters {
+	if formalParameters := parseFormalParameters(i, p.only(pYield|pAwait)); formalParameters != nil {
+		return &ast.UniqueFormalParameters{
+			FormalParameters: formalParameters,
+		}
+	}
+	return nil
+}
+
+func parseGeneratorMethod(i *isolate, p param) *ast.GeneratorMethod {
+	chck := i.checkpoint()
+
+	if i.acceptOneOfTypes(token.Asterisk) {
+		if propertyName := parsePropertyName(i, p.only(pYield|pAwait)); propertyName != nil {
+			if i.acceptOneOfTypes(token.ParOpen) {
+				if uniqueFormalParameters := parseUniqueFormalParameters(i, pYield); uniqueFormalParameters != nil {
+					if i.acceptOneOfTypes(token.ParClose) &&
+						i.acceptOneOfTypes(token.BraceOpen) {
+						if generatorBody := parseGeneratorBody(i, 0); generatorBody != nil {
+							if i.acceptOneOfTypes(token.BraceClose) {
+								return &ast.GeneratorMethod{
+									PropertyName:           propertyName,
+									UniqueFormalParameters: uniqueFormalParameters,
+									GeneratorBody:          generatorBody,
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseGeneratorDeclaration(i *isolate, p param) *ast.GeneratorDeclaration {
+	chck := i.checkpoint()
+
+	if p.is(pDefault) {
+		if i.acceptOneOfTypes(token.Function) &&
+			i.acceptOneOfTypes(token.Asterisk) &&
+			i.acceptOneOfTypes(token.ParOpen) {
+			if formalParameters := parseFormalParameters(i, pYield); formalParameters != nil {
+				if i.acceptOneOfTypes(token.ParClose) &&
+					i.acceptOneOfTypes(token.BraceOpen) {
+					if generatorBody := parseGeneratorBody(i, 0); generatorBody != nil {
+						return &ast.GeneratorDeclaration{
+							FormalParameters: formalParameters,
+							GeneratorBody:    generatorBody,
+						}
+					}
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+
+	if i.acceptOneOfTypes(token.Function) &&
+		i.acceptOneOfTypes(token.Asterisk) {
+		if bindingIdent := parseBindingIdentifier(i, p.only(pYield|pAwait)); bindingIdent != nil {
+			if i.acceptOneOfTypes(token.ParOpen) {
+				if formalParameters := parseFormalParameters(i, pYield); formalParameters != nil {
+					if i.acceptOneOfTypes(token.ParClose) &&
+						i.acceptOneOfTypes(token.BraceOpen) {
+						if generatorBody := parseGeneratorBody(i, 0); generatorBody != nil {
+							return &ast.GeneratorDeclaration{
+								BindingIdentifier: bindingIdent,
+								FormalParameters:  formalParameters,
+								GeneratorBody:     generatorBody,
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseGeneratorBody(i *isolate, p param) *ast.GeneratorBody {
+	if functionBody := parseFunctionBody(i, pYield); functionBody != nil {
+		return &ast.GeneratorBody{
+			FunctionBody: functionBody,
+		}
+	}
+	return nil
+}

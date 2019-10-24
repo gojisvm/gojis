@@ -151,3 +151,83 @@ func parseComputedPropertyName(i *isolate, p param) *ast.ComputedPropertyName {
 	i.restore(chck)
 	return nil
 }
+
+func parseFormalParameters(i *isolate, p param) *ast.FormalParameters {
+	chck := i.checkpoint()
+
+	if functionRestParameter := parseFunctionRestParameter(i, p.only(pYield|pAwait)); functionRestParameter != nil {
+		return &ast.FormalParameters{
+			FunctionRestParameter: functionRestParameter,
+		}
+	} else if formalParameterList := parseFormalParameterList(i, p.only(pYield|pAwait)); formalParameterList != nil {
+		if i.acceptOneOfTypes(token.Comma) {
+			if functionRestParameter := parseFunctionRestParameter(i, p.only(pYield|pAwait)); functionRestParameter != nil {
+				return &ast.FormalParameters{
+					FormalParameterList:   formalParameterList,
+					FunctionRestParameter: functionRestParameter,
+					Comma:                 true,
+				}
+			}
+			return &ast.FormalParameters{
+				FormalParameterList: formalParameterList,
+				Comma:               true,
+			}
+		}
+		return &ast.FormalParameters{
+			FormalParameterList: formalParameterList,
+		}
+	}
+
+	i.restore(chck)
+	return &ast.FormalParameters{}
+}
+
+func parseFunctionRestParameter(i *isolate, p param) *ast.FunctionRestParameter {
+	if bindingRestElement := parseBindingRestElement(i, p.only(pYield|pAwait)); bindingRestElement != nil {
+		return &ast.FunctionRestParameter{
+			BindingRestElement: bindingRestElement,
+		}
+	}
+	return nil
+}
+
+func parseFormalParameterList(i *isolate, p param) *ast.FormalParameterList {
+	chck := i.checkpoint()
+
+	var params []*ast.FormalParameter
+
+	first := parseFormalParameter(i, p.only(pYield|pAwait)) // expression consists of at least one entry
+	if first == nil {
+		return nil
+	}
+	params = append(params, first)
+
+	for { // parse until there are no more formal parameter parsable
+		beforeComma := i.checkpoint()
+
+		if !i.acceptOneOfTypes(token.Comma) {
+			i.restore(chck)
+			return nil
+		}
+
+		next := parseFormalParameter(i, p.only(pYield|pAwait))
+		if next == nil {
+			i.restore(beforeComma) // comma was consumed, but no formal parameter, so reset to before comma
+			break
+		}
+		params = append(params, next)
+	}
+
+	return &ast.FormalParameterList{
+		FormalParameters: params,
+	}
+}
+
+func parseFormalParameter(i *isolate, p param) *ast.FormalParameter {
+	if bindingElement := parseBindingElement(i, p.only(pYield|pAwait)); bindingElement != nil {
+		return &ast.FormalParameter{
+			BindingElement: bindingElement,
+		}
+	}
+	return nil
+}

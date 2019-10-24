@@ -29,29 +29,32 @@ const (
 	Async
 	Let
 
-	Await      // 11.6.2.1
-	Break      // 11.6.2.1
-	Case       // 11.6.2.1
-	Catch      // 11.6.2.1
-	Class      // 11.6.2.1
-	Const      // 11.6.2.1
-	Continue   // 11.6.2.1
-	Debugger   // 11.6.2.1
-	Default    // 11.6.2.1
-	Delete     // 11.6.2.1
-	Do         // 11.6.2.1
-	Else       // 11.6.2.1
-	Export     // 11.6.2.1
-	Extends    // 11.6.2.1
-	Finally    // 11.6.2.1
-	For        // 11.6.2.1
-	Function   // 11.6.2.1
+	Asterisk
+	Await    // 11.6.2.1
+	Break    // 11.6.2.1
+	Case     // 11.6.2.1
+	Catch    // 11.6.2.1
+	Class    // 11.6.2.1
+	Const    // 11.6.2.1
+	Continue // 11.6.2.1
+	Debugger // 11.6.2.1
+	Default  // 11.6.2.1
+	Delete   // 11.6.2.1
+	Do       // 11.6.2.1
+	Else     // 11.6.2.1
+	Export   // 11.6.2.1
+	Extends  // 11.6.2.1
+	Finally  // 11.6.2.1
+	For      // 11.6.2.1
+	Function // 11.6.2.1
+	Get
 	If         // 11.6.2.1
 	Import     // 11.6.2.1
 	In         // 11.6.2.1
 	Instanceof // 11.6.2.1
 	New_       // 11.6.2.1
 	Return     // 11.6.2.1
+	Set
 	Static
 	Super  // 11.6.2.1
 	Switch // 11.6.2.1
@@ -117,7 +120,7 @@ const (
 	MinusAssign
 	Modulo
 	ModuloAssign
-	Multiply
+	// Multiply = Asterisk
 	MultiplyAssign
 	NotEquals
 	OrAssign
