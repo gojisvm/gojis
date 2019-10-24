@@ -504,3 +504,22 @@ func parseYieldExpression(i *isolate, p param) *ast.YieldExpression {
 	i.restore(chck)
 	return nil
 }
+
+func parseIdentifierReference(i *isolate, p param) *ast.IdentifierReference {
+	if !p.is(pYield) && i.acceptOneOfTypes(token.Yield) {
+		return &ast.IdentifierReference{
+			Yield: true,
+		}
+	}
+	if !p.is(pAwait) && i.acceptOneOfTypes(token.Await) {
+		return &ast.IdentifierReference{
+			Await: true,
+		}
+	}
+	if ident := parseIdentifier(i, 0); ident != nil {
+		return &ast.IdentifierReference{
+			Identifier: ident,
+		}
+	}
+	return nil
+}

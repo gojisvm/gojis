@@ -16,9 +16,12 @@ func parseLabelIdentifier(i *isolate, p param) *ast.LabelIdentifier {
 			Await: true,
 		}
 	}
-	return &ast.LabelIdentifier{
-		Identifier: parseIdentifier(i, 0),
+	if ident := parseIdentifier(i, 0); ident != nil {
+		return &ast.LabelIdentifier{
+			Identifier: ident,
+		}
 	}
+	return nil
 }
 
 func parseIdentifier(i *isolate, p param) *ast.Identifier {
