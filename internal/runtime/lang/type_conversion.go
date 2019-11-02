@@ -38,9 +38,9 @@ func ToPrimitive(input Value, preferredType interface{}) (Value, errors.Error) {
 		}
 
 		if exoticToPrim != Undefined {
-			result, err := Call(exoticToPrim.(*Object), input, NewString(hint))
-			if err != nil {
-				return nil, err
+			result, callErr := Call(exoticToPrim.(*Object), input, NewString(hint))
+			if callErr != nil {
+				return nil, callErr
 			}
 
 			if result.Type() != TypeObject {
