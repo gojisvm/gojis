@@ -92,6 +92,26 @@ func (i *isolate) acceptOneOfTypes(ts ...token.Type) bool {
 	return false
 }
 
+// negativeLookahead determines, whether the next token's type is NOT one of the
+// given types. Given the parameters token.LineTerminator and token.Whitespace,
+// this method will return false if the next token is either a line terminator
+// or a whitespace. It will return true if the negative lookahead is successful.
+// This method will not consume any tokens.
+func (i *isolate) negativeLookahead(ts ...token.Type) bool {
+	next, ok := i.next()
+	if !ok {
+		return false
+	}
+	i.unread()
+
+	for _, t := range ts {
+		if t == next.Type {
+			return false
+		}
+	}
+	return true
+}
+
 type checkpoint struct {
 	pos int
 }

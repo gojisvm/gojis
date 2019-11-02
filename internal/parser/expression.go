@@ -614,7 +614,7 @@ func parseUpdateExpression(i *isolate, p param) *ast.UpdateExpression {
 
 	if leftHandSideExpression := parseLeftHandSideExpression(i, p.only(pYield|pAwait)); leftHandSideExpression != nil {
 		var plusPlus, minusMinus bool
-		if !i.acceptOneOfTypes(token.LineTerminator) {
+		if i.negativeLookahead(token.LineTerminator) {
 			if i.acceptOneOfTypes(token.UpdatePlus) {
 				plusPlus = true
 			} else if i.acceptOneOfTypes(token.UpdateMinus) {
@@ -650,7 +650,7 @@ func parseAsyncFunctionExpression(i *isolate, p param) *ast.AsyncFunctionExpress
 	chck := i.checkpoint()
 
 	if i.acceptOneOfTypes(token.Async) {
-		if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+		if i.negativeLookahead(token.LineTerminator) { // negative lookahead
 			if i.acceptOneOfTypes(token.Function) {
 				bindingIdent := parseBindingIdentifier(i, pAwait) // binding identifier is effectively optional
 				if i.acceptOneOfTypes(token.ParOpen) {
@@ -682,7 +682,7 @@ func parseAsyncGeneratorExpression(i *isolate, p param) *ast.AsyncGeneratorExpre
 	chck := i.checkpoint()
 
 	if i.acceptOneOfTypes(token.Async) {
-		if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+		if i.negativeLookahead(token.LineTerminator) { // negative lookahead
 			if i.acceptOneOfTypes(token.Function) {
 				if i.acceptOneOfTypes(token.Asterisk) {
 					bindingIdent := parseBindingIdentifier(i, pYield|pAwait) // optional
@@ -748,7 +748,7 @@ func parseArrowFunction(i *isolate, p param) *ast.ArrowFunction {
 	chck := i.checkpoint()
 
 	if arrowParameters := parseArrowParameters(i, p.only(pYield|pAwait)); arrowParameters != nil {
-		if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+		if i.negativeLookahead(token.LineTerminator) { // negative lookahead
 			if i.acceptOneOfTypes(token.Arrow) {
 				if conciseBody := parseConciseBody(i, p.only(pIn)); conciseBody != nil {
 					return &ast.ArrowFunction{
@@ -794,6 +794,22 @@ func parseConciseBody(i *isolate, p param) *ast.ConciseBody {
 		if i.acceptOneOfTypes(token.BraceClose) {
 			return &ast.ConciseBody{
 				FunctionBody: functionBody,
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseCoverCallExpressionAndAsyncArrowHead(i *isolate, p param) *ast.CoverCallExpressionAndAsyncArrowHead {
+	chck := i.checkpoint()
+
+	if memberExpression := parseMemberExpression(i, p.only(pYield|pAwait)); memberExpression != nil {
+		if args := parseArguments(i, p.only(pYield|pAwait)); args != nil {
+			return &ast.CoverCallExpressionAndAsyncArrowHead{
+				MemberExpression: memberExpression,
+				Arguments:        args,
 			}
 		}
 	}

@@ -211,13 +211,13 @@ type AsyncGeneratorExpression struct {
 }
 
 type CallExpression struct {
-	CoverCallExpressionAndAsyncArrowHead
-	SuperCall       *SuperCall
-	CallExpression  *CallExpression
-	Arguments       *Arguments
-	Expression      *Expression
-	IdentifierName  string
-	TemplateLiteral *TemplateLiteral
+	CoverCallExpressionAndAsyncArrowHead *CoverCallExpressionAndAsyncArrowHead
+	SuperCall                            *SuperCall
+	CallExpression                       *CallExpression
+	Arguments                            *Arguments
+	Expression                           *Expression
+	IdentifierName                       string
+	TemplateLiteral                      *TemplateLiteral
 }
 
 type SuperCall struct {

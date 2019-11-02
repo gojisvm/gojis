@@ -477,7 +477,7 @@ func parseAsyncFunctionDeclaration(i *isolate, p param) *ast.AsyncFunctionDeclar
 
 	if p.is(pDefault) {
 		if i.acceptOneOfTypes(token.Async) {
-			if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+			if i.negativeLookahead(token.LineTerminator) { // negative lookahead
 				if i.acceptOneOfTypes(token.Function) {
 					if i.acceptOneOfTypes(token.ParOpen) {
 						if formalParameters := parseFormalParameters(i, pAwait); formalParameters != nil {
@@ -501,7 +501,7 @@ func parseAsyncFunctionDeclaration(i *isolate, p param) *ast.AsyncFunctionDeclar
 	}
 
 	if i.acceptOneOfTypes(token.Async) {
-		if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+		if i.negativeLookahead(token.LineTerminator) { // negative lookahead
 			if i.acceptOneOfTypes(token.Function) {
 				if bindingIdent := parseBindingIdentifier(i, p.only(pYield|pAwait)); bindingIdent != nil {
 					if i.acceptOneOfTypes(token.ParOpen) {
@@ -545,7 +545,7 @@ func parseAsyncGeneratorDeclaration(i *isolate, p param) *ast.AsyncGeneratorDecl
 
 	if p.is(pDefault) {
 		if i.acceptOneOfTypes(token.Async) {
-			if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+			if i.negativeLookahead(token.LineTerminator) { // negative lookahead
 				if i.acceptOneOfTypes(token.Function) {
 					if i.acceptOneOfTypes(token.Asterisk) {
 						if i.acceptOneOfTypes(token.ParOpen) {
@@ -571,7 +571,7 @@ func parseAsyncGeneratorDeclaration(i *isolate, p param) *ast.AsyncGeneratorDecl
 	}
 
 	if i.acceptOneOfTypes(token.Async) {
-		if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+		if i.negativeLookahead(token.LineTerminator) { // negative lookahead
 			if i.acceptOneOfTypes(token.Function) {
 				if i.acceptOneOfTypes(token.Asterisk) {
 					if bindingIdent := parseBindingIdentifier(i, p.only(pYield|pAwait)); bindingIdent != nil {
@@ -616,7 +616,7 @@ func parseAsyncGeneratorMethod(i *isolate, p param) *ast.AsyncGeneratorMethod {
 	chck := i.checkpoint()
 
 	if i.acceptOneOfTypes(token.Async) {
-		if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+		if i.negativeLookahead(token.LineTerminator) { // negative lookahead
 			if i.acceptOneOfTypes(token.Asterisk) {
 				if propertyName := parsePropertyName(i, p.only(pYield|pAwait)); propertyName != nil {
 					if i.acceptOneOfTypes(token.ParOpen) {
@@ -649,7 +649,7 @@ func parseAsyncMethod(i *isolate, p param) *ast.AsyncMethod {
 	chck := i.checkpoint()
 
 	if i.acceptOneOfTypes(token.Async) {
-		if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+		if i.negativeLookahead(token.LineTerminator) { // negative lookahead
 			if propertyName := parsePropertyName(i, p.only(pYield|pAwait)); propertyName != nil {
 				if i.acceptOneOfTypes(token.ParOpen) {
 					if uniqueFormalParameters := parseUniqueFormalParameters(i, pAwait); uniqueFormalParameters != nil {
