@@ -461,3 +461,71 @@ func parseGeneratorBody(i *isolate, p param) *ast.GeneratorBody {
 	}
 	return nil
 }
+
+func parseAsyncFunctionDeclaration(i *isolate, p param) *ast.AsyncFunctionDeclaration {
+	chck := i.checkpoint()
+
+	if p.is(pDefault) {
+		if i.acceptOneOfTypes(token.Async) {
+			if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+				if i.acceptOneOfTypes(token.Function) {
+					if i.acceptOneOfTypes(token.ParOpen) {
+						if formalParameters := parseFormalParameters(i, pAwait); formalParameters != nil {
+							if i.acceptOneOfTypes(token.ParClose) {
+								if i.acceptOneOfTypes(token.BraceOpen) {
+									if asyncFunctionBody := parseAsyncFunctionBody(i, 0); asyncFunctionBody != nil {
+										if i.acceptOneOfTypes(token.BraceClose) {
+											return &ast.AsyncFunctionDeclaration{
+												FormalParameters:  formalParameters,
+												AsyncFunctionBody: asyncFunctionBody,
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if i.acceptOneOfTypes(token.Async) {
+		if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+			if i.acceptOneOfTypes(token.Function) {
+				if bindingIdent := parseBindingIdentifier(i, p.only(pYield|pAwait)); bindingIdent != nil {
+					if i.acceptOneOfTypes(token.ParOpen) {
+						if formalParameters := parseFormalParameters(i, pAwait); formalParameters != nil {
+							if i.acceptOneOfTypes(token.ParClose) {
+								if i.acceptOneOfTypes(token.BraceOpen) {
+									if asyncFunctionBody := parseAsyncFunctionBody(i, 0); asyncFunctionBody != nil {
+										if i.acceptOneOfTypes(token.BraceClose) {
+											return &ast.AsyncFunctionDeclaration{
+												BindingIdentifier: bindingIdent,
+												FormalParameters:  formalParameters,
+												AsyncFunctionBody: asyncFunctionBody,
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseAsyncFunctionBody(i *isolate, p param) *ast.AsyncFunctionBody {
+	if functionBody := parseFunctionBody(i, pAwait); functionBody != nil {
+		return &ast.AsyncFunctionBody{
+			FunctionBody: functionBody,
+		}
+	}
+
+	return nil
+}

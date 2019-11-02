@@ -107,6 +107,7 @@ const (
 	Dot
 	Ellipsis
 	Equals
+	ExclamationMark
 	GreaterThan
 	GreaterThanOrEqualTo
 	LeftShift
@@ -114,7 +115,7 @@ const (
 	LessThan
 	LessThanOrEqualTo
 	LogicalAnd
-	LogicalNot
+	// LogicalNot = ExclamationMark
 	LogicalOr
 	Minus
 	MinusAssign

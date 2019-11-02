@@ -94,14 +94,14 @@ func _() {
 	_ = x[Dot-83]
 	_ = x[Ellipsis-84]
 	_ = x[Equals-85]
-	_ = x[GreaterThan-86]
-	_ = x[GreaterThanOrEqualTo-87]
-	_ = x[LeftShift-88]
-	_ = x[LeftShiftAssign-89]
-	_ = x[LessThan-90]
-	_ = x[LessThanOrEqualTo-91]
-	_ = x[LogicalAnd-92]
-	_ = x[LogicalNot-93]
+	_ = x[ExclamationMark-86]
+	_ = x[GreaterThan-87]
+	_ = x[GreaterThanOrEqualTo-88]
+	_ = x[LeftShift-89]
+	_ = x[LeftShiftAssign-90]
+	_ = x[LessThan-91]
+	_ = x[LessThanOrEqualTo-92]
+	_ = x[LogicalAnd-93]
 	_ = x[LogicalOr-94]
 	_ = x[Minus-95]
 	_ = x[MinusAssign-96]
@@ -130,9 +130,9 @@ func _() {
 	_ = x[XorAssign-119]
 }
 
-const _Type_name = "UnknownLineTerminatorWhitespaceMultiLineCommentSingleLineCommentCommonTokenIdentifierNamePunctuatorStringLiteralTemplateHeadTemplateMiddleTemplateTailNoSubstitutionTemplateAsyncLetAsteriskAwaitBreakCaseCatchClassConstContinueDebuggerDefaultDeleteDoElseExportExtendsFinallyForFunctionGetIfImportInInstanceofNew_ReturnSetStaticSuperSwitchThisThrowTryTypeofVarVoidWhileWithYieldEnumImplementsPackageProtectedInterfacePrivatePublicNullBooleanDecimalLiteralBinaryIntegerLiteralOctalIntegerLiteralHexIntegerLiteralRegularExpressionLiteralTargetAndAssignArrowAssignBitwiseAndBitwiseNotBitwiseOrBitwiseXorBraceCloseBraceOpenBracketCloseBracketOpenColonCommaDivDivAssignDotEllipsisEqualsGreaterThanGreaterThanOrEqualToLeftShiftLeftShiftAssignLessThanLessThanOrEqualToLogicalAndLogicalNotLogicalOrMinusMinusAssignModuloModuloAssignMultiplyAssignNotEqualsOrAssignParCloseParOpenPlusPlusAssignPowerPowerAssignQuestionMarkRightShiftRightShiftAssignSemiColonStrictEqualsStrictNotEqualsTildeUnsignedRightShiftUnsignedRightShiftAssignUpdateMinusUpdatePlusXorAssign"
+const _Type_name = "UnknownLineTerminatorWhitespaceMultiLineCommentSingleLineCommentCommonTokenIdentifierNamePunctuatorStringLiteralTemplateHeadTemplateMiddleTemplateTailNoSubstitutionTemplateAsyncLetAsteriskAwaitBreakCaseCatchClassConstContinueDebuggerDefaultDeleteDoElseExportExtendsFinallyForFunctionGetIfImportInInstanceofNew_ReturnSetStaticSuperSwitchThisThrowTryTypeofVarVoidWhileWithYieldEnumImplementsPackageProtectedInterfacePrivatePublicNullBooleanDecimalLiteralBinaryIntegerLiteralOctalIntegerLiteralHexIntegerLiteralRegularExpressionLiteralTargetAndAssignArrowAssignBitwiseAndBitwiseNotBitwiseOrBitwiseXorBraceCloseBraceOpenBracketCloseBracketOpenColonCommaDivDivAssignDotEllipsisEqualsExclamationMarkGreaterThanGreaterThanOrEqualToLeftShiftLeftShiftAssignLessThanLessThanOrEqualToLogicalAndLogicalOrMinusMinusAssignModuloModuloAssignMultiplyAssignNotEqualsOrAssignParCloseParOpenPlusPlusAssignPowerPowerAssignQuestionMarkRightShiftRightShiftAssignSemiColonStrictEqualsStrictNotEqualsTildeUnsignedRightShiftUnsignedRightShiftAssignUpdateMinusUpdatePlusXorAssign"
 
-var _Type_index = [...]uint16{0, 7, 21, 31, 47, 64, 75, 89, 99, 112, 124, 138, 150, 172, 177, 180, 188, 193, 198, 202, 207, 212, 217, 225, 233, 240, 246, 248, 252, 258, 265, 272, 275, 283, 286, 288, 294, 296, 306, 310, 316, 319, 325, 330, 336, 340, 345, 348, 354, 357, 361, 366, 370, 375, 379, 389, 396, 405, 414, 421, 427, 431, 438, 452, 472, 491, 508, 532, 538, 547, 552, 558, 568, 578, 587, 597, 607, 616, 628, 639, 644, 649, 652, 661, 664, 672, 678, 689, 709, 718, 733, 741, 758, 768, 778, 787, 792, 803, 809, 821, 835, 844, 852, 860, 867, 871, 881, 886, 897, 909, 919, 935, 944, 956, 971, 976, 994, 1018, 1029, 1039, 1048}
+var _Type_index = [...]uint16{0, 7, 21, 31, 47, 64, 75, 89, 99, 112, 124, 138, 150, 172, 177, 180, 188, 193, 198, 202, 207, 212, 217, 225, 233, 240, 246, 248, 252, 258, 265, 272, 275, 283, 286, 288, 294, 296, 306, 310, 316, 319, 325, 330, 336, 340, 345, 348, 354, 357, 361, 366, 370, 375, 379, 389, 396, 405, 414, 421, 427, 431, 438, 452, 472, 491, 508, 532, 538, 547, 552, 558, 568, 578, 587, 597, 607, 616, 628, 639, 644, 649, 652, 661, 664, 672, 678, 693, 704, 724, 733, 748, 756, 773, 783, 792, 797, 808, 814, 826, 840, 849, 857, 865, 872, 876, 886, 891, 902, 914, 924, 940, 949, 961, 976, 981, 999, 1023, 1034, 1044, 1053}
 
 func (i Type) String() string {
 	if i >= Type(len(_Type_index)-1) {

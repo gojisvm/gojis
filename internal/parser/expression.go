@@ -60,7 +60,7 @@ func parseAssignmentExpression(i *isolate, p param) *ast.AssignmentExpression {
 		}
 	}
 
-	if asyncArrowFunction := parseAsyncparseArrowFunction(i, p.only(pIn|pYield|pAwait)); asyncArrowFunction != nil {
+	if asyncArrowFunction := parseAsyncArrowFunction(i, p.only(pIn|pYield|pAwait)); asyncArrowFunction != nil {
 		return &ast.AssignmentExpression{
 			AsyncArrowFunction: asyncArrowFunction,
 		}
@@ -521,5 +521,159 @@ func parseIdentifierReference(i *isolate, p param) *ast.IdentifierReference {
 			Identifier: ident,
 		}
 	}
+	return nil
+}
+
+func parseAwaitExpression(i *isolate, p param) *ast.AwaitExpression {
+	chck := i.checkpoint()
+
+	if i.acceptOneOfTypes(token.Await) {
+		if unaryExpr := parseUnaryExpression(i, p.only(pYield).add(pAwait)); unaryExpr != nil {
+			return &ast.AwaitExpression{
+				UnaryExpression: unaryExpr,
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseUnaryExpression(i *isolate, p param) *ast.UnaryExpression {
+	chck := i.checkpoint()
+
+	if p.is(pAwait) {
+		if awaitExpr := parseAwaitExpression(i, p.only(pYield)); awaitExpr != nil {
+			return &ast.UnaryExpression{
+				AwaitExpression: awaitExpr,
+			}
+		}
+	}
+
+	if updateExpr := parseUpdateExpression(i, p.only(pYield|pAwait)); updateExpr != nil {
+		return &ast.UnaryExpression{
+			UpdateExpression: updateExpr,
+		}
+	} else if i.acceptOneOfTypes(token.Delete) {
+		if unaryExpr := parseUnaryExpression(i, p.only(pYield|pAwait)); unaryExpr != nil {
+			return &ast.UnaryExpression{
+				Delete:          true,
+				UnaryExpression: unaryExpr,
+			}
+		}
+	} else if i.acceptOneOfTypes(token.Void) {
+		if unaryExpr := parseUnaryExpression(i, p.only(pYield|pAwait)); unaryExpr != nil {
+			return &ast.UnaryExpression{
+				Void:            true,
+				UnaryExpression: unaryExpr,
+			}
+		}
+	} else if i.acceptOneOfTypes(token.Typeof) {
+		if unaryExpr := parseUnaryExpression(i, p.only(pYield|pAwait)); unaryExpr != nil {
+			return &ast.UnaryExpression{
+				Typeof:          true,
+				UnaryExpression: unaryExpr,
+			}
+		}
+	} else if i.acceptOneOfTypes(token.Plus) {
+		if unaryExpr := parseUnaryExpression(i, p.only(pYield|pAwait)); unaryExpr != nil {
+			return &ast.UnaryExpression{
+				Plus:            true,
+				UnaryExpression: unaryExpr,
+			}
+		}
+	} else if i.acceptOneOfTypes(token.Minus) {
+		if unaryExpr := parseUnaryExpression(i, p.only(pYield|pAwait)); unaryExpr != nil {
+			return &ast.UnaryExpression{
+				Minus:           true,
+				UnaryExpression: unaryExpr,
+			}
+		}
+	} else if i.acceptOneOfTypes(token.Tilde) {
+		if unaryExpr := parseUnaryExpression(i, p.only(pYield|pAwait)); unaryExpr != nil {
+			return &ast.UnaryExpression{
+				Tilde:           true,
+				UnaryExpression: unaryExpr,
+			}
+		}
+	} else if i.acceptOneOfTypes(token.ExclamationMark) {
+		if unaryExpr := parseUnaryExpression(i, p.only(pYield|pAwait)); unaryExpr != nil {
+			return &ast.UnaryExpression{
+				ExclamationMark: true,
+				UnaryExpression: unaryExpr,
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseUpdateExpression(i *isolate, p param) *ast.UpdateExpression {
+	chck := i.checkpoint()
+
+	if leftHandSideExpression := parseLeftHandSideExpression(i, p.only(pYield|pAwait)); leftHandSideExpression != nil {
+		var plusPlus, minusMinus bool
+		if !i.acceptOneOfTypes(token.LineTerminator) {
+			if i.acceptOneOfTypes(token.UpdatePlus) {
+				plusPlus = true
+			} else if i.acceptOneOfTypes(token.UpdateMinus) {
+				minusMinus = true
+			}
+		}
+		return &ast.UpdateExpression{
+			LeftHandSideExpression: leftHandSideExpression,
+			PlusPlus:               plusPlus,
+			MinusMinus:             minusMinus,
+		}
+	} else if i.acceptOneOfTypes(token.UpdatePlus) {
+		if unaryExpr := parseUnaryExpression(i, p.only(pYield|pAwait)); unaryExpr != nil {
+			return &ast.UpdateExpression{
+				PlusPlus:        true,
+				UnaryExpression: unaryExpr,
+			}
+		}
+	} else if i.acceptOneOfTypes(token.UpdateMinus) {
+		if unaryExpr := parseUnaryExpression(i, p.only(pYield|pAwait)); unaryExpr != nil {
+			return &ast.UpdateExpression{
+				MinusMinus:      true,
+				UnaryExpression: unaryExpr,
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseAsyncFunctionExpression(i *isolate, p param) *ast.AsyncFunctionExpression {
+	chck := i.checkpoint()
+
+	if i.acceptOneOfTypes(token.Async) {
+		if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+			if i.acceptOneOfTypes(token.Function) {
+				bindingIdent := parseBindingIdentifier(i, pAwait) // binding identifier is effectively optional
+				if i.acceptOneOfTypes(token.ParOpen) {
+					if formalParameters := parseFormalParameters(i, pAwait); formalParameters != nil {
+						if i.acceptOneOfTypes(token.ParClose) {
+							if i.acceptOneOfTypes(token.BraceOpen) {
+								if asyncFunctionBody := parseAsyncFunctionBody(i, 0); asyncFunctionBody != nil {
+									if i.acceptOneOfTypes(token.BraceClose) {
+										return &ast.AsyncFunctionExpression{
+											BindingIdentifier: bindingIdent,
+											FormalParameters:  formalParameters,
+											AsyncFunctionBody: asyncFunctionBody,
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
 	return nil
 }
