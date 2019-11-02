@@ -711,3 +711,93 @@ func parseAsyncGeneratorExpression(i *isolate, p param) *ast.AsyncGeneratorExpre
 	i.restore(chck)
 	return nil
 }
+
+func parseSuperCall(i *isolate, p param) *ast.SuperCall {
+	chck := i.checkpoint()
+
+	if i.acceptOneOfTypes(token.Super) {
+		if args := parseArguments(i, p.only(pYield|pAwait)); args != nil {
+			return &ast.SuperCall{
+				Arguments: args,
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseClassExpression(i *isolate, p param) *ast.ClassExpression {
+	chck := i.checkpoint()
+
+	if i.acceptOneOfTypes(token.Class) {
+		bindingIdent := parseBindingIdentifier(i, p.only(pYield|pAwait))
+		if classTail := parseClassTail(i, p.only(pYield|pAwait)); classTail != nil {
+			return &ast.ClassExpression{
+				BindingIdentifier: bindingIdent,
+				ClassTail:         classTail,
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseArrowFunction(i *isolate, p param) *ast.ArrowFunction {
+	chck := i.checkpoint()
+
+	if arrowParameters := parseArrowParameters(i, p.only(pYield|pAwait)); arrowParameters != nil {
+		if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+			if i.acceptOneOfTypes(token.Arrow) {
+				if conciseBody := parseConciseBody(i, p.only(pIn)); conciseBody != nil {
+					return &ast.ArrowFunction{
+						ArrowParameters: arrowParameters,
+						ConciseBody:     conciseBody,
+					}
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseArrowParameters(i *isolate, p param) *ast.ArrowParameters {
+	if bindingIdent := parseBindingIdentifier(i, p.only(pYield|pAwait)); bindingIdent != nil {
+		return &ast.ArrowParameters{
+			BindingIdentifier: bindingIdent,
+		}
+	} else if coverParenthesizedExpressionAndArrowParameterList := parseCoverParenthesizedExpressionAndArrowParameterList(i, p.only(pYield|pAwait)); coverParenthesizedExpressionAndArrowParameterList != nil {
+		return &ast.ArrowParameters{
+			CoverParenthesizedExpressionAndArrowParameterList: coverParenthesizedExpressionAndArrowParameterList,
+		}
+	}
+
+	return nil
+}
+
+func parseConciseBody(i *isolate, p param) *ast.ConciseBody {
+	chck := i.checkpoint()
+
+	if i.acceptOneOfTypes(token.BraceOpen) {
+		if assignmentExpr := parseAssignmentExpression(i, p.only(pIn)); assignmentExpr != nil {
+			return &ast.ConciseBody{
+				AssignmentExpression: assignmentExpr,
+			}
+		}
+	}
+
+	// lookahead: no token.BraceOpen
+	if functionBody := parseFunctionBody(i, 0); functionBody != nil {
+		if i.acceptOneOfTypes(token.BraceClose) {
+			return &ast.ConciseBody{
+				FunctionBody: functionBody,
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
