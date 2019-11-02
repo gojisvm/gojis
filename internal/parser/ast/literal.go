@@ -92,3 +92,8 @@ type TemplateMiddleList struct {
 	Expression         *Expression
 	TemplateMiddleList *TemplateMiddleList
 }
+
+type RegularExpressionLiteral struct {
+	RegularExpressionBody  string
+	RegularExpressionFlags string
+}

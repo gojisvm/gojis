@@ -83,7 +83,8 @@ const (
 	OctalIntegerLiteral  // 11.8.3
 	HexIntegerLiteral    // 11.8.3
 
-	RegularExpressionLiteral // 11.8.5
+	RegularExpressionBody // 11.8.5
+	RegularExpressionFlags
 
 	Target
 
@@ -102,7 +103,7 @@ const (
 	BracketOpen
 	Colon
 	Comma
-	Div
+	// Div =  Slash
 	DivAssign
 	Dot
 	Ellipsis
@@ -135,6 +136,7 @@ const (
 	RightShift
 	RightShiftAssign
 	SemiColon
+	Slash
 	StrictEquals
 	StrictNotEquals
 	Tilde

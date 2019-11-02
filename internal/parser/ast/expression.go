@@ -52,15 +52,15 @@ type EqualityExpression struct {
 	Equals               bool
 	StrictEquals         bool
 	NotEquals            bool
-	NotStrictEquals      bool
+	StrictNotEquals      bool
 }
 
 type RelationalExpression struct {
 	ShiftExpression      *ShiftExpression
 	RelationalExpression *RelationalExpression
-	SmallerThan          bool
+	LessThan             bool
 	GreaterThan          bool
-	SmallerThanOrEqualTo bool
+	LessThanOrEqualTo    bool
 	GreaterThanOrEqualTo bool
 	Instanceof           bool
 	In                   bool
@@ -84,7 +84,9 @@ type AdditiveExpression struct {
 type MultiplicativeExpression struct {
 	ExponentiationExpression *ExponentiationExpression
 	MultiplicativeExpression *MultiplicativeExpression
-	MultiplicativeOperator   string
+	Asterisk                 bool
+	Slash                    bool
+	Modulo                   bool
 }
 
 type ExponentiationExpression struct {
@@ -154,7 +156,7 @@ type PrimaryExpression struct {
 	GeneratorExpression                               *GeneratorExpression
 	AsyncFunctionExpression                           *AsyncFunctionExpression
 	AsyncGeneratorExpression                          *AsyncGeneratorExpression
-	RegularExpressionLiteral                          string
+	RegularExpressionLiteral                          *RegularExpressionLiteral
 	TemplateLiteral                                   *TemplateLiteral
 	CoverParenthesizedExpressionAndArrowParameterList *CoverParenthesizedExpressionAndArrowParameterList
 }

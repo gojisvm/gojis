@@ -886,3 +886,303 @@ func parseAsyncArrowBindingIdentifier(i *isolate, p param) *ast.AsyncArrowBindin
 
 	return nil
 }
+
+func parseConditionalExpression(i *isolate, p param) *ast.ConditionalExpression {
+	chck := i.checkpoint()
+
+	if orExpr := parseLogicalORExpression(i, p.only(pIn|pYield|pAwait)); orExpr != nil {
+		if i.acceptOneOfTypes(token.QuestionMark) {
+			if assignmentExpr1 := parseAssignmentExpression(i, p.only(pYield|pAwait).add(pIn)); assignmentExpr1 != nil {
+				if i.acceptOneOfTypes(token.Colon) {
+					if assignmentExpr2 := parseAssignmentExpression(i, p.only(pIn|pYield|pAwait)); assignmentExpr2 != nil {
+						return &ast.ConditionalExpression{
+							LogicalORExpression:   orExpr,
+							AssignmentExpression1: assignmentExpr1,
+							AssignmentExpression2: assignmentExpr2,
+						}
+					}
+				}
+			}
+		}
+
+		return &ast.ConditionalExpression{
+			LogicalORExpression: orExpr,
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseLogicalORExpression(i *isolate, p param) *ast.LogicalORExpression {
+	chck := i.checkpoint()
+
+	if andExpr := parseLogicalANDExpression(i, p.only(pIn|pYield|pAwait)); andExpr != nil {
+		return &ast.LogicalORExpression{
+			LogicalANDExpression: andExpr,
+		}
+	} else if orExpr := parseLogicalORExpression(i, p.only(pIn|pYield|pAwait)); orExpr != nil {
+		if i.acceptOneOfTypes(token.LogicalOr) {
+			if andExpr := parseLogicalANDExpression(i, p.only(pIn|pYield|pAwait)); andExpr != nil {
+				return &ast.LogicalORExpression{
+					LogicalORExpression:  orExpr,
+					LogicalANDExpression: andExpr,
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseLogicalANDExpression(i *isolate, p param) *ast.LogicalANDExpression {
+	chck := i.checkpoint()
+
+	if orExpr := parseBitwiseORExpression(i, p.only(pIn|pYield|pAwait)); orExpr != nil {
+		return &ast.LogicalANDExpression{
+			BitwiseORExpression: orExpr,
+		}
+	} else if andExpr := parseLogicalANDExpression(i, p.only(pIn|pYield|pAwait)); andExpr != nil {
+		if i.acceptOneOfTypes(token.LogicalAnd) {
+			if orExpr := parseBitwiseORExpression(i, p.only(pIn|pYield|pAwait)); orExpr != nil {
+				return &ast.LogicalANDExpression{
+					BitwiseORExpression:  orExpr,
+					LogicalANDExpression: andExpr,
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseBitwiseANDExpression(i *isolate, p param) *ast.BitwiseANDExpression {
+	chck := i.checkpoint()
+
+	if eqExpr := parseEqualityExpression(i, p.only(pIn|pYield|pAwait)); eqExpr != nil {
+		return &ast.BitwiseANDExpression{
+			EqualityExpression: eqExpr,
+		}
+	} else if andExpr := parseBitwiseANDExpression(i, p.only(pIn|pYield|pAwait)); andExpr != nil {
+		if i.acceptOneOfTypes(token.BitwiseAnd) {
+			if eqExpr := parseEqualityExpression(i, p.only(pIn|pYield|pAwait)); eqExpr != nil {
+				return &ast.BitwiseANDExpression{
+					BitwiseANDExpression: andExpr,
+					EqualityExpression:   eqExpr,
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseBitwiseXORExpression(i *isolate, p param) *ast.BitwiseXORExpression {
+	chck := i.checkpoint()
+
+	if andExpr := parseBitwiseANDExpression(i, p.only(pIn|pYield|pAwait)); andExpr != nil {
+		return &ast.BitwiseXORExpression{
+			BitwiseANDExpression: andExpr,
+		}
+	} else if xorExpr := parseBitwiseXORExpression(i, p.only(pIn|pYield|pAwait)); xorExpr != nil {
+		if i.acceptOneOfTypes(token.BitwiseXor) {
+			if andExpr := parseBitwiseANDExpression(i, p.only(pIn|pYield|pAwait)); andExpr != nil {
+				return &ast.BitwiseXORExpression{
+					BitwiseXORExpression: xorExpr,
+					BitwiseANDExpression: andExpr,
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseBitwiseORExpression(i *isolate, p param) *ast.BitwiseORExpression {
+	chck := i.checkpoint()
+
+	if xorExpr := parseBitwiseXORExpression(i, p.only(pIn|pYield|pAwait)); xorExpr != nil {
+		return &ast.BitwiseORExpression{
+			BitwiseXORExpression: xorExpr,
+		}
+	} else if orExpr := parseBitwiseORExpression(i, p.only(pIn|pYield|pAwait)); orExpr != nil {
+		if i.acceptOneOfTypes(token.BitwiseXor) {
+			if xorExpr := parseBitwiseXORExpression(i, p.only(pIn|pYield|pAwait)); xorExpr != nil {
+				return &ast.BitwiseORExpression{
+					BitwiseORExpression:  orExpr,
+					BitwiseXORExpression: xorExpr,
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseEqualityExpression(i *isolate, p param) *ast.EqualityExpression {
+	chck := i.checkpoint()
+
+	if relationalExpr := parseRelationalExpression(i, p.only(pIn|pYield|pAwait)); relationalExpr != nil {
+		return &ast.EqualityExpression{
+			RelationalExpression: relationalExpr,
+		}
+	} else if eqExpr := parseEqualityExpression(i, p.only(pIn|pYield|pAwait)); eqExpr != nil {
+		if t, ok := i.acceptOneOf(token.Equals, token.NotEquals, token.StrictEquals, token.StrictNotEquals); ok {
+			if relationalExpr := parseRelationalExpression(i, p.only(pIn|pYield|pAwait)); relationalExpr != nil {
+				return &ast.EqualityExpression{
+					RelationalExpression: relationalExpr,
+					EqualityExpression:   eqExpr,
+					Equals:               t.Type == token.Equals,
+					NotEquals:            t.Type == token.NotEquals,
+					StrictEquals:         t.Type == token.StrictEquals,
+					StrictNotEquals:      t.Type == token.StrictNotEquals,
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseRelationalExpression(i *isolate, p param) *ast.RelationalExpression {
+	chck := i.checkpoint()
+
+	if shiftExpr := parseShiftExpression(i, p.only(pYield|pAwait)); shiftExpr != nil {
+		return &ast.RelationalExpression{
+			ShiftExpression: shiftExpr,
+		}
+	}
+
+	if p.is(pIn) {
+		if relationalExpr := parseRelationalExpression(i, p.only(pYield|pAwait).add(pIn)); relationalExpr != nil {
+			if i.acceptOneOfTypes(token.In) {
+				if shiftExpr := parseShiftExpression(i, p.only(pYield|pAwait)); shiftExpr != nil {
+					return &ast.RelationalExpression{
+						RelationalExpression: relationalExpr,
+						In:                   true,
+						ShiftExpression:      shiftExpr,
+					}
+				}
+			}
+		}
+	} else if relationalExpr := parseRelationalExpression(i, p.only(pIn|pYield|pAwait)); relationalExpr != nil {
+		if t, ok := i.acceptOneOf(token.LessThan, token.GreaterThan, token.LessThanOrEqualTo, token.GreaterThanOrEqualTo, token.Instanceof); ok {
+			if shiftExpr := parseShiftExpression(i, p.only(pYield|pAwait)); shiftExpr != nil {
+				return &ast.RelationalExpression{
+					RelationalExpression: relationalExpr,
+					ShiftExpression:      shiftExpr,
+					LessThan:             t.Type == token.LessThan,
+					GreaterThan:          t.Type == token.GreaterThan,
+					LessThanOrEqualTo:    t.Type == token.LessThanOrEqualTo,
+					GreaterThanOrEqualTo: t.Type == token.GreaterThanOrEqualTo,
+					Instanceof:           t.Type == token.Instanceof,
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseShiftExpression(i *isolate, p param) *ast.ShiftExpression {
+	chck := i.checkpoint()
+
+	if additiveExpr := parseAdditiveExpression(i, p.only(pYield|pAwait)); additiveExpr != nil {
+		return &ast.ShiftExpression{
+			AdditiveExpression: additiveExpr,
+		}
+	} else if shiftExpr := parseShiftExpression(i, p.only(pYield|pAwait)); shiftExpr != nil {
+		if t, ok := i.acceptOneOf(token.LeftShift, token.RightShift, token.UnsignedRightShift); ok {
+			if additiveExpr := parseAdditiveExpression(i, p.only(pYield|pAwait)); additiveExpr != nil {
+				return &ast.ShiftExpression{
+					ShiftExpression:    shiftExpr,
+					AdditiveExpression: additiveExpr,
+					LeftShift:          t.Type == token.LeftShift,
+					RightShift:         t.Type == token.RightShift,
+					UnsignedRightShift: t.Type == token.UnsignedRightShift,
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseAdditiveExpression(i *isolate, p param) *ast.AdditiveExpression {
+	chck := i.checkpoint()
+
+	if multiplicativeExpression := parseMultiplicativeExpression(i, p.only(pYield|pAwait)); multiplicativeExpression != nil {
+		return &ast.AdditiveExpression{
+			MultiplicativeExpression: multiplicativeExpression,
+		}
+	} else if additiveExpr := parseAdditiveExpression(i, p.only(pYield|pAwait)); additiveExpr != nil {
+		if t, ok := i.acceptOneOf(token.Plus, token.Minus); ok {
+			if multiplicativeExpr := parseMultiplicativeExpression(i, p.only(pYield|pAwait)); multiplicativeExpr != nil {
+				return &ast.AdditiveExpression{
+					AdditiveExpression:       additiveExpr,
+					MultiplicativeExpression: multiplicativeExpr,
+					Plus:                     t.Type == token.Plus,
+					Minus:                    t.Type == token.Minus,
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseMultiplicativeExpression(i *isolate, p param) *ast.MultiplicativeExpression {
+	chck := i.checkpoint()
+
+	if exponentiationExpression := parseExponentiationExpression(i, p.only(pYield|pAwait)); exponentiationExpression != nil {
+		return &ast.MultiplicativeExpression{
+			ExponentiationExpression: exponentiationExpression,
+		}
+	} else if multiplicativeExpr := parseMultiplicativeExpression(i, p.only(pYield|pAwait)); multiplicativeExpr != nil {
+		if t, ok := i.acceptOneOf(token.Asterisk, token.Slash, token.Modulo); ok {
+			if exponentiationExpression := parseExponentiationExpression(i, p.only(pYield|pAwait)); exponentiationExpression != nil {
+				return &ast.MultiplicativeExpression{
+					MultiplicativeExpression: multiplicativeExpr,
+					ExponentiationExpression: exponentiationExpression,
+					Asterisk:                 t.Type == token.Asterisk,
+					Slash:                    t.Type == token.Slash,
+					Modulo:                   t.Type == token.Modulo,
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseExponentiationExpression(i *isolate, p param) *ast.ExponentiationExpression {
+	chck := i.checkpoint()
+
+	if unaryExpression := parseUnaryExpression(i, p.only(pYield|pAwait)); unaryExpression != nil {
+		return &ast.ExponentiationExpression{
+			UnaryExpression: unaryExpression,
+		}
+	} else if updateExpr := parseUpdateExpression(i, p.only(pYield|pAwait)); updateExpr != nil {
+		if i.acceptOneOfTypes(token.Power) {
+			if exponentiationExpr := parseExponentiationExpression(i, p.only(pYield|pAwait)); exponentiationExpr != nil {
+				return &ast.ExponentiationExpression{
+					UpdateExpression:         updateExpr,
+					ExponentiationExpression: exponentiationExpr,
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}

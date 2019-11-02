@@ -350,3 +350,23 @@ func parseCoverInitializedName(i *isolate, p param) *ast.CoverInitializedName {
 	i.restore(chck)
 	return nil
 }
+
+func parseRegularExpressionLiteral(i *isolate, p param) *ast.RegularExpressionLiteral {
+	chck := i.checkpoint()
+
+	if i.acceptOneOfTypes(token.Slash) {
+		if body, ok := i.accept(token.RegularExpressionBody); ok {
+			if i.acceptOneOfTypes(token.Slash) {
+				if flags, ok := i.accept(token.RegularExpressionFlags); ok {
+					return &ast.RegularExpressionLiteral{
+						RegularExpressionBody:  body.Value,
+						RegularExpressionFlags: flags.Value,
+					}
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
