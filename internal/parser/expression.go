@@ -817,3 +817,72 @@ func parseCoverCallExpressionAndAsyncArrowHead(i *isolate, p param) *ast.CoverCa
 	i.restore(chck)
 	return nil
 }
+
+func parseAsyncArrowFunction(i *isolate, p param) *ast.AsyncArrowFunction {
+	chck := i.checkpoint()
+
+	if i.acceptOneOfTypes(token.Async) {
+		if i.negativeLookahead(token.LineTerminator) {
+			if asyncArrowBindingIdent := parseAsyncArrowBindingIdentifier(i, p.only(pYield)); asyncArrowBindingIdent != nil {
+				if i.negativeLookahead(token.LineTerminator) {
+					if i.acceptOneOfTypes(token.Arrow) {
+						if asyncConciseBode := parseAsyncConciseBody(i, p.only(pIn)); asyncConciseBode != nil {
+							return &ast.AsyncArrowFunction{
+								AsyncArrowBindingIdentifier: asyncArrowBindingIdent,
+								AsyncConciseBody:            asyncConciseBode,
+							}
+						}
+					}
+				}
+			}
+		}
+	} else if coverCallExpressionAndAsyncArrowHead := parseCoverCallExpressionAndAsyncArrowHead(i, p.only(pYield|pAwait)); coverCallExpressionAndAsyncArrowHead != nil {
+		if i.negativeLookahead(token.LineTerminator) {
+			if i.acceptOneOfTypes(token.Arrow) {
+				if asyncConciseBode := parseAsyncConciseBody(i, p.only(pIn)); asyncConciseBode != nil {
+					return &ast.AsyncArrowFunction{
+						CoverCallExpressionAndAsyncArrowHead: coverCallExpressionAndAsyncArrowHead,
+						AsyncConciseBody:                     asyncConciseBode,
+					}
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseAsyncConciseBody(i *isolate, p param) *ast.AsyncConciseBody {
+	chck := i.checkpoint()
+
+	if i.acceptOneOfTypes(token.BraceOpen) {
+		if assignmentExpr := parseAssignmentExpression(i, p.only(pIn)); assignmentExpr != nil {
+			return &ast.AsyncConciseBody{
+				AssignmentExpression: assignmentExpr,
+			}
+		}
+	}
+
+	// lookahead: no token.BraceOpen
+	if asyncFunctionBody := parseAsyncFunctionBody(i, 0); asyncFunctionBody != nil {
+		if i.acceptOneOfTypes(token.BraceClose) {
+			return &ast.AsyncConciseBody{
+				AsyncFunctionBody: asyncFunctionBody,
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseAsyncArrowBindingIdentifier(i *isolate, p param) *ast.AsyncArrowBindingIdentifier {
+	if bindingIdent := parseBindingIdentifier(i, p.only(pYield).add(pAwait)); bindingIdent != nil {
+		return &ast.AsyncArrowBindingIdentifier{
+			BindingIdentifier: bindingIdent,
+		}
+	}
+
+	return nil
+}
