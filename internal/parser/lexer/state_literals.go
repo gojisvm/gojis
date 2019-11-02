@@ -174,19 +174,22 @@ func lexRegularExpressionLiteral(l *Lexer) state {
 	if !l.accept(slash) {
 		return tokenMismatch(slash)
 	}
+	l.emit(token.Slash)
 
 	if ok, errState := l.acceptEnclosed(acceptRegularExpressionBody); !ok {
 		return errState
 	}
+	l.emit(token.RegularExpressionBody)
 
 	if !l.accept(slash) {
 		return tokenMismatch(slash)
 	}
+	l.emit(token.Slash)
 
 	if ok, errState := l.acceptEnclosed(acceptRegularExpressionFlags); !ok {
 		return errState
 	}
+	l.emit(token.RegularExpressionFlags)
 
-	l.emit(token.RegularExpressionLiteral)
 	return lexToken
 }

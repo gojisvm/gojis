@@ -75,7 +75,7 @@ func lexPunctuatorStartingWithSlash(l *Lexer) state {
 	if l.accept(assign) {
 		l.emit(token.DivAssign)
 	} else {
-		l.emit(token.Div)
+		l.emit(token.Slash)
 	}
 	return lexToken
 }
@@ -171,7 +171,7 @@ func lexPunctuatorStartingWithAsterisk(l *Lexer) state {
 		if l.accept(assign) {
 			l.emit(token.MultiplyAssign)
 		} else {
-			l.emit(token.Multiply)
+			l.emit(token.Asterisk)
 		}
 	}
 	return lexToken
@@ -189,7 +189,7 @@ func lexPunctuatorStartingWithExclamationMark(l *Lexer) state {
 			l.emit(token.NotEquals)
 		}
 	} else {
-		l.emit(token.LogicalNot)
+		l.emit(token.ExclamationMark)
 	}
 	return lexToken
 }

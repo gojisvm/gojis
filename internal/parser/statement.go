@@ -642,3 +642,52 @@ func parseFinally(i *isolate, p param) *ast.Finally {
 	i.restore(chck)
 	return nil
 }
+
+func parseIterationStatement(i *isolate, p param) *ast.IterationStatement {
+	chck := i.checkpoint()
+
+	if i.acceptOneOfTypes(token.Do) {
+		if stmt := parseStatement(i, p.only(pYield|pAwait|pReturn)); stmt != nil {
+			if i.acceptOneOfTypes(token.While) {
+				if i.acceptOneOfTypes(token.ParOpen) {
+					if expr := parseExpression(i, p.only(pYield|pAwait).add(pIn)); expr != nil {
+						if i.acceptOneOfTypes(token.ParClose) {
+							if i.acceptOneOfTypes(token.SemiColon) {
+								return &ast.IterationStatement{
+									Do:          true,
+									While:       true,
+									Statement:   stmt,
+									Expression1: expr,
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	} else if i.acceptOneOfTypes(token.While) {
+		if i.acceptOneOfTypes(token.ParOpen) {
+			if expr := parseExpression(i, p.only(pYield|pAwait).add(pIn)); expr != nil {
+				if i.acceptOneOfTypes(token.ParClose) {
+					if stmt := parseStatement(i, p.only(pYield|pAwait|pReturn)); stmt != nil {
+						return &ast.IterationStatement{
+							While:       true,
+							Expression1: expr,
+							Statement:   stmt,
+						}
+					}
+				}
+			}
+		}
+	} else if i.acceptOneOfTypes(token.For) {
+		return _parseForIterationStatement(i, p)
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func _parseForIterationStatement(i *isolate, p param) *ast.IterationStatement {
+	// token.For was already consumed
+	panic("TODO")
+}
