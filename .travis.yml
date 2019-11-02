@@ -3,8 +3,6 @@ language: go
 # You don't need to test on very old versions of the Go compiler. It's the user's
 # responsibility to keep their compiler up to date.
 go:
-  - 1.12.x
-  - 1.13.x
   - tip
 go_import_path: github.com/gojisvm/gojis
 
@@ -12,26 +10,9 @@ env:
   matrix:
   - GO111MODULE=on
 
-matrix:
-  # It's ok if our code fails on unstable development versions of Go.
-  allow_failures:
-    - go: tip
-  # Don't wait for tip tests to finish. Mark the test run green if the
-  # tests pass on the stable versions of Go.
-  fast_finish: true
-
 # Don't email me the results of the test runs.
 notifications:
   email: false
 
-# Anything in before_script that returns a nonzero exit code will flunk the
-# build and immediately stop. It's sorta like having set -e enabled in bash.
-before_script:
-  - go get gotest.tools/gotestsum
-  - go get github.com/securego/gosec/cmd/gosec
-  - go get github.com/schrej/godacov
-
 script:
-  - gosec -quiet ./... # run vulnerability analysis
-  - gotestsum --no-summary skipped --raw-command go test -json -race -v -coverprofile=coverage.txt -covermode=atomic ./...
-  - godacov -t $CODACY_TOKEN -r ./coverage.txt -c $TRAVIS_COMMIT
+  - go test -race ./...
