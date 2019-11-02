@@ -42,6 +42,8 @@ type PropertyDefinitionList struct {
 }
 
 type PropertyDefinition struct {
+	Colon                bool
+	Ellipsis             bool
 	IdentifierReference  *IdentifierReference
 	CoverInitializedName *CoverInitializedName
 	PropertyName         *PropertyName
