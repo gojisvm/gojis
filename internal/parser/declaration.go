@@ -369,6 +369,16 @@ func parseMethodDefinition(i *isolate, p param) *ast.MethodDefinition {
 	return nil
 }
 
+func parsePropertySetParameterList(i *isolate, p param) *ast.PropertySetParameterList {
+	if formalParameter := parseFormalParameter(i, 0); formalParameter != nil {
+		return &ast.PropertySetParameterList{
+			FormalParameter: formalParameter,
+		}
+	}
+
+	return nil
+}
+
 func parseUniqueFormalParameters(i *isolate, p param) *ast.UniqueFormalParameters {
 	if formalParameters := parseFormalParameters(i, p.only(pYield|pAwait)); formalParameters != nil {
 		return &ast.UniqueFormalParameters{
@@ -527,5 +537,141 @@ func parseAsyncFunctionBody(i *isolate, p param) *ast.AsyncFunctionBody {
 		}
 	}
 
+	return nil
+}
+
+func parseAsyncGeneratorDeclaration(i *isolate, p param) *ast.AsyncGeneratorDeclaration {
+	chck := i.checkpoint()
+
+	if p.is(pDefault) {
+		if i.acceptOneOfTypes(token.Async) {
+			if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+				if i.acceptOneOfTypes(token.Function) {
+					if i.acceptOneOfTypes(token.Asterisk) {
+						if i.acceptOneOfTypes(token.ParOpen) {
+							if formalParameters := parseFormalParameters(i, pYield|pAwait); formalParameters != nil {
+								if i.acceptOneOfTypes(token.ParClose) {
+									if i.acceptOneOfTypes(token.BraceOpen) {
+										if asyncGeneratorBody := parseAsyncGeneratorBody(i, 0); asyncGeneratorBody != nil {
+											if i.acceptOneOfTypes(token.BraceClose) {
+												return &ast.AsyncGeneratorDeclaration{
+													FormalParameters:   formalParameters,
+													AsyncGeneratorBody: asyncGeneratorBody,
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if i.acceptOneOfTypes(token.Async) {
+		if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+			if i.acceptOneOfTypes(token.Function) {
+				if i.acceptOneOfTypes(token.Asterisk) {
+					if bindingIdent := parseBindingIdentifier(i, p.only(pYield|pAwait)); bindingIdent != nil {
+						if i.acceptOneOfTypes(token.ParOpen) {
+							if formalParameters := parseFormalParameters(i, pYield|pAwait); formalParameters != nil {
+								if i.acceptOneOfTypes(token.ParClose) {
+									if i.acceptOneOfTypes(token.BraceOpen) {
+										if asyncGeneratorBody := parseAsyncGeneratorBody(i, 0); asyncGeneratorBody != nil {
+											if i.acceptOneOfTypes(token.BraceClose) {
+												return &ast.AsyncGeneratorDeclaration{
+													BindingIdentifier:  bindingIdent,
+													FormalParameters:   formalParameters,
+													AsyncGeneratorBody: asyncGeneratorBody,
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseAsyncGeneratorBody(i *isolate, p param) *ast.AsyncGeneratorBody {
+	if functionBody := parseFunctionBody(i, pYield|pAwait); functionBody != nil {
+		return &ast.AsyncGeneratorBody{
+			FunctionBody: functionBody,
+		}
+	}
+
+	return nil
+}
+
+func parseAsyncGeneratorMethod(i *isolate, p param) *ast.AsyncGeneratorMethod {
+	chck := i.checkpoint()
+
+	if i.acceptOneOfTypes(token.Async) {
+		if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+			if i.acceptOneOfTypes(token.Asterisk) {
+				if propertyName := parsePropertyName(i, p.only(pYield|pAwait)); propertyName != nil {
+					if i.acceptOneOfTypes(token.ParOpen) {
+						if uniqueFormalParameters := parseUniqueFormalParameters(i, pYield|pAwait); uniqueFormalParameters != nil {
+							if i.acceptOneOfTypes(token.ParClose) {
+								if i.acceptOneOfTypes(token.BraceOpen) {
+									if asyncGeneratorBody := parseAsyncGeneratorBody(i, 0); asyncGeneratorBody != nil {
+										if i.acceptOneOfTypes(token.BraceClose) {
+											return &ast.AsyncGeneratorMethod{
+												PropertyName:           propertyName,
+												UniqueFormalParameters: uniqueFormalParameters,
+												AsyncGeneratorBody:     asyncGeneratorBody,
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
+
+func parseAsyncMethod(i *isolate, p param) *ast.AsyncMethod {
+	chck := i.checkpoint()
+
+	if i.acceptOneOfTypes(token.Async) {
+		if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+			if propertyName := parsePropertyName(i, p.only(pYield|pAwait)); propertyName != nil {
+				if i.acceptOneOfTypes(token.ParOpen) {
+					if uniqueFormalParameters := parseUniqueFormalParameters(i, pAwait); uniqueFormalParameters != nil {
+						if i.acceptOneOfTypes(token.ParClose) {
+							if i.acceptOneOfTypes(token.BraceOpen) {
+								if asyncFunctionBody := parseAsyncFunctionBody(i, 0); asyncFunctionBody != nil {
+									if i.acceptOneOfTypes(token.BraceClose) {
+										return &ast.AsyncMethod{
+											PropertyName:           propertyName,
+											UniqueFormalParameters: uniqueFormalParameters,
+											AsyncFunctionBody:      asyncFunctionBody,
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
 	return nil
 }

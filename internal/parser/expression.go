@@ -677,3 +677,37 @@ func parseAsyncFunctionExpression(i *isolate, p param) *ast.AsyncFunctionExpress
 	i.restore(chck)
 	return nil
 }
+
+func parseAsyncGeneratorExpression(i *isolate, p param) *ast.AsyncGeneratorExpression {
+	chck := i.checkpoint()
+
+	if i.acceptOneOfTypes(token.Async) {
+		if !i.acceptOneOfTypes(token.LineTerminator) { // negative lookahead
+			if i.acceptOneOfTypes(token.Function) {
+				if i.acceptOneOfTypes(token.Asterisk) {
+					bindingIdent := parseBindingIdentifier(i, pYield|pAwait) // optional
+					if i.acceptOneOfTypes(token.ParOpen) {
+						if formalParameters := parseFormalParameters(i, pYield|pAwait); formalParameters != nil {
+							if i.acceptOneOfTypes(token.ParClose) {
+								if i.acceptOneOfTypes(token.BraceOpen) {
+									if asyncGeneratorBody := parseAsyncGeneratorBody(i, 0); asyncGeneratorBody != nil {
+										if i.acceptOneOfTypes(token.BraceClose) {
+											return &ast.AsyncGeneratorExpression{
+												BindingIdentifier:  bindingIdent,
+												FormalParameters:   formalParameters,
+												AsyncGeneratorBody: asyncGeneratorBody,
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	i.restore(chck)
+	return nil
+}
