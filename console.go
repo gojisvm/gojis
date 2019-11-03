@@ -2,6 +2,7 @@ package gojis
 
 import "io"
 
+// Console is an io.Writer that is also an Object.
 type Console interface {
 	io.Writer
 	Object
@@ -11,6 +12,7 @@ type console struct {
 	io.Writer
 }
 
+// NewConsole creates a ready to use console that can be used inside a VM.
 func NewConsole(w io.Writer) Console {
 	c := new(console)
 	c.Writer = w

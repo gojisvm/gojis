@@ -35,12 +35,9 @@ func NewVM() *VM {
 	}
 }
 
-func (vm *VM) Eval(script string) error {
-	panic("TODO")
-}
-
-func (vm *VM) EvalFile(path string) error {
-	panic("TODO")
+// Eval delegates to the builtin eval function of this VM's global object.
+func (vm *VM) Eval(script string) (Object, error) {
+	return vm.Object.Lookup("eval").CallWithArgs(script)
 }
 
 // SetConsole is used to change the console of the VM. Calls like 'console.log'
