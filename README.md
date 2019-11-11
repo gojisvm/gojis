@@ -8,6 +8,8 @@
         <br>
         <a href="https://www.codacy.com/app/gojisvm/gojis?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gojisvm/gojis&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/dd5507e3d34543e3a526b05aaea3eba8"></a>
         <a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fgojisvm%2Fgojis?ref=badge_shield"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fgojisvm%2Fgojis.svg?type=shield"></a>
+        <br>
+        <a href="https://travis-ci.com/gojisvm/gojis"><img src="https://img.shields.io/badge/-tip-informational"><img src="https://travis-ci.com/gojisvm/gojis.svg?branch=develop"></a>
     </p>
 </p>
 
