@@ -1,8 +1,17 @@
-# Gojis
+<p align="center">
+    <h1 align="center">Gojis</h1>
+    <p align="center">Pure Go ECMAScript interpreter.</p>
+    <p align="center">
+        <a href="https://github.com/gojisvm/gojis/actions"><img src="https://github.com/gojisvm/gojis/workflows/Build/badge.svg"></a>
+        <a href="https://github.com/gojisvm/gojis/actions"><img src="https://github.com/gojisvm/gojis/workflows/Tests/badge.svg"></a>
+        <a href="https://github.com/gojisvm/gojis/actions"><img src="https://github.com/gojisvm/gojis/workflows/Static%20analysis/badge.svg"></a>
+        <br>
+        <a href="https://www.codacy.com/app/gojisvm/gojis?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gojisvm/gojis&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/dd5507e3d34543e3a526b05aaea3eba8"></a>
+        <a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fgojisvm%2Fgojis?ref=badge_shield"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fgojisvm%2Fgojis.svg?type=shield"></a>
+    </p>
+</p>
 
-[![Build Status](https://api.travis-ci.com/gojisvm/gojis.svg?branch=develop)](https://travis-ci.com/gojisvm/gojis)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/dd5507e3d34543e3a526b05aaea3eba8)](https://www.codacy.com/app/gojisvm/gojis?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gojisvm/gojis&amp;utm_campaign=Badge_Grade)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fgojisvm%2Fgojis.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fgojisvm%2Fgojis?ref=badge_shield)
+---
 
 Gojis is an implementation of ECMAScript 2018 (ES 9). It basically is a JavaScript VM, just like
 [Goja](https://github.com/dop251/goja) or [Otto](https://github.com/robertkrimen/otto).
