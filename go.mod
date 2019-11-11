@@ -14,6 +14,6 @@ require (
 	golang.org/x/net v0.0.0-20190620200207-3b0461eec859 // indirect
 	golang.org/x/sys v0.0.0-20190422165155-953cdadca894 // indirect
 	golang.org/x/text v0.3.2
-	gopkg.in/yaml.v2 v2.2.4
+	gopkg.in/yaml.v2 v2.2.5
 	zombiezen.com/go/capnproto2 v2.17.0+incompatible
 )
