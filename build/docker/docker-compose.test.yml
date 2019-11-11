@@ -1,0 +1,7 @@
+version: '3'
+services:
+  sut:
+    build: .
+    command: |
+      echo "Testing image..."
+      echo "done"
