@@ -46,7 +46,7 @@ func _() {
 	_ = x[Import-35]
 	_ = x[In-36]
 	_ = x[Instanceof-37]
-	_ = x[New_-38]
+	_ = x[NewT-38]
 	_ = x[Return-39]
 	_ = x[Set-40]
 	_ = x[Static-41]

@@ -52,7 +52,7 @@ const (
 	Import     // 11.6.2.1
 	In         // 11.6.2.1
 	Instanceof // 11.6.2.1
-	New_       // 11.6.2.1
+	NewT       // 11.6.2.1
 	Return     // 11.6.2.1
 	Set
 	Static

@@ -78,7 +78,7 @@ var (
 		KeywordImport:          token.Import,
 		KeywordIn:              token.In,
 		KeywordInstanceof:      token.Instanceof,
-		KeywordNew:             token.New_,
+		KeywordNew:             token.NewT,
 		KeywordReturn:          token.Return,
 		KeywordStatic:          token.Static,
 		KeywordSuper:           token.Super,

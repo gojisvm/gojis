@@ -44,6 +44,10 @@ func newWithInitialState(input []byte, initial state) *Lexer {
 	}
 }
 
+// StartLexing starts the lexing process. This function recovers from all panics
+// that panic a lexer.Error. Any other panic will not be recovered from. After
+// this function was called, the lexer will start pushing tokens onto its token
+// stream.
 func (l *Lexer) StartLexing() (err error) {
 	defer l.tokens.Close()
 

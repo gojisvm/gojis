@@ -119,7 +119,7 @@ func parseNewExpression(i *isolate, p param) *ast.NewExpression {
 		}
 	}
 
-	if !i.acceptOneOfTypes(token.New_) {
+	if !i.acceptOneOfTypes(token.NewT) {
 		i.restore(chck)
 		return nil
 	}
@@ -223,7 +223,7 @@ func parseMetaProperty(i *isolate, p param) *ast.MetaProperty {
 
 func parseNewTarget(i *isolate, p param) *ast.NewTarget {
 	// new . target
-	if i.acceptOneOfTypes(token.New_) &&
+	if i.acceptOneOfTypes(token.NewT) &&
 		i.acceptOneOfTypes(token.Dot) &&
 		i.acceptOneOfTypes(token.Target) {
 		return &ast.NewTarget{}
@@ -271,7 +271,7 @@ func parseMemberExpression(i *isolate, p param) *ast.MemberExpression {
 		return &ast.MemberExpression{
 			MetaProperty: metaProperty,
 		}
-	} else if i.acceptOneOfTypes(token.New_) {
+	} else if i.acceptOneOfTypes(token.NewT) {
 		if memberExpression := parseMemberExpression(i, p.only(pYield|pAwait)); memberExpression != nil {
 			if arguments := parseArguments(i, p.only(pYield|pAwait)); arguments != nil {
 				return &ast.MemberExpression{

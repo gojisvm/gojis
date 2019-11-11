@@ -15,10 +15,14 @@ import (
 type Parser struct {
 }
 
+// New creates a new ready to use parser.
 func New() *Parser {
 	return &Parser{}
 }
 
+// ParseFiles parses all given files. The file must exist and must be a file
+// (not a directory). Effectively, all files will be parsed with
+// parser.Parser.ParseFile, and the resulting ASTs will be merged.
 func (p *Parser) ParseFiles(paths ...string) (*ast.Script, error) {
 	var asts []*ast.Script
 	for _, path := range paths {
@@ -31,6 +35,7 @@ func (p *Parser) ParseFiles(paths ...string) (*ast.Script, error) {
 	return ast.Merge(asts...), nil
 }
 
+// ParseFile parses the given file and returns the resulting AST.
 func (p *Parser) ParseFile(path string) (*ast.Script, error) {
 	f, err := os.Open(filepath.Clean(path))
 	if err != nil {
@@ -39,6 +44,9 @@ func (p *Parser) ParseFile(path string) (*ast.Script, error) {
 	return p.Parse(path, f)
 }
 
+// Parse parses frmo the given reader, which will be handled with the given
+// srcName as source name. If this method is used to parse a file, srcName
+// should be the file name.
 func (p *Parser) Parse(srcName string, r io.Reader) (*ast.Script, error) {
 	data, err := ioutil.ReadAll(r)
 	if err != nil {
