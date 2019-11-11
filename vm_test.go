@@ -16,7 +16,7 @@ func TestHelloWorld(t *testing.T) {
 	var buf bytes.Buffer
 	vm.SetConsole(gojis.NewConsole(&buf))
 
-	vm.Eval(`console.log("Hello World!");`)
+	_, _ = vm.Eval(`console.log("Hello World!");`)
 
 	golden.Equal(t, "TestHelloWorld", buf.Bytes())
 }
@@ -29,7 +29,7 @@ func TestInlineObject(t *testing.T) {
 	var buf bytes.Buffer
 	vm.SetConsole(gojis.NewConsole(&buf))
 
-	vm.Eval(`
+	_, _ = vm.Eval(`
 function foo(arg) {
 	console.log(arg.func());
 }

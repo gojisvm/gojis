@@ -14,7 +14,7 @@ func BenchmarkCreateObjectFromSnapshot(b *testing.B) {
 	var r interface{}
 
 	var buf bytes.Buffer
-	snapshot.Store(&buf, NewContainer())
+	_ = snapshot.Store(&buf, NewContainer())
 
 	b.ReportAllocs()
 	b.ResetTimer()

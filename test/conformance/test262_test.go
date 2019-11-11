@@ -45,7 +45,9 @@ func executeTest(t *testing.T, path string) {
 
 	file, err := os.Open(path)
 	require.NoError(err)
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 
 	req, err := test262.ParseHeader(file)
 	if err != nil {

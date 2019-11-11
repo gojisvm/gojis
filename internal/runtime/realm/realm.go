@@ -74,8 +74,8 @@ func CreateIntrinsics(r *Realm) lang.InternalValue {
 // AddRestrictedFunctionProperties adds restricted function properties to the
 // given object within this realm as specified in 9.2.9.
 func (r *Realm) AddRestrictedFunctionProperties(f *lang.Object) {
-	lang.DefinePropertyOrThrow(f, lang.NewStringOrSymbol(lang.NewString("caller")), lang.NewAccessorProperty(nil, nil, false, true))
-	lang.DefinePropertyOrThrow(f, lang.NewStringOrSymbol(lang.NewString("arguments")), lang.NewAccessorProperty(nil, nil, false, true))
+	_, _ = lang.DefinePropertyOrThrow(f, lang.NewStringOrSymbol(lang.NewString("caller")), lang.NewAccessorProperty(nil, nil, false, true))
+	_, _ = lang.DefinePropertyOrThrow(f, lang.NewStringOrSymbol(lang.NewString("arguments")), lang.NewAccessorProperty(nil, nil, false, true))
 }
 
 // GetIntrinsicObject returns the intrinsic object of the realm specified by the

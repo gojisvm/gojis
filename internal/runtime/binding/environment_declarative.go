@@ -106,8 +106,8 @@ func (e *DeclarativeEnvironment) SetMutableBinding(n lang.String, val lang.Value
 			return errors.NewReferenceError("Cannot set mutable binding in strict mode if binding does not exist")
 		}
 
-		e.CreateMutableBinding(n, true)
-		e.InitializeBinding(n, val)
+		_ = e.CreateMutableBinding(n, true)
+		_ = e.InitializeBinding(n, val)
 		return nil
 	}
 

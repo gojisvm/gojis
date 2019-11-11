@@ -28,7 +28,7 @@ func benchmarkPush(s Stack) func(b *testing.B) {
 func benchmarkPushLarge(s Stack) func(b *testing.B) {
 	return func(b *testing.B) {
 		var data [8192]byte
-		rand.Read(data[:])
+		_, _ = rand.Read(data[:])
 
 		type t struct {
 			data [8192]byte

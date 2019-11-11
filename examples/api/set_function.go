@@ -9,27 +9,27 @@ func main() {
 	vm := gojis.NewVM()
 
 	vm.SetFunction("greet", func(gojis.Args) gojis.Object {
-		vm.Eval(`console.log("Hello World!");`)
+		_, _ = vm.Eval(`console.log("Hello World!");`)
 
 		// or
 
-		vm.Lookup("eval").CallWithArgs(`console.log("Hello World!");`)
+		_, _ = vm.Lookup("eval").CallWithArgs(`console.log("Hello World!");`)
 
 		// or
 
-		vm.Lookup("console").Lookup("log").CallWithArgs("Hello", "World!")
+		_, _ = vm.Lookup("console").Lookup("log").CallWithArgs("Hello", "World!")
 
 		// or
 
 		console := vm.Lookup("console")
 		consoleLog := console.Lookup("log")
-		consoleLog.CallWithArgs("Hello", "World!")
-		consoleLog.CallWithArgs("I am reusable!")
+		_, _ = consoleLog.CallWithArgs("Hello", "World!")
+		_, _ = consoleLog.CallWithArgs("I am reusable!")
 
 		return gojis.Undefined
 	})
 
-	vm.Eval(`greet();`)
+	_, _ = vm.Eval(`greet();`)
 	/*
 		prints:
 		Hello World!
@@ -56,4 +56,6 @@ func main() {
 
 		return nil
 	})
+
+	_, _ = vm.Eval(`alert("Hello");`)
 }
