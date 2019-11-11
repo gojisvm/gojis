@@ -14,11 +14,11 @@ func BenchmarkString(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		r = matcher.Matches('2')
-		r = matcher.Matches('d')
-		r = matcher.Matches('u')
-		r = matcher.Matches('F')
-		r = matcher.Matches('U')
+		r = matcher.Matches('2') &&
+			matcher.Matches('d') &&
+			matcher.Matches('u') &&
+			matcher.Matches('F') &&
+			matcher.Matches('U')
 	}
 
 	result = r
@@ -36,11 +36,11 @@ func BenchmarkMerge(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		r = matcher.Matches('2')
-		r = matcher.Matches('d')
-		r = matcher.Matches('u')
-		r = matcher.Matches('F')
-		r = matcher.Matches('U')
+		r = matcher.Matches('2') &&
+			matcher.Matches('d') &&
+			matcher.Matches('u') &&
+			matcher.Matches('F') &&
+			matcher.Matches('U')
 	}
 
 	result = r
