@@ -1,3 +1,4 @@
+// Package lexer provides means to lex ECMAScript code.
 package lexer
 
 import (

@@ -186,7 +186,7 @@ func parseArrayLiteral(i *isolate, p param) *ast.ArrayLiteral {
 func parseElementList(i *isolate, p param) *ast.ElementList {
 	chck := i.checkpoint()
 
-	if elementList := parseElementList(i, p.only(pYield|pAwait)); elementList != nil {
+	if elementList := parseElementList(i, p.only(pYield|pAwait)); elementList != nil { // #85
 		if i.acceptOneOfTypes(token.Comma) {
 			elision := parseElision(i, 0)
 			if assignmentExpr := parseAssignmentExpression(i, p.only(pYield|pAwait).add(pIn)); assignmentExpr != nil {

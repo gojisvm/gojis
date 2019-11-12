@@ -1,3 +1,4 @@
+// Package parser implements means to create an AST from a given input source.
 package parser
 
 import (
