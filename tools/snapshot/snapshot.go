@@ -188,7 +188,15 @@ func toInternalNested(ptr unsafe.Pointer, t reflect.Type) *internalNested {
 }
 
 func bytesAt(p unsafe.Pointer, size uintptr) []byte {
-	return (*(*[1<<31 - 1]byte)(p))[:size]
+	return *(*[]byte)(
+		unsafe.Pointer(
+			&reflect.SliceHeader{
+				Data: uintptr(p),
+				Len:  int(size),
+				Cap:  int(size),
+			},
+		),
+	)
 }
 
 type nestedPtr struct {
