@@ -26,10 +26,13 @@ func Load(b []byte, v interface{}, size uintptr) error {
 	}
 
 	sn, err := ReadRootSnapshot(msg)
+	if err != nil {
+		return fmt.Errorf("ReadRootSnapshot: %v", err)
+	}
 
 	root, err := sn.Nested()
 	if err != nil {
-		return fmt.Errorf("Load(root): %v", err)
+		return fmt.Errorf("Load Nested: %v", err)
 	}
 
 	err = loadTo(&data, root)
@@ -76,11 +79,14 @@ func Store(w io.Writer, v interface{}) error {
 	}
 
 	sn, err := storeToCapnp(v, seg)
-	_ = msg.SetRoot(sn)
+	if err != nil {
+		return fmt.Errorf("Store: %v", err)
+	}
+	_ = msg.SetRootPtr(sn.ToPtr())
 
 	err = encodeCapnp(w, msg)
 	if err != nil {
-		return fmt.Errorf("Store: %v", err)
+		return fmt.Errorf("encodeCapnp: %v", err)
 	}
 
 	return nil
@@ -121,21 +127,24 @@ func storeToCapnp(v interface{}, s *capnp.Segment) (Snapshot, error) {
 func storeNestedInSegment(internalNested *internalNested, s *capnp.Segment) (Nested, error) {
 	nested, err := NewNested(s)
 	if err != nil {
-		return nested, fmt.Errorf("storeNestedInSegment: %v", err)
+		return nested, fmt.Errorf("NewNested: %v", err)
 	}
 
 	pointers, err := NewPointer_List(s, int32(len(internalNested.targets)))
 	if err != nil {
-		return nested, fmt.Errorf("storeNestedInSegment: %v", err)
+		return nested, fmt.Errorf("NewPointer_List: %v", err)
 	}
 
 	for i, targets := range internalNested.targets {
 		pointer, err := NewPointer(s)
 		if err != nil {
-			return nested, fmt.Errorf("storeNestedInSegment: %v", err)
+			return nested, fmt.Errorf("NewPointer: %v", err)
 		}
 
 		next, err := storeNestedInSegment(targets.target, s)
+		if err != nil {
+			return nested, fmt.Errorf("storeNestedInSegment: %v", err)
+		}
 
 		pointer.SetOffset(targets.offset)
 		_ = pointer.SetTarget(next)
@@ -153,7 +162,7 @@ func storeNestedInSegment(internalNested *internalNested, s *capnp.Segment) (Nes
 func encodeCapnp(w io.Writer, msg *capnp.Message) error {
 	err := capnp.NewEncoder(w).Encode(msg)
 	if err != nil {
-		return fmt.Errorf("encodeCapnp: %v", err)
+		return fmt.Errorf("encode: %v", err)
 	}
 	return nil
 }
