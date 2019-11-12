@@ -196,7 +196,7 @@ func bytesAt(p unsafe.Pointer, size uintptr) []byte {
 				Cap:  int(size),
 			},
 		),
-	)
+	) // #nosec
 }
 
 type nestedPtr struct {
