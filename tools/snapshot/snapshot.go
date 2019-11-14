@@ -196,16 +196,12 @@ func toInternalNested(ptr unsafe.Pointer, t reflect.Type) *internalNested {
 	return result
 }
 
-func bytesAt(p unsafe.Pointer, size uintptr) []byte {
-	return *(*[]byte)(
-		unsafe.Pointer(
-			&reflect.SliceHeader{
-				Data: uintptr(p),
-				Len:  int(size),
-				Cap:  int(size),
-			},
-		),
-	) // #nosec
+func bytesAt(p unsafe.Pointer, size uintptr) (s []byte) {
+	sh := (*reflect.SliceHeader)(unsafe.Pointer(&s)) // #nosec
+	sh.Data = uintptr(p)
+	sh.Len = int(size)
+	sh.Cap = int(size)
+	return
 }
 
 type nestedPtr struct {

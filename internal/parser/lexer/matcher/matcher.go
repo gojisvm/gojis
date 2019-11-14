@@ -1,3 +1,5 @@
+// Package matcher implements matchers that efficiently let you determine
+// whether a rune is part of a previously defined rune set.
 package matcher
 
 import (

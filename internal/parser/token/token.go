@@ -1,3 +1,5 @@
+// Package token contains token types and a token stream implementation that can
+// be used by lexers and parsers.
 package token
 
 import "fmt"
