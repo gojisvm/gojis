@@ -8,7 +8,7 @@ import (
 
 func Test_lexToken(t *testing.T) {
 	_misc().Execute(t)
-	// _punctuators().Execute(t)
+	_punctuators().Execute(t)
 }
 
 func _misc() TokenSequenceTests {
