@@ -20,6 +20,7 @@ func _misc() TokenSequenceTests {
 			{"/regex(p?)/", []token.Type{token.Slash, token.RegularExpressionBody, token.Slash, token.RegularExpressionFlags}}, // expect flags token although there is none, because the specification states that the flags can be empty
 			{"/regex(p?)/g", []token.Type{token.Slash, token.RegularExpressionBody, token.Slash, token.RegularExpressionFlags}},
 			{"console.log()", []token.Type{token.IdentifierName, token.Dot, token.IdentifierName, token.ParOpen, token.ParClose}},
+			{"console.log();", []token.Type{token.IdentifierName, token.Dot, token.IdentifierName, token.ParOpen, token.ParClose, token.SemiColon}},
 		},
 	}
 }
