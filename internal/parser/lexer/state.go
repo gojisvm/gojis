@@ -32,6 +32,8 @@ func lexToken(l *Lexer) state {
 		}
 	case '\\': // backslash or identifierStart (handled in default)
 		return lexIdentifierName
+	case '}':
+		return lexPunctuator
 	case 'n': // null
 		peeked, ok := l.peekN(4)
 		if !ok {
@@ -84,6 +86,9 @@ func lexToken(l *Lexer) state {
 		}
 		if punctuatorStart.Matches(r) {
 			return lexPunctuator
+		}
+		if whiteSpace.Matches(r) {
+			return lexWhitespace
 		}
 	}
 	return unexpectedToken

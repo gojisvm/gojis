@@ -21,6 +21,7 @@ func _misc() TokenSequenceTests {
 			{"/regex(p?)/g", []token.Type{token.Slash, token.RegularExpressionBody, token.Slash, token.RegularExpressionFlags}},
 			{"console.log()", []token.Type{token.IdentifierName, token.Dot, token.IdentifierName, token.ParOpen, token.ParClose}},
 			{"console.log();", []token.Type{token.IdentifierName, token.Dot, token.IdentifierName, token.ParOpen, token.ParClose, token.SemiColon}},
+			{"function foo(arg1, arg2, arg3) {}", []token.Type{token.Function, token.Whitespace, token.IdentifierName, token.ParOpen, token.IdentifierName, token.Comma, token.Whitespace, token.IdentifierName, token.Comma, token.Whitespace, token.IdentifierName, token.ParClose, token.Whitespace, token.BraceOpen, token.BraceClose}},
 		},
 	}
 }
