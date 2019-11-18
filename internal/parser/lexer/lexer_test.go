@@ -1,9 +1,13 @@
 package lexer
 
 import (
+	"bytes"
+	"io/ioutil"
+	"path/filepath"
 	"testing"
 
 	"github.com/gojisvm/gojis/internal/parser/token"
+	"github.com/gojisvm/gojis/tools/golden"
 	"github.com/stretchr/testify/require"
 )
 
@@ -100,5 +104,49 @@ func testWithDataAndState(data []byte, initial state) {
 
 	for range l.TokenStream().Tokens() {
 		// drain all tokens
+	}
+}
+
+func TestGolden(t *testing.T) {
+	require := require.New(t)
+
+	files, err := filepath.Glob("testdata/*.js")
+	require.NoError(err)
+
+	for _, file := range files {
+		t.Run(file, testGoldenSingleFile(file))
+	}
+}
+
+func testGoldenSingleFile(file string) func(*testing.T) {
+	return func(t *testing.T) {
+		require := require.New(t)
+
+		data, err := ioutil.ReadFile(file)
+		require.NoError(err)
+
+		l := New(data)
+
+		go func() {
+			err := l.StartLexing()
+			if err != nil {
+				panic(err)
+			}
+		}()
+
+		// read all tokens
+		var tokens []token.Token
+		for t := range l.TokenStream().Tokens() {
+			tokens = append(tokens, t)
+		}
+
+		// generate string from token sequence
+		var buf bytes.Buffer
+		for _, token := range tokens {
+			buf.WriteString(token.Type.String())
+			buf.WriteString("\n")
+		}
+
+		golden.Equal(t, filepath.Base(file), buf.Bytes())
 	}
 }
