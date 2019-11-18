@@ -7,7 +7,21 @@ import (
 )
 
 func Test_lexToken(t *testing.T) {
-	_punctuators().Execute(t)
+	_misc().Execute(t)
+	// _punctuators().Execute(t)
+}
+
+func _misc() TokenSequenceTests {
+	return TokenSequenceTests{
+		name: "miscellaneous tests",
+		tests: []TokenSequenceTest{
+			{"// comment", []token.Type{token.SingleLineComment}},
+			{"/* comment */", []token.Type{token.MultiLineComment}},
+			{"/regex(p?)/", []token.Type{token.Slash, token.RegularExpressionBody, token.Slash, token.RegularExpressionFlags}}, // expect flags token although there is none, because the specification states that the flags can be empty
+			{"/regex(p?)/g", []token.Type{token.Slash, token.RegularExpressionBody, token.Slash, token.RegularExpressionFlags}},
+			{"console.log()", []token.Type{token.IdentifierName, token.Dot, token.IdentifierName, token.ParOpen, token.ParClose}},
+		},
+	}
 }
 
 func _punctuators() TokenSequenceTests {

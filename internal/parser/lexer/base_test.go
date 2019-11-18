@@ -33,6 +33,9 @@ func (s TokenSequenceTests) Execute(t *testing.T) {
 			var wg sync.WaitGroup
 
 			l := newWithInitialState([]byte(test.data), lexToken)
+			l.stateHook = func(name string) {
+				t.Logf("entering state: %v", name)
+			}
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
@@ -43,7 +46,7 @@ func (s TokenSequenceTests) Execute(t *testing.T) {
 
 			var cnt int
 			for next := range l.TokenStream().Tokens() {
-				t.Logf("cnt: %v, recv: %v", cnt, next.Type.String())
+				t.Logf("cnt: %v, recv: %v(%v)", cnt, next.Type.String(), next.Value)
 				require.Less(cnt, len(test.types), "Received more tokens than expected")
 
 				require.Equalf(test.types[cnt], next.Type, "Did not receive expected token type, expected %v, but got %v", test.types[cnt], next.Type)

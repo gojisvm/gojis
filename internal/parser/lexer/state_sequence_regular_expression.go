@@ -60,7 +60,19 @@ func acceptRegularExpressionBackslashSequence(l *Lexer) state {
 }
 
 func acceptRegularExpressionClass(l *Lexer) state {
-	panic("TODO")
+	if !l.accept(bracketOpen) {
+		return tokenMismatch(bracketOpen)
+	}
+
+	if ok, err := l.acceptEnclosed(acceptRegularExpressionChars); !ok {
+		return err
+	}
+
+	if !l.accept(bracketClose) {
+		return tokenMismatch(bracketClose)
+	}
+
+	return nil
 }
 
 func acceptRegularExpressionClassChars(l *Lexer) state {

@@ -33,36 +33,47 @@ func lexPunctuator(l *Lexer) state {
 	case ',':
 		_ = l.next() // consume the rune
 		l.emit(token.Comma)
+		return lexToken
 	case ';':
 		_ = l.next() // consume the rune
 		l.emit(token.SemiColon)
+		return lexToken
 	case ':':
 		_ = l.next() // consume the rune
 		l.emit(token.Colon)
+		return lexToken
 	case '?':
 		_ = l.next() // consume the rune
 		l.emit(token.QuestionMark)
+		return lexToken
 	case '(':
 		_ = l.next() // consume the rune
 		l.emit(token.ParOpen)
+		return lexToken
 	case ')':
 		_ = l.next() // consume the rune
 		l.emit(token.ParClose)
+		return lexToken
 	case '[':
 		_ = l.next() // consume the rune
 		l.emit(token.BracketOpen)
+		return lexToken
 	case ']':
 		_ = l.next() // consume the rune
 		l.emit(token.BracketClose)
+		return lexToken
 	case '{':
 		_ = l.next() // consume the rune
 		l.emit(token.BraceOpen)
+		return lexToken
 	case '}':
 		_ = l.next() // consume the rune
 		l.emit(token.BraceClose)
+		return lexToken
 	case '~':
 		_ = l.next() // consume the rune
 		l.emit(token.Tilde)
+		return lexToken
 	}
 	return tokenMismatch(punctuatorStart)
 }

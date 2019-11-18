@@ -3,6 +3,8 @@ package lexer
 
 import (
 	"fmt"
+	"reflect"
+	"runtime"
 
 	"github.com/gojisvm/gojis/internal/parser/lexer/matcher"
 	"github.com/gojisvm/gojis/internal/parser/token"
@@ -20,8 +22,9 @@ type Lexer struct {
 	start int
 	pos   int
 
-	current state
-	tokens  *token.Stream
+	current   state
+	stateHook func(string)
+	tokens    *token.Stream
 
 	unreads uint64
 }
@@ -63,6 +66,10 @@ func (l *Lexer) StartLexing() (err error) {
 	}()
 
 	for {
+		if l.stateHook != nil {
+			l.stateHook(functionName(l.current))
+		}
+
 		l.current = l.current(l)
 		if l.current == nil {
 			// last state was end state
@@ -71,6 +78,10 @@ func (l *Lexer) StartLexing() (err error) {
 	}
 
 	return
+}
+
+func functionName(i interface{}) string {
+	return runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
 }
 
 // eof determines whether the position marker of the lexer has reached the end
@@ -149,6 +160,19 @@ func (l *Lexer) peekN(n uint) ([]rune, bool) {
 	}
 
 	return l.input[l.pos : l.pos+int(n)], true
+}
+
+func (l *Lexer) peekWords(words ...string) bool {
+	for _, word := range words {
+		peeked, ok := l.peekN(uint(len(word)))
+		if !ok {
+			continue
+		}
+		if word == string(peeked) {
+			return true
+		}
+	}
+	return false
 }
 
 // lookahead return the rune n places after the current lexer position.

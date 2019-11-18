@@ -137,7 +137,12 @@ func acceptLineTerminatorSequence(l *Lexer) state {
 }
 
 func acceptIdentifierPart(l *Lexer) state {
-	for l.acceptMultiple(identifierPartPartial) > 0 {
+	for {
+		found := l.acceptMultiple(identifierPartPartial)
+		if found < 1 {
+			return tokenMismatch(identifierPartPartial)
+		}
+
 		if l.accept(backslash) {
 			errState := acceptUnicodeEscapeSequence(l)
 			if errState != nil {
