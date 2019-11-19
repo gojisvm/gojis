@@ -8,5 +8,5 @@ func lexReservedWord(l *Lexer) state {
 			return lexToken
 		}
 	}
-	return errorf("Unexpected token '%s', expected reserved word", string(l.peek()))
+	return unexpectedToken
 }

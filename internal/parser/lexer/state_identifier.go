@@ -20,10 +20,23 @@ func lexIdentifierStart(l *Lexer) state {
 }
 
 func lexIdentifierPart(l *Lexer) state {
-	if ok, errState := l.acceptEnclosed(acceptIdentifierPart); !ok {
-		return errState
+	for l.acceptMultiple(identifierPartPartial) > 0 {
+		if l.accept(backslash) {
+			// next sequence must be a unicode escape sequence
+			errState := acceptUnicodeEscapeSequence(l)
+			if errState != nil {
+				return errState
+			}
+		}
 	}
 
-	l.emit(token.IdentifierName)
+	// check if the identifier is a reserved word, and if so, emit it as such
+	accepted := string(l.input[l.start:l.pos])
+	if t, ok := allReservedWords[accepted]; ok {
+		l.emit(t)
+	} else {
+		// identifier is not a reserved word, thus emit it as identifier name
+		l.emit(token.IdentifierName)
+	}
 	return lexToken
 }

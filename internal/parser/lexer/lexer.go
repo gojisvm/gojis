@@ -162,19 +162,6 @@ func (l *Lexer) peekN(n uint) ([]rune, bool) {
 	return l.input[l.pos : l.pos+int(n)], true
 }
 
-func (l *Lexer) peekWords(words ...string) bool {
-	for _, word := range words {
-		peeked, ok := l.peekN(uint(len(word)))
-		if !ok {
-			continue
-		}
-		if word == string(peeked) {
-			return true
-		}
-	}
-	return false
-}
-
 // lookahead return the rune n places after the current lexer position.
 // l.lookahead(0) is equal to l.peek(), l.lookahead(4) is equal to
 // l.peekN(5)[4]. If the requested rune is beyong the lexer's eof, (rune(0),

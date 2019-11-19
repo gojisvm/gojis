@@ -53,6 +53,15 @@ func lexNumericLiteral(l *Lexer) state {
 	return lexDecimalLiteral
 }
 
+func lexSignedInteger(l *Lexer) state {
+	l.acceptOneOf(plus, dash) // optional sign
+	if l.acceptMultiple(decimalDigit) < 1 {
+		return tokenMismatch(decimalDigit)
+	}
+	l.emit(token.SignedInteger)
+	return lexToken
+}
+
 func lexDecimalLiteral(l *Lexer) state {
 	if l.accept(dot) {
 		if l.acceptMultiple(decimalDigit) < 1 {
@@ -71,7 +80,7 @@ func lexDecimalIntegerLiteral(l *Lexer) state {
 
 	// zero has already been accepted in lexNumericLiteral
 	if !l.accept(nonZeroDigit) {
-		return tokenMismatch(nonZeroDigit)
+		return lexOptionalExponentPart // only a zero, advance to exponent
 	}
 	l.acceptMultiple(decimalDigit)
 
@@ -176,8 +185,11 @@ func lexRegularExpressionLiteral(l *Lexer) state {
 	}
 	l.emit(token.Slash)
 
-	if ok, errState := l.acceptEnclosed(acceptRegularExpressionBody); !ok {
-		return errState
+	if ok, _ := l.acceptEnclosed(acceptRegularExpressionBody); !ok {
+		// there was no regular expression body, so the slash is emitted, but
+		// regexp lexing stops here. the parser has to interpret the emitted
+		// slash as a division symbol.
+		return lexToken
 	}
 	l.emit(token.RegularExpressionBody)
 

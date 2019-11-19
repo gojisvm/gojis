@@ -2,6 +2,7 @@ package lexer
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"testing"
@@ -110,7 +111,7 @@ func testWithDataAndState(data []byte, initial state) {
 func TestGolden(t *testing.T) {
 	require := require.New(t)
 
-	files, err := filepath.Glob("testdata/*.js")
+	files, err := filepath.Glob("testdata/test007.js")
 	require.NoError(err)
 
 	for _, file := range files {
@@ -126,11 +127,16 @@ func testGoldenSingleFile(file string) func(*testing.T) {
 		require.NoError(err)
 
 		l := New(data)
+		l.stateHook = func(name string) {
+			t.Logf("entering state: %v", name)
+			row, col := rowAndCol(l.pos, l)
+			fmt.Printf("entering state: %v (%v:%v)\n", name, row, col)
+		}
 
 		go func() {
 			err := l.StartLexing()
 			if err != nil {
-				panic(err)
+				require.NoError(err)
 			}
 		}()
 

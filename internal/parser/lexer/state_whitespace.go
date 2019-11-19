@@ -8,3 +8,10 @@ func lexWhitespace(l *Lexer) state {
 	}
 	return lexToken
 }
+
+func lexLineTerminator(l *Lexer) state {
+	if l.accept(lineTerminator) {
+		l.emit(token.LineTerminator)
+	}
+	return lexToken
+}

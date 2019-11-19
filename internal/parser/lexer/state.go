@@ -34,16 +34,9 @@ func lexToken(l *Lexer) state {
 		return lexIdentifierName
 	case '}':
 		return lexPunctuator
-	case 'n': // null
-		peeked, ok := l.peekN(4)
-		if !ok {
-			return unexpectedToken
-		}
-		if string(peeked) == "null" {
-			return lexNull
-		}
-		return lexReservedWord
-	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '.':
+	case '"', '\'', '`':
+		return lexStringLiteral
+	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.':
 		next, ok := l.lookahead(1)
 		if !ok {
 			return unexpectedToken
@@ -53,29 +46,18 @@ func lexToken(l *Lexer) state {
 			return lexPunctuator
 		}
 		return lexNumericLiteral
-	case 't': // true
-		peeked, ok := l.peekN(4)
+	case '+', '-':
+		next, ok := l.lookahead(1)
 		if !ok {
 			return unexpectedToken
 		}
-		if string(peeked) == "true" {
-			return lexBoolean
+
+		if whiteSpace.Matches(next) {
+			return lexPunctuator
+		} else if decimalDigit.Matches(next) {
+			return lexSignedInteger
 		}
-		fallthrough
-	case 'f': //false
-		peeked, ok := l.peekN(5)
-		if !ok {
-			return unexpectedToken
-		}
-		if string(peeked) == "false" {
-			return lexBoolean
-		}
-		fallthrough
-	case 'a', 'b', 'c', 'd', 'e', 'i', 'r', 's', 'v', 'w', 'y': // f, n, t are handled in separate cases because of null, true, false
-		if l.peekWords(allReservedWordsSlice...) {
-			return lexReservedWord
-		}
-		fallthrough
+		return lexPunctuator
 	default:
 		// handle all cases that cannot be expressed in a switch block. for
 		// optimization, matcher matches from here can be converted to cases if
@@ -89,6 +71,9 @@ func lexToken(l *Lexer) state {
 		}
 		if whiteSpace.Matches(r) {
 			return lexWhitespace
+		}
+		if lineTerminator.Matches(r) {
+			return lexLineTerminator
 		}
 	}
 	return unexpectedToken

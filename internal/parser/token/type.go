@@ -82,6 +82,7 @@ const (
 	BinaryIntegerLiteral // 11.8.3
 	OctalIntegerLiteral  // 11.8.3
 	HexIntegerLiteral    // 11.8.3
+	SignedInteger        // 11.8.3
 
 	RegularExpressionBody // 11.8.5
 	RegularExpressionFlags

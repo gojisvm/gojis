@@ -98,11 +98,13 @@ func acceptRegularExpressionClassChar(l *Lexer) state {
 
 func acceptRegularExpressionFlags(l *Lexer) state {
 	// zero or more IdentifierPart
-	var ok bool
-	for {
-		ok, _ = l.acceptEnclosed(acceptIdentifierPart)
-		if !ok {
-			break
+	for l.acceptMultiple(identifierPartPartial) > 0 {
+		if l.accept(backslash) {
+			// next sequence must be a unicode escape sequence
+			errState := acceptUnicodeEscapeSequence(l)
+			if errState != nil {
+				return errState
+			}
 		}
 	}
 	return nil
