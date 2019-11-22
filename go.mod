@@ -3,6 +3,7 @@ module github.com/gojisvm/gojis
 go 1.13
 
 require (
+	github.com/davecgh/go-spew v1.1.1
 	github.com/google/uuid v1.1.1
 	github.com/philhofer/fwd v1.0.0 // indirect
 	github.com/pkg/profile v1.4.0

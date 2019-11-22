@@ -233,6 +233,7 @@ func parseNewTarget(i *isolate, p param) *ast.NewTarget {
 
 func parseMemberExpression(i *isolate, p param) *ast.MemberExpression {
 	chck := i.checkpoint()
+	return nil
 
 	if primaryExpression := parsePrimaryExpression(i, p.only(pYield|pAwait)); primaryExpression != nil {
 		return &ast.MemberExpression{
@@ -487,8 +488,7 @@ func parseYieldExpression(i *isolate, p param) *ast.YieldExpression {
 
 	if i.acceptOneOfTypes(token.Yield) {
 		// ensure that no line terminator ahead
-		if i.acceptOneOfTypes(token.LineTerminator) {
-			i.unread()
+		if !i.negativeLookahead(token.LineTerminator) {
 			return &ast.YieldExpression{}
 		}
 

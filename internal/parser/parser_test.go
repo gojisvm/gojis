@@ -1,12 +1,47 @@
 package parser
 
 import (
+	"bytes"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/stretchr/testify/require"
 )
+
+func TestGolden(t *testing.T) {
+	require := require.New(t)
+
+	files, err := filepath.Glob("testdata/*.js")
+	require.NoError(err)
+
+	for _, file := range files {
+		t.Run(file, testGoldenSingleFile(file))
+	}
+}
+
+func testGoldenSingleFile(file string) func(*testing.T) {
+	return func(t *testing.T) {
+		require := require.New(t)
+
+		data, err := ioutil.ReadFile(file)
+		require.NoError(err)
+
+		p := New()
+		// reading the file and then creating a byte reader removes the possibility that the parser fails at reading the file
+		ast, err := p.Parse(file, bytes.NewReader(data))
+		require.NoError(err)
+
+		spew.Dump(ast)
+		t.Fail()
+	}
+}
+
+// ============================================
+// == as of this point, test262 parser tests ==
+// ============================================
 
 const basePath = "test262-parser-tests"
 

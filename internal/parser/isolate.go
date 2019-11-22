@@ -4,23 +4,20 @@ import (
 	"fmt"
 
 	"github.com/gojisvm/gojis/internal/parser/ast"
-	"github.com/gojisvm/gojis/internal/parser/lexer"
 	"github.com/gojisvm/gojis/internal/parser/token"
 )
 
 type isolate struct {
 	sourceName string
-	lx         *lexer.Lexer
-
-	tokens []token.Token
-	pos    int
+	input      []rune
+	start      int
+	pos        int
 }
 
 func newIsolate(sourceName string, input []byte) *isolate {
-	lx := lexer.New(input)
 	return &isolate{
 		sourceName: sourceName,
-		lx:         lx,
+		input:      []rune(string(input)),
 	}
 }
 
@@ -35,50 +32,38 @@ func (i *isolate) fatal(msg string) {
 }
 
 func (i *isolate) done() bool {
-	return i.pos >= len(i.tokens)
+	return i.pos >= len(i.input)
 }
 
-func (i *isolate) next() (token.Token, bool) {
-	if i.done() {
-		return token.Token{}, false
-	}
-
-	t := i.tokens[i.pos]
-	i.pos++
-	return t, true
-}
-
-func (i *isolate) unread() {
-	if i.pos-1 < 0 {
-		// noop, cannot unread
-		return
-	}
-
-	i.pos--
+// collect collects all accepted runes and returns them as a token. After that,
+// it sets the start position to the current position.
+func (i *isolate) collect(t token.Type) token.Token {
+	tk := token.New(
+		t,                              // token type
+		string(i.input[i.start:i.pos]), // token value
+		i.start,                        // token start pos
+		i.pos-i.start,                  // token length
+	)
+	i.start = i.pos
+	return tk
 }
 
 func (i *isolate) accept(t token.Type) (token.Token, bool) {
-	next, ok := i.next()
-	if !ok || next.Type != t {
-		i.unread()
-		return token.Token{}, false
+	if i.lexForToken(t) {
+		return i.collect(t), true
 	}
-	return next, true
+	return token.Token{}, false
 }
 
 func (i *isolate) acceptOneOf(ts ...token.Type) (token.Token, bool) {
-	next, ok := i.next()
-	if !ok {
-		return token.Token{}, false
-	}
+	chck := i.checkpoint()
 
 	for _, t := range ts {
-		if next.Type == t {
-			return next, true
+		if t, ok := i.accept(t); ok {
+			return t, ok
 		}
+		i.restore(chck)
 	}
-
-	i.unread()
 	return token.Token{}, false
 }
 
@@ -98,31 +83,26 @@ func (i *isolate) acceptOneOfTypes(ts ...token.Type) bool {
 // or a whitespace. It will return true if the negative lookahead is successful.
 // This method will not consume any tokens.
 func (i *isolate) negativeLookahead(ts ...token.Type) bool {
-	next, ok := i.next()
-	if !ok {
-		return false
-	}
-	i.unread()
+	chck := i.checkpoint()
+	defer i.restore(chck)
 
-	for _, t := range ts {
-		if t == next.Type {
-			return false
-		}
-	}
-	return true
+	return !i.acceptOneOfTypes(ts...)
 }
 
 type checkpoint struct {
-	pos int
+	start int
+	pos   int
 }
 
 func (i *isolate) checkpoint() checkpoint {
 	return checkpoint{
-		pos: i.pos,
+		start: i.start,
+		pos:   i.pos,
 	}
 }
 
 func (i *isolate) restore(chck checkpoint) {
+	i.start = chck.start
 	i.pos = chck.pos
 }
 
@@ -138,17 +118,6 @@ func (i *isolate) parse() (script *ast.Script, err error) {
 			err = parseError
 		}
 	}()
-
-	go func() {
-		err := i.lx.StartLexing()
-		if err != nil {
-			i.fatalf("Lexer failed: %v", err)
-		}
-	}()
-
-	for t := range i.lx.TokenStream().Tokens() {
-		i.tokens = append(i.tokens, t)
-	}
 
 	script = i.parseScript()
 	return

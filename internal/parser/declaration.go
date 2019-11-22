@@ -62,6 +62,7 @@ func parseVariableDeclarationList(i *isolate, p param) *ast.VariableDeclarationL
 
 	first := parseVariableDeclaration(i, p.only(pYield|pAwait|pReturn)) // variable declaration list consists of at least one entry
 	if first == nil {
+		i.restore(chck)
 		return nil
 	}
 	decls = append(decls, first)
@@ -70,8 +71,8 @@ func parseVariableDeclarationList(i *isolate, p param) *ast.VariableDeclarationL
 		beforeComma := i.checkpoint()
 
 		if !i.acceptOneOfTypes(token.Comma) {
-			i.restore(chck)
-			return nil
+			i.restore(beforeComma)
+			break
 		}
 
 		next := parseVariableDeclaration(i, p.only(pYield|pAwait|pReturn))
