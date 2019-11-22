@@ -1,9 +1,9 @@
-package lexer
+package parser
 
 import (
 	"unicode"
 
-	"github.com/gojisvm/gojis/internal/parser/lexer/matcher"
+	"github.com/gojisvm/gojis/internal/parser/matcher"
 )
 
 // Defined matchers
