@@ -1,1 +1,1 @@
-varfoo;
+var foo;

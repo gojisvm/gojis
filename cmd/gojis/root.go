@@ -12,6 +12,11 @@ const (
 	// in the help text.
 	AppName = "gojis"
 
+	// debug is the constant key for the flag and configuration entry "debug"
+	debug          = "debug"
+	debugShorthand = "d"
+	debugDefault   = false
+
 	// profiling is the constant key for the flag and configuration entry
 	// "profiling".
 	profiling          = "profiling"

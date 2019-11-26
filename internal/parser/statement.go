@@ -134,15 +134,24 @@ func parseStatement(i *isolate, p param) *ast.Statement {
 }
 
 func parseBlockStatement(i *isolate, p param) *ast.BlockStatement {
-	return &ast.BlockStatement{
-		Block: parseBlock(i, p.only(pYield|pAwait|pReturn)),
+	if block := parseBlock(i, p.only(pYield|pAwait|pReturn)); block != nil {
+		return &ast.BlockStatement{
+			Block: block,
+		}
 	}
+	return nil
 }
 
 func parseBlock(i *isolate, p param) *ast.Block {
-	return &ast.Block{
-		StatementList: parseStatementList(i, p.only(pYield|pAwait|pReturn)),
+	if i.acceptOneOfTypes(token.BraceOpen) {
+		stmtList := parseStatementList(i, p.only(pYield|pAwait|pReturn)) // statement list is optional
+		if i.acceptOneOfTypes(token.BraceClose) {
+			return &ast.Block{
+				StatementList: stmtList,
+			}
+		}
 	}
+	return nil
 }
 
 func parseVariableStatement(i *isolate, p param) *ast.VariableStatement {
