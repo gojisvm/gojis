@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gojisvm/gojis"
+	"github.com/gojisvm/gojis/config"
 	"github.com/pkg/profile"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -39,7 +40,9 @@ var (
 				defer p.Stop()
 			}
 
-			vm := gojis.NewVM()
+			vm := gojis.NewVM(&config.Cfg{
+				Debug: viper.GetBool(debug),
+			})
 			_ = vm
 		},
 	}
@@ -48,9 +51,11 @@ var (
 func init() {
 	cobra.OnInitialize(initConfig)
 
+	rootCmd.PersistentFlags().BoolP(debug, debugShorthand, debugDefault, "Enable only if you know what you're doing")
 	rootCmd.PersistentFlags().BoolP(profiling, profilingShorthand, profilingDefault, "Enable to write a CPU profile")
 	rootCmd.PersistentFlags().String(profilePath, profilePathDefault, "Set the output path for the CPU profile. Only has an effect if profiling is enabled")
 
+	_ = viper.BindPFlag(debug, rootCmd.PersistentFlags().Lookup(debug))
 	_ = viper.BindPFlag(profiling, rootCmd.PersistentFlags().Lookup(profiling))
 	_ = viper.BindPFlag(profilePath, rootCmd.PersistentFlags().Lookup(profilePath))
 }

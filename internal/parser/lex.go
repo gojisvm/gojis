@@ -31,11 +31,11 @@ var (
 		token.Class:                    lexWord("class"),
 		token.Colon:                    lexWord(":"),
 		token.Comma:                    lexWord(","),
-		token.CommonToken:              nil,
+		token.CommonToken:              func(*isolate) bool { panic("TODO") },
 		token.Const:                    lexWord("const"),
 		token.Continue:                 lexWord("continue"),
 		token.Debugger:                 lexWord("debugger"),
-		token.DecimalLiteral:           nil,
+		token.DecimalLiteral:           lexDecimalLiteral,
 		token.Default:                  lexWord("default"),
 		token.Delete:                   lexWord("delete"),
 		token.DivAssign:                lexWord("/="),
@@ -74,13 +74,13 @@ var (
 		token.MinusAssign:              lexWord("-="),
 		token.Modulo:                   lexWord("%"),
 		token.ModuloAssign:             lexWord("%="),
-		token.MultiLineComment:         nil,
+		token.MultiLineComment:         func(*isolate) bool { panic("TODO") },
 		token.MultiplyAssign:           lexWord("*="),
 		token.NewT:                     lexWord("new"),
-		token.NoSubstitutionTemplate:   nil,
+		token.NoSubstitutionTemplate:   func(*isolate) bool { panic("TODO") },
 		token.NotEquals:                lexWord("!="),
 		token.Null:                     lexWord("null"),
-		token.OctalIntegerLiteral:      nil,
+		token.OctalIntegerLiteral:      lexOctalIntegerLiteral,
 		token.OrAssign:                 lexWord("|="),
 		token.Package:                  lexWord("package"),
 		token.ParClose:                 lexWord(")"),
@@ -94,15 +94,15 @@ var (
 		token.Public:                   lexWord("public"),
 		token.Punctuator:               lexPunctuator,
 		token.QuestionMark:             lexWord("?"),
-		token.RegularExpressionBody:    nil,
-		token.RegularExpressionFlags:   nil,
+		token.RegularExpressionBody:    func(*isolate) bool { panic("TODO") },
+		token.RegularExpressionFlags:   func(*isolate) bool { panic("TODO") },
 		token.Return:                   lexWord("return"),
 		token.RightShift:               lexWord(">>"),
 		token.RightShiftAssign:         lexWord(">>="),
 		token.SemiColon:                lexWord(";"),
 		token.Set:                      lexWord("set"),
-		token.SignedInteger:            nil,
-		token.SingleLineComment:        nil,
+		token.SignedInteger:            lexSignedInteger,
+		token.SingleLineComment:        func(*isolate) bool { panic("TODO") },
 		token.Slash:                    lexWord("/"),
 		token.Static:                   lexWord("static"),
 		token.StrictEquals:             lexWord("==="),
@@ -111,9 +111,9 @@ var (
 		token.Super:                    lexWord("super"),
 		token.Switch:                   lexWord("switch"),
 		token.Target:                   lexWord("target"),
-		token.TemplateHead:             nil,
-		token.TemplateMiddle:           nil,
-		token.TemplateTail:             nil,
+		token.TemplateHead:             func(*isolate) bool { panic("TODO") },
+		token.TemplateMiddle:           func(*isolate) bool { panic("TODO") },
+		token.TemplateTail:             func(*isolate) bool { panic("TODO") },
 		token.This:                     lexWord("this"),
 		token.Throw:                    lexWord("throw"),
 		token.Tilde:                    lexWord("~"),
@@ -384,9 +384,76 @@ func lexStringLiteral(i *isolate) bool {
 }
 
 func lexEscapeSequence(i *isolate) bool {
-	return false
+	panic("TODO")
 }
 
 func lexLineTerminatorSequence(i *isolate) bool {
+	panic("TODO")
+}
+
+func lexDecimalLiteral(i *isolate) bool {
+	if lexDecimalIntegerLiteral(i) {
+		if i.acceptMatcher(dot) {
+			_ = lexDecimalDigits(i)
+		}
+		_ = lexExponentPart(i)
+		return true
+	} else if i.acceptMatcher(dot) {
+		if lexDecimalDigits(i) {
+			_ = lexExponentPart(i)
+			return true
+		}
+	}
 	return false
+}
+
+func lexDecimalIntegerLiteral(i *isolate) bool {
+	if i.acceptMatcher(zero) {
+		return true
+	}
+
+	if i.acceptMatcher(nonZeroDigit) {
+		_ = lexDecimalDigits(i) // the result doesn't matter, as decimal digits are optional here
+	}
+
+	return false
+}
+
+func lexDecimalDigits(i *isolate) bool {
+	var foundAtLeastOne bool
+	for i.acceptMatcher(decimalDigit) {
+		foundAtLeastOne = true
+	}
+	return foundAtLeastOne
+}
+
+func lexExponentPart(i *isolate) bool {
+	if i.acceptMatcher(exponentIndicator) {
+		if lexSignedInteger(i) {
+			return true
+		}
+	}
+	return false
+}
+
+func lexSignedInteger(i *isolate) bool {
+	_ = i.acceptMatcher(sign) // "+" or "-" is effectively optional
+	return lexDecimalDigits(i)
+}
+
+func lexOctalIntegerLiteral(i *isolate) bool {
+	if i.acceptMatcher(zero) {
+		if i.acceptMatcher(octalIndicator) {
+			return lexOctalDigits(i)
+		}
+	}
+	return false
+}
+
+func lexOctalDigits(i *isolate) bool {
+	var foundAtLeastOne bool
+	for i.acceptMatcher(octalDigit) {
+		foundAtLeastOne = true
+	}
+	return foundAtLeastOne
 }

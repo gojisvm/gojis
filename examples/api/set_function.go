@@ -2,11 +2,12 @@ package main
 
 import (
 	"github.com/gojisvm/gojis"
+	"github.com/gojisvm/gojis/config"
 )
 
 // #nosec
 func main() {
-	vm := gojis.NewVM()
+	vm := gojis.NewVM(&config.Cfg{})
 
 	vm.SetFunction("greet", func(gojis.Args) gojis.Object {
 		_, _ = vm.Eval(`console.log("Hello World!");`)

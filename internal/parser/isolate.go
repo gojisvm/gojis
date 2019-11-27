@@ -49,6 +49,13 @@ func (i *isolate) collect(t token.Type) token.Token {
 }
 
 func (i *isolate) accept(t token.Type) (token.Token, bool) {
+	/*
+		White space code points may occur between any two tokens and at the
+		start or end of input.
+	*/
+	for i.acceptMatcher(whiteSpace) {
+	}
+
 	if i.lexForToken(t) {
 		return i.collect(t), true
 	}

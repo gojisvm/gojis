@@ -135,6 +135,11 @@ func parseNewExpression(i *isolate, p param) *ast.NewExpression {
 }
 
 func parseCallExpression(i *isolate, p param) *ast.CallExpression {
+	// see #90
+	return nil
+}
+
+func _parseCallExpression(i *isolate, p param) *ast.CallExpression {
 	chck := i.checkpoint()
 
 	if coverCallExpressionAndAsyncArrowHead := parseCoverCallExpressionAndAsyncArrowHead(i, p.only(pYield|pAwait)); coverCallExpressionAndAsyncArrowHead != nil {
@@ -232,8 +237,37 @@ func parseNewTarget(i *isolate, p param) *ast.NewTarget {
 }
 
 func parseMemberExpression(i *isolate, p param) *ast.MemberExpression {
-	chck := i.checkpoint()
+	/*
+	   Because the MemberExpression rule is left-recursive, this has not been
+	   implemented yet. Please find a modified, working, non left-recursive rule
+	   directly below this paragraph. The difficulty is creating a model that
+	   supports the modified rule, but can be converted to the original,
+	   expected model.
+
+	   S → S 'p' | 'q'
+
+	   S  → 'q' ps
+	   ps → 'p' ps | <nothing>
+
+	   ---
+
+	   MemX:
+	   PrimX     MemXAux
+	   SuperProp MemXAux
+	   MetaProp  MemXAux
+	   "new"     MemX    Args
+
+	   MemXAux:
+	   "[" X "]"       MemXAux
+	   "." IdentName   MemXAux
+	   TemplateLiteral MemXAux
+	   <nothing>
+	*/
 	return nil
+}
+
+func _parseMemberExpression(i *isolate, p param) *ast.MemberExpression {
+	chck := i.checkpoint()
 
 	if primaryExpression := parsePrimaryExpression(i, p.only(pYield|pAwait)); primaryExpression != nil {
 		return &ast.MemberExpression{
@@ -888,6 +922,11 @@ func parseAsyncArrowBindingIdentifier(i *isolate, p param) *ast.AsyncArrowBindin
 }
 
 func parseConditionalExpression(i *isolate, p param) *ast.ConditionalExpression {
+	// see #90
+	return nil
+}
+
+func _parseConditionalExpression(i *isolate, p param) *ast.ConditionalExpression {
 	chck := i.checkpoint()
 
 	if orExpr := parseLogicalORExpression(i, p.only(pIn|pYield|pAwait)); orExpr != nil {
@@ -915,6 +954,11 @@ func parseConditionalExpression(i *isolate, p param) *ast.ConditionalExpression 
 }
 
 func parseLogicalORExpression(i *isolate, p param) *ast.LogicalORExpression {
+	// see #90
+	return nil
+}
+
+func _parseLogicalORExpression(i *isolate, p param) *ast.LogicalORExpression {
 	chck := i.checkpoint()
 
 	if andExpr := parseLogicalANDExpression(i, p.only(pIn|pYield|pAwait)); andExpr != nil {
@@ -937,6 +981,11 @@ func parseLogicalORExpression(i *isolate, p param) *ast.LogicalORExpression {
 }
 
 func parseLogicalANDExpression(i *isolate, p param) *ast.LogicalANDExpression {
+	// see #90
+	return nil
+}
+
+func _parseLogicalANDExpression(i *isolate, p param) *ast.LogicalANDExpression {
 	chck := i.checkpoint()
 
 	if orExpr := parseBitwiseORExpression(i, p.only(pIn|pYield|pAwait)); orExpr != nil {
@@ -959,6 +1008,11 @@ func parseLogicalANDExpression(i *isolate, p param) *ast.LogicalANDExpression {
 }
 
 func parseBitwiseANDExpression(i *isolate, p param) *ast.BitwiseANDExpression {
+	// see #90
+	return nil
+}
+
+func _parseBitwiseANDExpression(i *isolate, p param) *ast.BitwiseANDExpression {
 	chck := i.checkpoint()
 
 	if eqExpr := parseEqualityExpression(i, p.only(pIn|pYield|pAwait)); eqExpr != nil {
@@ -981,6 +1035,11 @@ func parseBitwiseANDExpression(i *isolate, p param) *ast.BitwiseANDExpression {
 }
 
 func parseBitwiseXORExpression(i *isolate, p param) *ast.BitwiseXORExpression {
+	// see #90
+	return nil
+}
+
+func _parseBitwiseXORExpression(i *isolate, p param) *ast.BitwiseXORExpression {
 	chck := i.checkpoint()
 
 	if andExpr := parseBitwiseANDExpression(i, p.only(pIn|pYield|pAwait)); andExpr != nil {
@@ -1003,6 +1062,11 @@ func parseBitwiseXORExpression(i *isolate, p param) *ast.BitwiseXORExpression {
 }
 
 func parseBitwiseORExpression(i *isolate, p param) *ast.BitwiseORExpression {
+	// see #90
+	return nil
+}
+
+func _parseBitwiseORExpression(i *isolate, p param) *ast.BitwiseORExpression {
 	chck := i.checkpoint()
 
 	if xorExpr := parseBitwiseXORExpression(i, p.only(pIn|pYield|pAwait)); xorExpr != nil {
@@ -1025,6 +1089,11 @@ func parseBitwiseORExpression(i *isolate, p param) *ast.BitwiseORExpression {
 }
 
 func parseEqualityExpression(i *isolate, p param) *ast.EqualityExpression {
+	// see #90
+	return nil
+}
+
+func _parseEqualityExpression(i *isolate, p param) *ast.EqualityExpression {
 	chck := i.checkpoint()
 
 	if relationalExpr := parseRelationalExpression(i, p.only(pIn|pYield|pAwait)); relationalExpr != nil {
@@ -1051,6 +1120,11 @@ func parseEqualityExpression(i *isolate, p param) *ast.EqualityExpression {
 }
 
 func parseRelationalExpression(i *isolate, p param) *ast.RelationalExpression {
+	// see #90
+	return nil
+}
+
+func _parseRelationalExpression(i *isolate, p param) *ast.RelationalExpression {
 	chck := i.checkpoint()
 
 	if shiftExpr := parseShiftExpression(i, p.only(pYield|pAwait)); shiftExpr != nil {
@@ -1092,6 +1166,11 @@ func parseRelationalExpression(i *isolate, p param) *ast.RelationalExpression {
 }
 
 func parseShiftExpression(i *isolate, p param) *ast.ShiftExpression {
+	// see #90
+	return nil
+}
+
+func _parseShiftExpression(i *isolate, p param) *ast.ShiftExpression {
 	chck := i.checkpoint()
 
 	if additiveExpr := parseAdditiveExpression(i, p.only(pYield|pAwait)); additiveExpr != nil {
@@ -1117,6 +1196,11 @@ func parseShiftExpression(i *isolate, p param) *ast.ShiftExpression {
 }
 
 func parseAdditiveExpression(i *isolate, p param) *ast.AdditiveExpression {
+	// see #90
+	return nil
+}
+
+func _parseAdditiveExpression(i *isolate, p param) *ast.AdditiveExpression {
 	chck := i.checkpoint()
 
 	if multiplicativeExpression := parseMultiplicativeExpression(i, p.only(pYield|pAwait)); multiplicativeExpression != nil {
@@ -1141,6 +1225,11 @@ func parseAdditiveExpression(i *isolate, p param) *ast.AdditiveExpression {
 }
 
 func parseMultiplicativeExpression(i *isolate, p param) *ast.MultiplicativeExpression {
+	// se #90
+	return nil
+}
+
+func _parseMultiplicativeExpression(i *isolate, p param) *ast.MultiplicativeExpression {
 	chck := i.checkpoint()
 
 	if exponentiationExpression := parseExponentiationExpression(i, p.only(pYield|pAwait)); exponentiationExpression != nil {
