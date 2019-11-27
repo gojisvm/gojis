@@ -7,7 +7,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/davecgh/go-spew/spew"
+	"github.com/gojisvm/gojis/internal/parser/ast"
+	"github.com/gojisvm/gojis/tools/golden"
 	"github.com/stretchr/testify/require"
 )
 
@@ -31,11 +32,12 @@ func testGoldenSingleFile(file string) func(*testing.T) {
 
 		p := New()
 		// reading the file and then creating a byte reader removes the possibility that the parser fails at reading the file
-		ast, err := p.Parse(file, bytes.NewReader(data))
+		tree, err := p.Parse(file, bytes.NewReader(data))
 		require.NoError(err)
 
-		spew.Dump(ast)
-		t.Fail()
+		astString := ast.ToString(tree)
+		t.Logf("ast:\n%v", astString)
+		golden.Equal(t, filepath.Base(file), []byte(astString))
 	}
 }
 
