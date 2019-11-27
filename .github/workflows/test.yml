@@ -42,6 +42,6 @@ jobs:
     - name: Coverage
       uses: brpaz/godacov-action@v1
       with:
-        reportPath: './coverage.txt'
-        codacyToken: ${{ secrets.CODACY_TOKEN }}
-        commitId: ${{ github.sha }}
+          reportPath: './coverage.txt'
+          codacyToken: ${{ secrets.CODACY_TOKEN }}
+          commitId: ${{ github.sha }}
