@@ -10,6 +10,8 @@
         <a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fgojisvm%2Fgojis?ref=badge_shield"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fgojisvm%2Fgojis.svg?type=shield"></a>
         <br>
         <a href="https://travis-ci.com/gojisvm/gojis"><img src="https://img.shields.io/badge/-tip-informational"><img src="https://travis-ci.com/gojisvm/gojis.svg?branch=develop"></a>
+        <br>
+        <img src="https://img.shields.io/badge/status-WIP-yellow">
     </p>
 </p>
 
