@@ -12,9 +12,12 @@ func parseScript(i *isolate, p param) *ast.Script {
 }
 
 func parseScriptBody(i *isolate, p param) *ast.ScriptBody {
-	return &ast.ScriptBody{
-		StatementList: parseStatementList(i, p),
+	if stmtList := parseStatementList(i, p); stmtList != nil {
+		return &ast.ScriptBody{
+			StatementList: stmtList,
+		}
 	}
+	return nil
 }
 
 func parseArguments(i *isolate, p param) *ast.Arguments {

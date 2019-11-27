@@ -36,6 +36,7 @@ func testGoldenSingleFile(file string) func(*testing.T) {
 		require.NoError(err)
 
 		astString := ast.ToString(tree)
+		t.Logf("ast:\n%v", astString)
 		golden.Equal(t, filepath.Base(file), []byte(astString))
 	}
 }
