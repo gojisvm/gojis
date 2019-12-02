@@ -26,9 +26,34 @@ func (i *isolate) fatalf(msg string, args ...interface{}) {
 }
 
 func (i *isolate) fatal(msg string) {
+	line, col := i.lineAndColPos()
 	panic(Error{
-		msg: msg,
+		msg:    msg,
+		source: i.sourceName,
+		line:   line,
+		col:    col,
 	})
+}
+
+func (i *isolate) lineAndColPos() (row, col int) {
+	row = 1 // lines start at 1
+	col = 1 // cols start at 1
+
+	for idx, r := range i.input {
+		if idx >= i.pos {
+			break
+		}
+		if r == '\t' {
+			col += 4
+		} else {
+			col++
+		}
+		if lineTerminator.Matches(r) {
+			col = 1
+			row++
+		}
+	}
+	return
 }
 
 func (i *isolate) done() bool {

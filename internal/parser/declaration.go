@@ -78,6 +78,7 @@ func parseVariableDeclarationList(i *isolate, p param) *ast.VariableDeclarationL
 		next := parseVariableDeclaration(i, p.only(pYield|pAwait|pReturn))
 		if next == nil {
 			i.restore(beforeComma) // comma was consumed, but no variable declaration, so reset to before comma
+			i.fatal("expecting variable declaration after comma")
 			break
 		}
 		decls = append(decls, next)
