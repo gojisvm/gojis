@@ -15,7 +15,7 @@ import (
 func TestGolden(t *testing.T) {
 	require := require.New(t)
 
-	files, err := filepath.Glob("testdata/*.js")
+	files, err := filepath.Glob("testdata/test*.js")
 	require.NoError(err)
 
 	for _, file := range files {

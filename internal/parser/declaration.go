@@ -56,14 +56,11 @@ func parseHoistableDeclaration(i *isolate, p param) *ast.HoistableDeclaration {
 }
 
 func parseVariableDeclarationList(i *isolate, p param) *ast.VariableDeclarationList {
-	chck := i.checkpoint()
-
 	var decls []*ast.VariableDeclaration
 
 	first := parseVariableDeclaration(i, p.only(pYield|pAwait|pReturn)) // variable declaration list consists of at least one entry
 	if first == nil {
-		i.restore(chck)
-		return nil
+		i.fatal(msgExpectingVariableDeclaration)
 	}
 	decls = append(decls, first)
 
@@ -71,15 +68,15 @@ func parseVariableDeclarationList(i *isolate, p param) *ast.VariableDeclarationL
 		beforeComma := i.checkpoint()
 
 		if !i.acceptOneOfTypes(token.Comma) {
+			// if no comma, it is possible that the variable declaration list is
+			// finished, so no error here
 			i.restore(beforeComma)
 			break
 		}
 
 		next := parseVariableDeclaration(i, p.only(pYield|pAwait|pReturn))
 		if next == nil {
-			i.restore(beforeComma) // comma was consumed, but no variable declaration, so reset to before comma
-			i.fatal("expecting variable declaration after comma")
-			break
+			i.fatal(msgExpectingVariableDeclarationAfterComma)
 		}
 		decls = append(decls, next)
 	}
@@ -103,6 +100,7 @@ func parseVariableDeclaration(i *isolate, p param) *ast.VariableDeclaration {
 
 	bp := parseBindingPattern(i, p.only(pYield|pAwait))
 	if bp == nil {
+		i.restore(chck)
 		return nil
 	}
 

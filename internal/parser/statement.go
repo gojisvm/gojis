@@ -157,10 +157,15 @@ func parseBlock(i *isolate, p param) *ast.Block {
 func parseVariableStatement(i *isolate, p param) *ast.VariableStatement {
 	chck := i.checkpoint()
 
+	// Expecting 'var'. If the token is not present, there is no variable
+	// statement to parse. The caller has to try another goal.
 	if !i.acceptOneOfTypes(token.Var) {
 		i.restore(chck)
 		return nil
 	}
+
+	// As of here, we are sure that a variable statement must exist. From here,
+	// it is an error if something is not right.
 
 	list := parseVariableDeclarationList(i, p.only(pYield|pAwait).add(pIn))
 	if list == nil {
