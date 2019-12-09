@@ -329,16 +329,17 @@ func (a *memberExpressionAuxiliary) ToActual() *ast.MemberExpression {
 }
 
 func (a *memberExpressionAuxiliary) toActualRecursive(aggregator *ast.MemberExpression) *ast.MemberExpression {
-	if a._Nothing {
-		return aggregator
-	}
-
 	aggregator.PrimaryExpression = a.PrimaryExpression
 	aggregator.MetaProperty = a.MetaProperty
 	aggregator.SuperProperty = a.SuperProperty
 	aggregator.TemplateLiteral = a.TemplateLiteral
 	aggregator.IdentifierName = a.IdentifierName
 	aggregator.Expression = a.Expression
+
+	if a._Nothing {
+		return aggregator
+	}
+
 	// no arguments, since that is not handled with auxiliary objects
 	aggregator.MemberExpression = a.Aux.ToActual()
 
