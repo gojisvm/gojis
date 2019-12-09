@@ -4,3 +4,4 @@
 /internal/parser/test262-parser-tests/
 /bin/
 **.pprof
+.idea
