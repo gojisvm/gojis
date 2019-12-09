@@ -263,7 +263,123 @@ func parseMemberExpression(i *isolate, p param) *ast.MemberExpression {
 	   TemplateLiteral MemXAux
 	   <nothing>
 	*/
+
+	chck := i.checkpoint()
+
+	if primExpr := parsePrimaryExpression(i, p.only(pYield|pAwait)); primExpr != nil {
+		if aux := parseMemberExpressionAuxiliary(i, p); aux != nil {
+			aux.PrimaryExpression = primExpr
+			return aux.ToActual()
+		}
+	} else if superProp := parseSuperProperty(i, p.only(pYield|pAwait)); superProp != nil {
+		if aux := parseMemberExpressionAuxiliary(i, p); aux != nil {
+			aux.SuperProperty = superProp
+			return aux.ToActual()
+		}
+	} else if metaProp := parseMetaProperty(i, p.only(pYield|pAwait)); metaProp != nil {
+		if aux := parseMemberExpressionAuxiliary(i, p); aux != nil {
+			aux.MetaProperty = metaProp
+			return aux.ToActual()
+		}
+	} else if i.acceptOneOfTypes(token.NewT) { // token is parsed, so this throws errors as of here
+		if memberExpr := parseMemberExpression(i, p.only(pYield|pAwait)); memberExpr != nil {
+			if args := parseArguments(i, p.only(pYield|pAwait)); args != nil {
+				return &ast.MemberExpression{
+					MemberExpression: memberExpr,
+					Arguments:        args,
+				}
+			} else {
+				i.fatal(msgExpectingArguments)
+			}
+		} else {
+			i.fatal(msgExpectingMemberExpression)
+		}
+	}
+
+	i.restore(chck)
 	return nil
+}
+
+/*
+   MemXAux:
+   "[" X "]"       MemXAux
+   "." IdentName   MemXAux
+   TemplateLiteral MemXAux
+   <nothing>
+*/
+type memberExpressionAuxiliary struct {
+	Brackets        bool
+	Expression      *ast.Expression
+	Dot             bool
+	IdentifierName  string
+	TemplateLiteral *ast.TemplateLiteral
+	Aux             *memberExpressionAuxiliary
+
+	PrimaryExpression *ast.PrimaryExpression
+	SuperProperty     *ast.SuperProperty
+	MetaProperty      *ast.MetaProperty
+
+	_Nothing bool
+}
+
+func (a *memberExpressionAuxiliary) ToActual() *ast.MemberExpression {
+	memX := new(ast.MemberExpression)
+	a.toActualRecursive(memX)
+	return memX
+}
+
+func (a *memberExpressionAuxiliary) toActualRecursive(aggregator *ast.MemberExpression) *ast.MemberExpression {
+	if a._Nothing {
+		return aggregator
+	}
+
+	aggregator.PrimaryExpression = a.PrimaryExpression
+	aggregator.MetaProperty = a.MetaProperty
+	aggregator.SuperProperty = a.SuperProperty
+	aggregator.TemplateLiteral = a.TemplateLiteral
+	aggregator.IdentifierName = a.IdentifierName
+	aggregator.Expression = a.Expression
+	// no arguments, since that is not handled with auxiliary objects
+	aggregator.MemberExpression = a.Aux.ToActual()
+
+	return aggregator
+}
+
+func parseMemberExpressionAuxiliary(i *isolate, p param) *memberExpressionAuxiliary {
+	if i.acceptOneOfTypes(token.BracketOpen) {
+		if expr := parseExpression(i, p.only(pYield|pAwait).add(pIn)); expr != nil {
+			if i.acceptOneOfTypes(token.BracketClose) {
+				return &memberExpressionAuxiliary{
+					Brackets:   true,
+					Expression: expr,
+					Aux:        parseMemberExpressionAuxiliary(i, p),
+				}
+			} else {
+				i.fatal(msgExpectingBracketClose)
+			}
+		} else {
+			i.fatal(msgExpectingExpression)
+		}
+	} else if i.acceptOneOfTypes(token.Dot) {
+		if t, ok := i.accept(token.IdentifierName); ok {
+			return &memberExpressionAuxiliary{
+				Dot:            true,
+				IdentifierName: t.Value,
+				Aux:            parseMemberExpressionAuxiliary(i, p),
+			}
+		} else {
+			i.fatal(msgExpectingIdentifierName)
+		}
+	} else if templateLiteral := parseTemplateLiteral(i, p.only(pYield|pAwait).add(pTagged)); templateLiteral != nil {
+		return &memberExpressionAuxiliary{
+			TemplateLiteral: templateLiteral,
+			Aux:             parseMemberExpressionAuxiliary(i, p),
+		}
+	}
+
+	return &memberExpressionAuxiliary{
+		_Nothing: true,
+	}
 }
 
 func _parseMemberExpression(i *isolate, p param) *ast.MemberExpression {
