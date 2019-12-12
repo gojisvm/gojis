@@ -1,54 +1,32 @@
-{
-  "ScriptBody": {
-    "StatementList": {
-      "StatementListItems": [
-        {
-          "Statement": {
-            "BlockStatement": null,
-            "VariableStatement": {
-              "VariableDeclarationList": {
-                "VariableDeclarations": [
-                  {
-                    "BindingIdentifier": {
-                      "Identifier": {
-                        "IdentifierName": " foo"
-                      },
-                      "Yield": false,
-                      "Await": false
-                    },
-                    "BindingPattern": null,
-                    "Initializer": null
-                  },
-                  {
-                    "BindingIdentifier": {
-                      "Identifier": {
-                        "IdentifierName": " bar"
-                      },
-                      "Yield": false,
-                      "Await": false
-                    },
-                    "BindingPattern": null,
-                    "Initializer": null
-                  }
-                ]
-              }
-            },
-            "EmptyStatement": null,
-            "ExpressionStatement": null,
-            "IfStatement": null,
-            "BreakableStatement": null,
-            "ContinueStatement": null,
-            "BreakStatement": null,
-            "ReturnStatement": null,
-            "WithStatement": null,
-            "LabelledStatement": null,
-            "ThrowStatement": null,
-            "TryStatement": null,
-            "DebuggerStatement": null
-          },
-          "Declaration": null
-        }
-      ]
-    }
-  }
-}
+Script (
+  ScriptBody (
+    StatementList (
+      StatementListItem (
+        Statement (
+          VariableStatement (
+            VariableDeclarationList (
+              VariableDeclaration (
+                BindingIdentifier (
+                  Identifier (
+                    IdentifierName:  foo
+                  )
+                  Yield: false
+                  Await: false
+                )
+              )
+              VariableDeclaration (
+                BindingIdentifier (
+                  Identifier (
+                    IdentifierName:  bar
+                  )
+                  Yield: false
+                  Await: false
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)

@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/gojisvm/gojis/internal/parser/ast"
 	"github.com/gojisvm/gojis/tools/golden"
 	"github.com/stretchr/testify/require"
 )
@@ -35,7 +34,7 @@ func testGoldenSingleFile(file string) func(*testing.T) {
 		tree, err := p.Parse(file, bytes.NewReader(data))
 		require.NoError(err)
 
-		astString := ast.ToString(tree)
+		astString := tree.String()
 		t.Logf("ast:\n%v", astString)
 		golden.Equal(t, filepath.Base(file), []byte(astString))
 	}
