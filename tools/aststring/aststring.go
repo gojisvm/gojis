@@ -31,7 +31,7 @@ func main() {
 	}
 }
 
-type StructDecl struct {
+type structDecl struct {
 	name       string
 	structType *ast.StructType
 }
@@ -44,7 +44,7 @@ func process(path string) {
 		return // abort, but don't kill the tool completely
 	}
 
-	var structs []*StructDecl
+	var structs []*structDecl
 
 	// gather all types
 	for _, decl := range file.Decls {
@@ -52,7 +52,7 @@ func process(path string) {
 			for _, spec := range genDecl.Specs {
 				if typeSpec, ok := spec.(*ast.TypeSpec); ok {
 					if structType, ok := typeSpec.Type.(*ast.StructType); ok {
-						structs = append(structs, &StructDecl{
+						structs = append(structs, &structDecl{
 							name:       typeSpec.Name.Name,
 							structType: structType,
 						})

@@ -7,7 +7,7 @@ import (
 	"path"
 	"strings"
 
-	. "github.com/dave/jennifer/jen"
+	j "github.com/dave/jennifer/jen"
 )
 
 const (
@@ -17,22 +17,22 @@ const (
 	parClose      = ")"
 )
 
-func generate(fpath string, structs []*StructDecl) {
+func generate(fpath string, structs []*structDecl) {
 	if len(structs) == 0 {
 		// no-op if no structs in file
 		return
 	}
 
 	filename := fpath + "/ast"
-	f := NewFilePath(filename)
+	f := j.NewFilePath(filename)
 	f.PackageComment(headerComment)
 
 	for _, structDecl := range structs {
-		var calls []Code
+		var calls []j.Code
 
-		calls = append(calls, Var().Id("buf").Qual("bytes", "Buffer"))
-		calls = append(calls, List(Id("_"), Id("_")).Op("=").Id("buf").Dot("WriteString").Call(Lit(structDecl.name+" "+parOpen)))
-		calls = append(calls, List(Id("_"), Id("_")).Op("=").Id("buf").Dot("WriteString").Call(Lit("\n")))
+		calls = append(calls, j.Var().Id("buf").Qual("bytes", "Buffer"))
+		calls = append(calls, j.List(j.Id("_"), j.Id("_")).Op("=").Id("buf").Dot("WriteString").Call(j.Lit(structDecl.name+" "+parOpen)))
+		calls = append(calls, j.List(j.Id("_"), j.Id("_")).Op("=").Id("buf").Dot("WriteString").Call(j.Lit("\n")))
 
 		for _, field := range structDecl.structType.Fields.List {
 			switch field.Type.(type) {
@@ -40,22 +40,22 @@ func generate(fpath string, structs []*StructDecl) {
 				for _, fieldName := range field.Names {
 					calls = append(
 						calls,
-						If(
-							Id("node").
+						j.If(
+							j.Id("node").
 								Dot(fieldName.Name).
 								Op("!=").
 								Nil(),
 						).Block(
-							List(Id("_"), Id("_")).Op("=").Id("buf").
+							j.List(j.Id("_"), j.Id("_")).Op("=").Id("buf").
 								Dot("WriteString").
 								Call(
-									Qual(filename, "PrefixToString").
+									j.Qual(filename, "PrefixToString").
 										Call(
-											Id("node").
+											j.Id("node").
 												Dot(fieldName.Name).
 												Dot("String").
 												Call(),
-											Lit(indentPrefix),
+											j.Lit(indentPrefix),
 										),
 								),
 						),
@@ -65,39 +65,39 @@ func generate(fpath string, structs []*StructDecl) {
 				for _, fieldName := range field.Names {
 					calls = append(
 						calls,
-						List(Id("_"), Id("_")).Op("=").Id("buf").
+						j.List(j.Id("_"), j.Id("_")).Op("=").Id("buf").
 							Dot("WriteString").
 							Call(
-								Qual(filename, "PrefixToString").
+								j.Qual(filename, "PrefixToString").
 									Call(
-										Qual("fmt", "Sprintf").
+										j.Qual("fmt", "Sprintf").
 											Call(
-												Lit("%v: %v"),
-												Lit(fieldName.Name),
-												Id("node").
+												j.Lit("%v: %v"),
+												j.Lit(fieldName.Name),
+												j.Id("node").
 													Dot(fieldName.Name),
 											),
-										Lit(indentPrefix),
+										j.Lit(indentPrefix),
 									),
 							),
 					)
-					calls = append(calls, List(Id("_"), Id("_")).Op("=").Id("buf").Dot("WriteString").Call(Lit("\n")))
+					calls = append(calls, j.List(j.Id("_"), j.Id("_")).Op("=").Id("buf").Dot("WriteString").Call(j.Lit("\n")))
 				}
 			case *ast.ArrayType:
 				for _, fieldName := range field.Names {
 					calls = append(
 						calls,
-						For(List(Id("_"), Id("elem")).Op(":=").Range().Id("node").Dot(fieldName.Name)).
+						j.For(j.List(j.Id("_"), j.Id("elem")).Op(":=").Range().Id("node").Dot(fieldName.Name)).
 							Block(
-								List(Id("_"), Id("_")).Op("=").Id("buf").
+								j.List(j.Id("_"), j.Id("_")).Op("=").Id("buf").
 									Dot("WriteString").
 									Call(
-										Qual(filename, "PrefixToString").
+										j.Qual(filename, "PrefixToString").
 											Call(
-												Id("elem").
+												j.Id("elem").
 													Dot("String").
 													Call(),
-												Lit(indentPrefix),
+												j.Lit(indentPrefix),
 											),
 									),
 							),
@@ -106,13 +106,13 @@ func generate(fpath string, structs []*StructDecl) {
 			}
 		}
 
-		calls = append(calls, List(Id("_"), Id("_")).Op("=").Id("buf").Dot("WriteString").Call(Lit(parClose)))
-		calls = append(calls, List(Id("_"), Id("_")).Op("=").Id("buf").Dot("WriteString").Call(Lit("\n")))
-		calls = append(calls, Return(Id("buf").Dot("String").Call()))
+		calls = append(calls, j.List(j.Id("_"), j.Id("_")).Op("=").Id("buf").Dot("WriteString").Call(j.Lit(parClose)))
+		calls = append(calls, j.List(j.Id("_"), j.Id("_")).Op("=").Id("buf").Dot("WriteString").Call(j.Lit("\n")))
+		calls = append(calls, j.Return(j.Id("buf").Dot("String").Call()))
 
 		f.Func().
 			Params(
-				Id("node").Id("*" + structDecl.name),
+				j.Id("node").Id("*" + structDecl.name),
 			).
 			Id("String").
 			Params().

@@ -13,6 +13,8 @@ func Merge(asts ...*Script) *Script {
 	panic("TODO")
 }
 
+// PrefixToString converts the given val to a string using fmt's %v and prepends
+// the prefix. The result is then returned.
 func PrefixToString(val interface{}, prefix string) string {
 	v := fmt.Sprintf("%v", val)
 

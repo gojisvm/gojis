@@ -288,9 +288,8 @@ func parseMemberExpression(i *isolate, p param) *ast.MemberExpression {
 					MemberExpression: memberExpr,
 					Arguments:        args,
 				}
-			} else {
-				i.fatal(msgExpectingArguments)
 			}
+			i.fatal(msgExpectingArguments)
 		} else {
 			i.fatal(msgExpectingMemberExpression)
 		}
@@ -355,9 +354,8 @@ func parseMemberExpressionAuxiliary(i *isolate, p param) *memberExpressionAuxili
 					Expression: expr,
 					Aux:        parseMemberExpressionAuxiliary(i, p),
 				}
-			} else {
-				i.fatal(msgExpectingBracketClose)
 			}
+			i.fatal(msgExpectingBracketClose)
 		} else {
 			i.fatal(msgExpectingExpression)
 		}
@@ -368,9 +366,8 @@ func parseMemberExpressionAuxiliary(i *isolate, p param) *memberExpressionAuxili
 				IdentifierName: t.Value,
 				Aux:            parseMemberExpressionAuxiliary(i, p),
 			}
-		} else {
-			i.fatal(msgExpectingIdentifierName)
 		}
+		i.fatal(msgExpectingIdentifierName)
 	} else if templateLiteral := parseTemplateLiteral(i, p.only(pYield|pAwait).add(pTagged)); templateLiteral != nil {
 		return &memberExpressionAuxiliary{
 			TemplateLiteral: templateLiteral,
