@@ -8,216 +8,216 @@ import (
 
 func (node *BindingElement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("BindingElement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("BindingElement (")
+	_, _ = buf.WriteString("\n")
 	if node.SingleNameBinding != nil {
-		buf.WriteString(PrefixToString(node.SingleNameBinding.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.SingleNameBinding.String(), "  "))
 	}
 	if node.BindingPattern != nil {
-		buf.WriteString(PrefixToString(node.BindingPattern.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingPattern.String(), "  "))
 	}
 	if node.Initializer != nil {
-		buf.WriteString(PrefixToString(node.Initializer.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Initializer.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *SingleNameBinding) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("SingleNameBinding (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("SingleNameBinding (")
+	_, _ = buf.WriteString("\n")
 	if node.BindingIdentifier != nil {
-		buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
 	}
 	if node.Initializer != nil {
-		buf.WriteString(PrefixToString(node.Initializer.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Initializer.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *BindingRestElement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("BindingRestElement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("BindingRestElement (")
+	_, _ = buf.WriteString("\n")
 	if node.BindingIdentifier != nil {
-		buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
 	}
 	if node.BindingPattern != nil {
-		buf.WriteString(PrefixToString(node.BindingPattern.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingPattern.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *BindingPattern) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("BindingPattern (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("BindingPattern (")
+	_, _ = buf.WriteString("\n")
 	if node.ObjectBindingPattern != nil {
-		buf.WriteString(PrefixToString(node.ObjectBindingPattern.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.ObjectBindingPattern.String(), "  "))
 	}
 	if node.ArrayBindingPattern != nil {
-		buf.WriteString(PrefixToString(node.ArrayBindingPattern.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.ArrayBindingPattern.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *ObjectBindingPattern) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("ObjectBindingPattern (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("ObjectBindingPattern (")
+	_, _ = buf.WriteString("\n")
 	if node.BindingRestProperty != nil {
-		buf.WriteString(PrefixToString(node.BindingRestProperty.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingRestProperty.String(), "  "))
 	}
 	if node.BindingPropertyList != nil {
-		buf.WriteString(PrefixToString(node.BindingPropertyList.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingPropertyList.String(), "  "))
 	}
-	buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Comma", node.Comma), "  "))
-	buf.WriteString("\n")
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Comma", node.Comma), "  "))
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *ArrayBindingPattern) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("ArrayBindingPattern (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("ArrayBindingPattern (")
+	_, _ = buf.WriteString("\n")
 	if node.Elision != nil {
-		buf.WriteString(PrefixToString(node.Elision.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Elision.String(), "  "))
 	}
 	if node.BindingRestElement != nil {
-		buf.WriteString(PrefixToString(node.BindingRestElement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingRestElement.String(), "  "))
 	}
 	if node.BindingElementList != nil {
-		buf.WriteString(PrefixToString(node.BindingElementList.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingElementList.String(), "  "))
 	}
-	buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Comma", node.Comma), "  "))
-	buf.WriteString("\n")
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Comma", node.Comma), "  "))
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *BindingRestProperty) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("BindingRestProperty (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("BindingRestProperty (")
+	_, _ = buf.WriteString("\n")
 	if node.BindingIdentifier != nil {
-		buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *BindingElementList) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("BindingElementList (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("BindingElementList (")
+	_, _ = buf.WriteString("\n")
 	for _, elem := range node.BindingElisionElement {
-		buf.WriteString(PrefixToString(elem.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(elem.String(), "  "))
 	}
-	buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Comma", node.Comma), "  "))
-	buf.WriteString("\n")
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Comma", node.Comma), "  "))
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *BindingElisionElement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("BindingElisionElement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("BindingElisionElement (")
+	_, _ = buf.WriteString("\n")
 	if node.Elision != nil {
-		buf.WriteString(PrefixToString(node.Elision.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Elision.String(), "  "))
 	}
 	if node.BindingElement != nil {
-		buf.WriteString(PrefixToString(node.BindingElement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingElement.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *BindingPropertyList) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("BindingPropertyList (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("BindingPropertyList (")
+	_, _ = buf.WriteString("\n")
 	for _, elem := range node.BindingProperties {
-		buf.WriteString(PrefixToString(elem.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(elem.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *BindingProperty) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("BindingProperty (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("BindingProperty (")
+	_, _ = buf.WriteString("\n")
 	if node.SingleNameBinding != nil {
-		buf.WriteString(PrefixToString(node.SingleNameBinding.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.SingleNameBinding.String(), "  "))
 	}
 	if node.PropertyName != nil {
-		buf.WriteString(PrefixToString(node.PropertyName.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.PropertyName.String(), "  "))
 	}
 	if node.BindingElement != nil {
-		buf.WriteString(PrefixToString(node.BindingElement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingElement.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *ForBinding) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("ForBinding (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("ForBinding (")
+	_, _ = buf.WriteString("\n")
 	if node.BindingIdentifier != nil {
-		buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
 	}
 	if node.BindingPattern != nil {
-		buf.WriteString(PrefixToString(node.BindingPattern.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingPattern.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *BindingList) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("BindingList (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("BindingList (")
+	_, _ = buf.WriteString("\n")
 	for _, elem := range node.LexicalBindings {
-		buf.WriteString(PrefixToString(elem.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(elem.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *LexicalBinding) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("LexicalBinding (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("LexicalBinding (")
+	_, _ = buf.WriteString("\n")
 	if node.BindingIdentifier != nil {
-		buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
 	}
 	if node.BindingPattern != nil {
-		buf.WriteString(PrefixToString(node.BindingPattern.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingPattern.String(), "  "))
 	}
 	if node.Initializer != nil {
-		buf.WriteString(PrefixToString(node.Initializer.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Initializer.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }

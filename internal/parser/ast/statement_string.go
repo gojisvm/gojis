@@ -8,440 +8,440 @@ import (
 
 func (node *StatementList) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("StatementList (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("StatementList (")
+	_, _ = buf.WriteString("\n")
 	for _, elem := range node.StatementListItems {
-		buf.WriteString(PrefixToString(elem.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(elem.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *StatementListItem) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("StatementListItem (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("StatementListItem (")
+	_, _ = buf.WriteString("\n")
 	if node.Statement != nil {
-		buf.WriteString(PrefixToString(node.Statement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Statement.String(), "  "))
 	}
 	if node.Declaration != nil {
-		buf.WriteString(PrefixToString(node.Declaration.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Declaration.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *Statement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("Statement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("Statement (")
+	_, _ = buf.WriteString("\n")
 	if node.BlockStatement != nil {
-		buf.WriteString(PrefixToString(node.BlockStatement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BlockStatement.String(), "  "))
 	}
 	if node.VariableStatement != nil {
-		buf.WriteString(PrefixToString(node.VariableStatement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.VariableStatement.String(), "  "))
 	}
 	if node.EmptyStatement != nil {
-		buf.WriteString(PrefixToString(node.EmptyStatement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.EmptyStatement.String(), "  "))
 	}
 	if node.ExpressionStatement != nil {
-		buf.WriteString(PrefixToString(node.ExpressionStatement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.ExpressionStatement.String(), "  "))
 	}
 	if node.IfStatement != nil {
-		buf.WriteString(PrefixToString(node.IfStatement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.IfStatement.String(), "  "))
 	}
 	if node.BreakableStatement != nil {
-		buf.WriteString(PrefixToString(node.BreakableStatement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BreakableStatement.String(), "  "))
 	}
 	if node.ContinueStatement != nil {
-		buf.WriteString(PrefixToString(node.ContinueStatement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.ContinueStatement.String(), "  "))
 	}
 	if node.BreakStatement != nil {
-		buf.WriteString(PrefixToString(node.BreakStatement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BreakStatement.String(), "  "))
 	}
 	if node.ReturnStatement != nil {
-		buf.WriteString(PrefixToString(node.ReturnStatement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.ReturnStatement.String(), "  "))
 	}
 	if node.WithStatement != nil {
-		buf.WriteString(PrefixToString(node.WithStatement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.WithStatement.String(), "  "))
 	}
 	if node.LabelledStatement != nil {
-		buf.WriteString(PrefixToString(node.LabelledStatement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.LabelledStatement.String(), "  "))
 	}
 	if node.ThrowStatement != nil {
-		buf.WriteString(PrefixToString(node.ThrowStatement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.ThrowStatement.String(), "  "))
 	}
 	if node.TryStatement != nil {
-		buf.WriteString(PrefixToString(node.TryStatement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.TryStatement.String(), "  "))
 	}
 	if node.DebuggerStatement != nil {
-		buf.WriteString(PrefixToString(node.DebuggerStatement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.DebuggerStatement.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *BlockStatement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("BlockStatement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("BlockStatement (")
+	_, _ = buf.WriteString("\n")
 	if node.Block != nil {
-		buf.WriteString(PrefixToString(node.Block.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Block.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *Block) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("Block (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("Block (")
+	_, _ = buf.WriteString("\n")
 	if node.StatementList != nil {
-		buf.WriteString(PrefixToString(node.StatementList.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.StatementList.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *VariableStatement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("VariableStatement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("VariableStatement (")
+	_, _ = buf.WriteString("\n")
 	if node.VariableDeclarationList != nil {
-		buf.WriteString(PrefixToString(node.VariableDeclarationList.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.VariableDeclarationList.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *EmptyStatement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("EmptyStatement (")
-	buf.WriteString("\n")
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("EmptyStatement (")
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *ExpressionStatement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("ExpressionStatement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("ExpressionStatement (")
+	_, _ = buf.WriteString("\n")
 	if node.Expression != nil {
-		buf.WriteString(PrefixToString(node.Expression.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Expression.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *IfStatement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("IfStatement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("IfStatement (")
+	_, _ = buf.WriteString("\n")
 	if node.Expression != nil {
-		buf.WriteString(PrefixToString(node.Expression.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Expression.String(), "  "))
 	}
 	if node.Statement != nil {
-		buf.WriteString(PrefixToString(node.Statement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Statement.String(), "  "))
 	}
 	if node.ElseStatement != nil {
-		buf.WriteString(PrefixToString(node.ElseStatement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.ElseStatement.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *BreakableStatement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("BreakableStatement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("BreakableStatement (")
+	_, _ = buf.WriteString("\n")
 	if node.IterationStatement != nil {
-		buf.WriteString(PrefixToString(node.IterationStatement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.IterationStatement.String(), "  "))
 	}
 	if node.SwitchStatement != nil {
-		buf.WriteString(PrefixToString(node.SwitchStatement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.SwitchStatement.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *IterationStatement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("IterationStatement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("IterationStatement (")
+	_, _ = buf.WriteString("\n")
 	if node.Statement != nil {
-		buf.WriteString(PrefixToString(node.Statement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Statement.String(), "  "))
 	}
 	if node.Expression1 != nil {
-		buf.WriteString(PrefixToString(node.Expression1.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Expression1.String(), "  "))
 	}
 	if node.Expression2 != nil {
-		buf.WriteString(PrefixToString(node.Expression2.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Expression2.String(), "  "))
 	}
 	if node.Expression3 != nil {
-		buf.WriteString(PrefixToString(node.Expression3.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Expression3.String(), "  "))
 	}
 	if node.VariableDeclarationList != nil {
-		buf.WriteString(PrefixToString(node.VariableDeclarationList.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.VariableDeclarationList.String(), "  "))
 	}
 	if node.LexicalDeclaration != nil {
-		buf.WriteString(PrefixToString(node.LexicalDeclaration.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.LexicalDeclaration.String(), "  "))
 	}
 	if node.LeftHandSideExpression != nil {
-		buf.WriteString(PrefixToString(node.LeftHandSideExpression.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.LeftHandSideExpression.String(), "  "))
 	}
 	if node.ForBinding != nil {
-		buf.WriteString(PrefixToString(node.ForBinding.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.ForBinding.String(), "  "))
 	}
 	if node.ForDeclaration != nil {
-		buf.WriteString(PrefixToString(node.ForDeclaration.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.ForDeclaration.String(), "  "))
 	}
 	if node.AssignmentExpression != nil {
-		buf.WriteString(PrefixToString(node.AssignmentExpression.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.AssignmentExpression.String(), "  "))
 	}
-	buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Do", node.Do), "  "))
-	buf.WriteString("\n")
-	buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "While", node.While), "  "))
-	buf.WriteString("\n")
-	buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "For", node.For), "  "))
-	buf.WriteString("\n")
-	buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "In", node.In), "  "))
-	buf.WriteString("\n")
-	buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Var", node.Var), "  "))
-	buf.WriteString("\n")
-	buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Of", node.Of), "  "))
-	buf.WriteString("\n")
-	buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Await", node.Await), "  "))
-	buf.WriteString("\n")
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Do", node.Do), "  "))
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "While", node.While), "  "))
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "For", node.For), "  "))
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "In", node.In), "  "))
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Var", node.Var), "  "))
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Of", node.Of), "  "))
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Await", node.Await), "  "))
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *SwitchStatement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("SwitchStatement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("SwitchStatement (")
+	_, _ = buf.WriteString("\n")
 	if node.Expression != nil {
-		buf.WriteString(PrefixToString(node.Expression.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Expression.String(), "  "))
 	}
 	if node.CaseBlock != nil {
-		buf.WriteString(PrefixToString(node.CaseBlock.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.CaseBlock.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *CaseBlock) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("CaseBlock (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("CaseBlock (")
+	_, _ = buf.WriteString("\n")
 	for _, elem := range node.CaseClauses {
-		buf.WriteString(PrefixToString(elem.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(elem.String(), "  "))
 	}
 	if node.DefaultClause != nil {
-		buf.WriteString(PrefixToString(node.DefaultClause.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.DefaultClause.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *CaseClause) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("CaseClause (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("CaseClause (")
+	_, _ = buf.WriteString("\n")
 	if node.Expression != nil {
-		buf.WriteString(PrefixToString(node.Expression.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Expression.String(), "  "))
 	}
 	if node.StatementList != nil {
-		buf.WriteString(PrefixToString(node.StatementList.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.StatementList.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *DefaultClause) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("DefaultClause (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("DefaultClause (")
+	_, _ = buf.WriteString("\n")
 	if node.StatementList != nil {
-		buf.WriteString(PrefixToString(node.StatementList.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.StatementList.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *ContinueStatement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("ContinueStatement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("ContinueStatement (")
+	_, _ = buf.WriteString("\n")
 	if node.LabelIdentifier != nil {
-		buf.WriteString(PrefixToString(node.LabelIdentifier.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.LabelIdentifier.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *BreakStatement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("BreakStatement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("BreakStatement (")
+	_, _ = buf.WriteString("\n")
 	if node.LabelIdentifier != nil {
-		buf.WriteString(PrefixToString(node.LabelIdentifier.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.LabelIdentifier.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *ReturnStatement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("ReturnStatement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("ReturnStatement (")
+	_, _ = buf.WriteString("\n")
 	if node.Expression != nil {
-		buf.WriteString(PrefixToString(node.Expression.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Expression.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *WithStatement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("WithStatement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("WithStatement (")
+	_, _ = buf.WriteString("\n")
 	if node.Expression != nil {
-		buf.WriteString(PrefixToString(node.Expression.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Expression.String(), "  "))
 	}
 	if node.Statement != nil {
-		buf.WriteString(PrefixToString(node.Statement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Statement.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *LabelledStatement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("LabelledStatement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("LabelledStatement (")
+	_, _ = buf.WriteString("\n")
 	if node.LabelIdentifier != nil {
-		buf.WriteString(PrefixToString(node.LabelIdentifier.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.LabelIdentifier.String(), "  "))
 	}
 	if node.LabelledItem != nil {
-		buf.WriteString(PrefixToString(node.LabelledItem.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.LabelledItem.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *LabelledItem) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("LabelledItem (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("LabelledItem (")
+	_, _ = buf.WriteString("\n")
 	if node.Statement != nil {
-		buf.WriteString(PrefixToString(node.Statement.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Statement.String(), "  "))
 	}
 	if node.FunctionDeclaration != nil {
-		buf.WriteString(PrefixToString(node.FunctionDeclaration.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.FunctionDeclaration.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *ThrowStatement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("ThrowStatement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("ThrowStatement (")
+	_, _ = buf.WriteString("\n")
 	if node.Expression != nil {
-		buf.WriteString(PrefixToString(node.Expression.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Expression.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *TryStatement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("TryStatement (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("TryStatement (")
+	_, _ = buf.WriteString("\n")
 	if node.Block != nil {
-		buf.WriteString(PrefixToString(node.Block.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Block.String(), "  "))
 	}
 	if node.Catch != nil {
-		buf.WriteString(PrefixToString(node.Catch.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Catch.String(), "  "))
 	}
 	if node.Finally != nil {
-		buf.WriteString(PrefixToString(node.Finally.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Finally.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *Catch) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("Catch (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("Catch (")
+	_, _ = buf.WriteString("\n")
 	if node.CatchParameter != nil {
-		buf.WriteString(PrefixToString(node.CatchParameter.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.CatchParameter.String(), "  "))
 	}
 	if node.Block != nil {
-		buf.WriteString(PrefixToString(node.Block.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Block.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *CatchParameter) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("CatchParameter (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("CatchParameter (")
+	_, _ = buf.WriteString("\n")
 	if node.BindingIdentifier != nil {
-		buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
 	}
 	if node.BindingPattern != nil {
-		buf.WriteString(PrefixToString(node.BindingPattern.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingPattern.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *Finally) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("Finally (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("Finally (")
+	_, _ = buf.WriteString("\n")
 	if node.Block != nil {
-		buf.WriteString(PrefixToString(node.Block.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Block.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *DebuggerStatement) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("DebuggerStatement (")
-	buf.WriteString("\n")
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("DebuggerStatement (")
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }

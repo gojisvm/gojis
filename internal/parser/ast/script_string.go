@@ -5,24 +5,24 @@ import "bytes"
 
 func (node *Script) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("Script (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("Script (")
+	_, _ = buf.WriteString("\n")
 	if node.ScriptBody != nil {
-		buf.WriteString(PrefixToString(node.ScriptBody.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.ScriptBody.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *ScriptBody) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("ScriptBody (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("ScriptBody (")
+	_, _ = buf.WriteString("\n")
 	if node.StatementList != nil {
-		buf.WriteString(PrefixToString(node.StatementList.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.StatementList.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }

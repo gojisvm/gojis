@@ -8,104 +8,104 @@ import (
 
 func (node *Initializer) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("Initializer (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("Initializer (")
+	_, _ = buf.WriteString("\n")
 	if node.AssignmentExpression != nil {
-		buf.WriteString(PrefixToString(node.AssignmentExpression.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.AssignmentExpression.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *Elision) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("Elision (")
-	buf.WriteString("\n")
-	buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Commas", node.Commas), "  "))
-	buf.WriteString("\n")
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("Elision (")
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Commas", node.Commas), "  "))
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *SuperProperty) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("SuperProperty (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("SuperProperty (")
+	_, _ = buf.WriteString("\n")
 	if node.Expression != nil {
-		buf.WriteString(PrefixToString(node.Expression.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Expression.String(), "  "))
 	}
-	buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "IdentifierName", node.IdentifierName), "  "))
-	buf.WriteString("\n")
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "IdentifierName", node.IdentifierName), "  "))
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *MetaProperty) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("MetaProperty (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("MetaProperty (")
+	_, _ = buf.WriteString("\n")
 	if node.NewTarget != nil {
-		buf.WriteString(PrefixToString(node.NewTarget.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.NewTarget.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *NewTarget) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("NewTarget (")
-	buf.WriteString("\n")
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("NewTarget (")
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *Arguments) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("Arguments (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("Arguments (")
+	_, _ = buf.WriteString("\n")
 	if node.ArgumentList != nil {
-		buf.WriteString(PrefixToString(node.ArgumentList.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.ArgumentList.String(), "  "))
 	}
-	buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Comma", node.Comma), "  "))
-	buf.WriteString("\n")
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Comma", node.Comma), "  "))
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *ArgumentList) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("ArgumentList (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("ArgumentList (")
+	_, _ = buf.WriteString("\n")
 	if node.AssignmentExpression != nil {
-		buf.WriteString(PrefixToString(node.AssignmentExpression.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.AssignmentExpression.String(), "  "))
 	}
-	buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Ellipsis", node.Ellipsis), "  "))
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Ellipsis", node.Ellipsis), "  "))
+	_, _ = buf.WriteString("\n")
 	if node.ArgumentList != nil {
-		buf.WriteString(PrefixToString(node.ArgumentList.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.ArgumentList.String(), "  "))
 	}
-	buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Comma", node.Comma), "  "))
-	buf.WriteString("\n")
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Comma", node.Comma), "  "))
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *LetOrConst) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("LetOrConst (")
-	buf.WriteString("\n")
-	buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Let", node.Let), "  "))
-	buf.WriteString("\n")
-	buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Const", node.Const), "  "))
-	buf.WriteString("\n")
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("LetOrConst (")
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Let", node.Let), "  "))
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(PrefixToString(fmt.Sprintf("%v: %v", "Const", node.Const), "  "))
+	_, _ = buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }

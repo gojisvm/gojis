@@ -5,186 +5,186 @@ import "bytes"
 
 func (node *Declaration) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("Declaration (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("Declaration (")
+	_, _ = buf.WriteString("\n")
 	if node.HoistableDeclaration != nil {
-		buf.WriteString(PrefixToString(node.HoistableDeclaration.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.HoistableDeclaration.String(), "  "))
 	}
 	if node.ClassDeclaration != nil {
-		buf.WriteString(PrefixToString(node.ClassDeclaration.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.ClassDeclaration.String(), "  "))
 	}
 	if node.LexicalDeclaration != nil {
-		buf.WriteString(PrefixToString(node.LexicalDeclaration.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.LexicalDeclaration.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *HoistableDeclaration) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("HoistableDeclaration (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("HoistableDeclaration (")
+	_, _ = buf.WriteString("\n")
 	if node.FunctionDeclaration != nil {
-		buf.WriteString(PrefixToString(node.FunctionDeclaration.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.FunctionDeclaration.String(), "  "))
 	}
 	if node.GeneratorDeclaration != nil {
-		buf.WriteString(PrefixToString(node.GeneratorDeclaration.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.GeneratorDeclaration.String(), "  "))
 	}
 	if node.AsyncFunctionDeclaration != nil {
-		buf.WriteString(PrefixToString(node.AsyncFunctionDeclaration.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.AsyncFunctionDeclaration.String(), "  "))
 	}
 	if node.AsyncGeneratorDeclaration != nil {
-		buf.WriteString(PrefixToString(node.AsyncGeneratorDeclaration.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.AsyncGeneratorDeclaration.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *FunctionDeclaration) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("FunctionDeclaration (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("FunctionDeclaration (")
+	_, _ = buf.WriteString("\n")
 	if node.BindingIdentifier != nil {
-		buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
 	}
 	if node.FormalParameters != nil {
-		buf.WriteString(PrefixToString(node.FormalParameters.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.FormalParameters.String(), "  "))
 	}
 	if node.FunctionBody != nil {
-		buf.WriteString(PrefixToString(node.FunctionBody.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.FunctionBody.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *GeneratorDeclaration) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("GeneratorDeclaration (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("GeneratorDeclaration (")
+	_, _ = buf.WriteString("\n")
 	if node.BindingIdentifier != nil {
-		buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
 	}
 	if node.FormalParameters != nil {
-		buf.WriteString(PrefixToString(node.FormalParameters.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.FormalParameters.String(), "  "))
 	}
 	if node.GeneratorBody != nil {
-		buf.WriteString(PrefixToString(node.GeneratorBody.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.GeneratorBody.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *VariableDeclarationList) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("VariableDeclarationList (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("VariableDeclarationList (")
+	_, _ = buf.WriteString("\n")
 	for _, elem := range node.VariableDeclarations {
-		buf.WriteString(PrefixToString(elem.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(elem.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *VariableDeclaration) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("VariableDeclaration (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("VariableDeclaration (")
+	_, _ = buf.WriteString("\n")
 	if node.BindingIdentifier != nil {
-		buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
 	}
 	if node.BindingPattern != nil {
-		buf.WriteString(PrefixToString(node.BindingPattern.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingPattern.String(), "  "))
 	}
 	if node.Initializer != nil {
-		buf.WriteString(PrefixToString(node.Initializer.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.Initializer.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *ForDeclaration) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("ForDeclaration (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("ForDeclaration (")
+	_, _ = buf.WriteString("\n")
 	if node.LetOrConst != nil {
-		buf.WriteString(PrefixToString(node.LetOrConst.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.LetOrConst.String(), "  "))
 	}
 	if node.ForBinding != nil {
-		buf.WriteString(PrefixToString(node.ForBinding.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.ForBinding.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *LexicalDeclaration) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("LexicalDeclaration (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("LexicalDeclaration (")
+	_, _ = buf.WriteString("\n")
 	if node.LetOrConst != nil {
-		buf.WriteString(PrefixToString(node.LetOrConst.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.LetOrConst.String(), "  "))
 	}
 	if node.BindingList != nil {
-		buf.WriteString(PrefixToString(node.BindingList.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingList.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *ClassDeclaration) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("ClassDeclaration (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("ClassDeclaration (")
+	_, _ = buf.WriteString("\n")
 	if node.BindingIdentifier != nil {
-		buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
 	}
 	if node.ClassTail != nil {
-		buf.WriteString(PrefixToString(node.ClassTail.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.ClassTail.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *AsyncFunctionDeclaration) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("AsyncFunctionDeclaration (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("AsyncFunctionDeclaration (")
+	_, _ = buf.WriteString("\n")
 	if node.BindingIdentifier != nil {
-		buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
 	}
 	if node.AsyncFunctionBody != nil {
-		buf.WriteString(PrefixToString(node.AsyncFunctionBody.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.AsyncFunctionBody.String(), "  "))
 	}
 	if node.FormalParameters != nil {
-		buf.WriteString(PrefixToString(node.FormalParameters.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.FormalParameters.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }
 
 func (node *AsyncGeneratorDeclaration) String() string {
 	var buf bytes.Buffer
-	buf.WriteString("AsyncGeneratorDeclaration (")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("AsyncGeneratorDeclaration (")
+	_, _ = buf.WriteString("\n")
 	if node.BindingIdentifier != nil {
-		buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.BindingIdentifier.String(), "  "))
 	}
 	if node.AsyncGeneratorBody != nil {
-		buf.WriteString(PrefixToString(node.AsyncGeneratorBody.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.AsyncGeneratorBody.String(), "  "))
 	}
 	if node.FormalParameters != nil {
-		buf.WriteString(PrefixToString(node.FormalParameters.String(), "  "))
+		_, _ = buf.WriteString(PrefixToString(node.FormalParameters.String(), "  "))
 	}
-	buf.WriteString(")")
-	buf.WriteString("\n")
+	_, _ = buf.WriteString(")")
+	_, _ = buf.WriteString("\n")
 	return buf.String()
 }

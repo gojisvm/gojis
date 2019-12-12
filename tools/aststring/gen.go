@@ -31,8 +31,8 @@ func generate(fpath string, structs []*StructDecl) {
 		var calls []Code
 
 		calls = append(calls, Var().Id("buf").Qual("bytes", "Buffer"))
-		calls = append(calls, Id("buf").Dot("WriteString").Call(Lit(structDecl.name+" "+parOpen)))
-		calls = append(calls, Id("buf").Dot("WriteString").Call(Lit("\n")))
+		calls = append(calls, List(Id("_"), Id("_")).Op("=").Id("buf").Dot("WriteString").Call(Lit(structDecl.name+" "+parOpen)))
+		calls = append(calls, List(Id("_"), Id("_")).Op("=").Id("buf").Dot("WriteString").Call(Lit("\n")))
 
 		for _, field := range structDecl.structType.Fields.List {
 			switch field.Type.(type) {
@@ -46,7 +46,7 @@ func generate(fpath string, structs []*StructDecl) {
 								Op("!=").
 								Nil(),
 						).Block(
-							Id("buf").
+							List(Id("_"), Id("_")).Op("=").Id("buf").
 								Dot("WriteString").
 								Call(
 									Qual(filename, "PrefixToString").
@@ -65,7 +65,7 @@ func generate(fpath string, structs []*StructDecl) {
 				for _, fieldName := range field.Names {
 					calls = append(
 						calls,
-						Id("buf").
+						List(Id("_"), Id("_")).Op("=").Id("buf").
 							Dot("WriteString").
 							Call(
 								Qual(filename, "PrefixToString").
@@ -81,7 +81,7 @@ func generate(fpath string, structs []*StructDecl) {
 									),
 							),
 					)
-					calls = append(calls, Id("buf").Dot("WriteString").Call(Lit("\n")))
+					calls = append(calls, List(Id("_"), Id("_")).Op("=").Id("buf").Dot("WriteString").Call(Lit("\n")))
 				}
 			case *ast.ArrayType:
 				for _, fieldName := range field.Names {
@@ -89,7 +89,7 @@ func generate(fpath string, structs []*StructDecl) {
 						calls,
 						For(List(Id("_"), Id("elem")).Op(":=").Range().Id("node").Dot(fieldName.Name)).
 							Block(
-								Id("buf").
+								List(Id("_"), Id("_")).Op("=").Id("buf").
 									Dot("WriteString").
 									Call(
 										Qual(filename, "PrefixToString").
@@ -106,8 +106,8 @@ func generate(fpath string, structs []*StructDecl) {
 			}
 		}
 
-		calls = append(calls, Id("buf").Dot("WriteString").Call(Lit(parClose)))
-		calls = append(calls, Id("buf").Dot("WriteString").Call(Lit("\n")))
+		calls = append(calls, List(Id("_"), Id("_")).Op("=").Id("buf").Dot("WriteString").Call(Lit(parClose)))
+		calls = append(calls, List(Id("_"), Id("_")).Op("=").Id("buf").Dot("WriteString").Call(Lit("\n")))
 		calls = append(calls, Return(Id("buf").Dot("String").Call()))
 
 		f.Func().
