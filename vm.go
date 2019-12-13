@@ -1,7 +1,6 @@
 package gojis
 
 import (
-	"github.com/gojisvm/gojis/config"
 	"github.com/gojisvm/gojis/internal/runtime"
 )
 
@@ -26,18 +25,36 @@ const (
 type VM struct {
 	Object // the global object
 
-	cfg     *config.Cfg
 	runtime *runtime.Runtime
+
+	// configuration
+
+	// debug indicates that the VM should output diagnostic messages
+	debug bool
 }
+
+type Option func(*VM)
 
 // NewVM creates a new, initialized VM that is ready to use.
-func NewVM(cfg *config.Cfg) *VM {
-	return &VM{
-		Object: nil,
-
-		cfg: cfg,
+func NewVM(opts ...Option) *VM {
+	vm := new(VM)
+	for _, opt := range opts {
+		opt(vm)
 	}
+
+	return vm
 }
+
+// Functional options
+var Opts = optStruct{}
+
+type optStruct struct{}
+
+func (optStruct) Debug(vm *VM) {
+	vm.debug = true
+}
+
+// ------------------
 
 // Eval delegates to the builtin eval function of this VM's global object.
 func (vm *VM) Eval(script string) (Object, error) {

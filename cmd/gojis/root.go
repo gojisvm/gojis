@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/gojisvm/gojis"
-	"github.com/gojisvm/gojis/config"
 	"github.com/pkg/profile"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -40,9 +39,13 @@ var (
 				defer p.Stop()
 			}
 
-			vm := gojis.NewVM(&config.Cfg{
-				Debug: viper.GetBool(debug),
-			})
+			// create and populate vm options
+			opts := []gojis.Option{}
+			if viper.GetBool(debug) {
+				opts = append(opts, gojis.Opts.Debug)
+			}
+
+			vm := gojis.NewVM(opts...)
 			_ = vm
 		},
 	}
