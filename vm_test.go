@@ -5,16 +5,13 @@ import (
 	"testing"
 
 	"github.com/gojisvm/gojis"
-	"github.com/gojisvm/gojis/config"
 	"github.com/gojisvm/gojis/tools/golden"
 )
 
 func TestHelloWorld(t *testing.T) {
 	t.SkipNow() // skipped until API is implemented
 
-	vm := gojis.NewVM(&config.Cfg{
-		Debug: false,
-	})
+	vm := gojis.NewVM()
 
 	var buf bytes.Buffer
 	vm.SetConsole(gojis.NewConsole(&buf))
@@ -27,9 +24,7 @@ func TestHelloWorld(t *testing.T) {
 func TestInlineObject(t *testing.T) {
 	t.SkipNow()
 
-	vm := gojis.NewVM(&config.Cfg{
-		Debug: false,
-	})
+	vm := gojis.NewVM()
 
 	var buf bytes.Buffer
 	vm.SetConsole(gojis.NewConsole(&buf))
