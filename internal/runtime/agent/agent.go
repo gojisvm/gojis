@@ -2,13 +2,16 @@ package agent
 
 import (
 	"fmt"
+	"math/rand"
+	"sync"
+	"time"
 
 	"github.com/gojisvm/gojis/internal/runtime/agent/job"
 	"github.com/gojisvm/gojis/internal/runtime/binding"
 	"github.com/gojisvm/gojis/internal/runtime/errors"
 	"github.com/gojisvm/gojis/internal/runtime/lang"
 	"github.com/gojisvm/gojis/internal/runtime/realm"
-	"github.com/google/uuid"
+	"github.com/oklog/ulid"
 )
 
 // QueueKind represents the description of 8.4, Table 25.
@@ -25,11 +28,19 @@ const (
 
 // ID is a type alias for uuid.UUID, in order to be independent of
 // uuid.UUID as a unique identifier.
-type ID uuid.UUID
+type ID ulid.ULID
+
+var (
+	entropyLock sync.Mutex
+	entropy     = ulid.Monotonic(rand.New(rand.NewSource(time.Now().Unix())), 0)
+)
 
 // NewID returns a new ID that is guaranteed to be globally unique.
 func NewID() ID {
-	return ID(uuid.New())
+	entropyLock.Lock()
+	defer entropyLock.Unlock()
+
+	return ID(ulid.MustNew(ulid.Timestamp(time.Now()), entropy))
 }
 
 // Agent comprises a set of ECMAScript execution contexts, an execution context
