@@ -13,5 +13,5 @@ require (
 	github.com/tinylib/msgp v1.1.0 // indirect
 	golang.org/x/text v0.3.2
 	gopkg.in/yaml.v2 v2.2.7
-	zombiezen.com/go/capnproto2 v2.17.0+incompatible
+	zombiezen.com/go/capnproto2 v2.18.0+incompatible
 )
