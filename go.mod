@@ -12,6 +12,6 @@ require (
 	github.com/stretchr/testify v1.4.0
 	github.com/tinylib/msgp v1.1.0 // indirect
 	golang.org/x/text v0.3.2
-	gopkg.in/yaml.v2 v2.2.8
+	gopkg.in/yaml.v2 v2.3.0
 	zombiezen.com/go/capnproto2 v2.18.0+incompatible
 )
