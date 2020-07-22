@@ -46,7 +46,7 @@ func NewVM(opts ...Option) *VM {
 	return vm
 }
 
-// Functional options
+// Opts represents functional options.
 var Opts = optStruct{}
 
 type optStruct struct{}
