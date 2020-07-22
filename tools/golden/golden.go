@@ -51,7 +51,7 @@ func goldenUpdate(t *testing.T, goldenName string, actual []byte) {
 	err := os.MkdirAll(folder, 0750)
 	require.NoError(err, "Unable to create testdata directory %v: %v", folder, err)
 
-	err = ioutil.WriteFile(goldenName, actual, 0666)
+	err = ioutil.WriteFile(goldenName, actual, 0600)
 	require.NoError(err, "Unable to update golden test file %v: %v", goldenName, err)
 }
 

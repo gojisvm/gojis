@@ -123,7 +123,7 @@ func generate(fpath string, structs []*structDecl) {
 	}
 
 	outputFile := strings.TrimSuffix(fpath, path.Ext(fpath)) + "_string.go"
-	err := ioutil.WriteFile(outputFile, []byte(f.GoString()), 0666)
+	err := ioutil.WriteFile(outputFile, []byte(f.GoString()), 0600)
 	if err != nil {
 		log.Fatalf("write file: %v", err)
 	}
