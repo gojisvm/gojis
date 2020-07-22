@@ -33,6 +33,7 @@ type VM struct {
 	debug bool
 }
 
+// Option represents configuration for a VM instance.
 type Option func(*VM)
 
 // NewVM creates a new, initialized VM that is ready to use.
