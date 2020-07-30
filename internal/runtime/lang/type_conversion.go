@@ -326,5 +326,5 @@ func ToIndex(arg Value) Number {
 }
 
 func unhandledType(arg Value) error {
-	return fmt.Errorf("Unhandled type in type conversion: '%v'", arg.Type())
+	return fmt.Errorf("unhandled type in type conversion: '%v'", arg.Type())
 }

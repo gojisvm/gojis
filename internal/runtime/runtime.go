@@ -15,5 +15,9 @@ func New(sourceText string) *Runtime {
 
 // Evaluate evaluates the runtime's AST.
 func (r *Runtime) Evaluate() error {
+	i := newIsolate()
+	_ = i.parseScript
+	_ = i.scriptEvaluation
+	_ = i.globalDeclarationInstantiation
 	panic("TODO")
 }

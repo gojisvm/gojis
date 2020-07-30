@@ -186,6 +186,7 @@ func parseArrayLiteral(i *isolate, p param) *ast.ArrayLiteral {
 func parseElementList(i *isolate, p param) *ast.ElementList {
 	chck := i.checkpoint()
 
+	//lint:ignore SA5007 #85
 	if elementList := parseElementList(i, p.only(pYield|pAwait)); elementList != nil { // #85
 		if i.acceptOneOfTypes(token.Comma) {
 			elision := parseElision(i, 0)

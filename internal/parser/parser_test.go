@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/gojisvm/gojis/tools/golden"
+	"github.com/gojisvm/gojis/internal/tool/golden"
 	"github.com/stretchr/testify/require"
 )
 

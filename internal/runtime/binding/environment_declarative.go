@@ -41,7 +41,7 @@ func (e *DeclarativeEnvironment) deleteBinding(n lang.String) {
 func (e *DeclarativeEnvironment) mustGetBinding(n lang.String) *Binding {
 	val, ok := e.getBinding(n)
 	if !ok {
-		panic(fmt.Errorf("Missing binding for name '%v'", n.Value()))
+		panic(fmt.Errorf("missing binding for name '%v'", n.Value()))
 	}
 
 	return val

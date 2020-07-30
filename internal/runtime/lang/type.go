@@ -44,7 +44,7 @@ func (t Type) String() string {
 // the given ECMALanguage data types.
 func EnsureTypeOneOf(arg Value, ts ...Type) {
 	if !TypeIsOneOf(arg, ts...) {
-		panic(fmt.Errorf("Value's type must be one of %v, but was %v", ts, arg.Type()))
+		panic(fmt.Errorf("value's type must be one of %v, but was %v", ts, arg.Type()))
 	}
 }
 

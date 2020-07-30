@@ -1,9 +1,5 @@
 package gojis
 
-import (
-	"github.com/gojisvm/gojis/internal/runtime"
-)
-
 // Type represents the ECMAScript language types.
 type Type uint8
 
@@ -24,8 +20,6 @@ const (
 // ECMAScript code.
 type VM struct {
 	Object // the global object
-
-	runtime *runtime.Runtime
 
 	// configuration
 

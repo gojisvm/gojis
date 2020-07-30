@@ -1,26 +1,2 @@
 // default codeowner
-*                       @TimSatke
-
-// repository details
-/.github/               @TimSatke
-LICENSE.md              @TimSatke
-
-// Documentation (not GitHub Pages)
-README.md               @TimSatke
-CONTRIBUTING.md         @TimSatke
-
-// owner for Go source files
-*.go                    @TimSatke
-go.mod                  @TimSatke
-go.sum                  @TimSatke
-
-// DevOps
-.hound.yml              @TimSatke
-.travis.yml             @TimSatke
-/build/                 @TimSatke
-
-/cmd/                   @TimSatke
-/pkg/vm/                @TimSatke
-/internal/parser/       @TimSatke
-/internal/runtime/      @TimSatke
-/test/                  @TimSatke
+* @TimSatke

@@ -172,7 +172,7 @@ func SetIntegrityLevel(o *Object, level string) (Boolean, errors.Error) {
 	case IntegrityLevelFrozen:
 		return setIntegrityLevelFrozen(o, keys)
 	default:
-		panic(fmt.Errorf("Unknown integrity level '%v'", level))
+		panic(fmt.Errorf("unknown integrity level '%v'", level))
 	}
 }
 
@@ -249,8 +249,9 @@ func CreateListFromArrayLike(o *Object, elementTypes []Type) {
 // Invoke is used to call a method property of an ECMAScript language value.
 // Invoke is specified in 7.3.18.
 func Invoke(v Value, p StringOrSymbol, args ...Value) (Value, errors.Error) {
-	if args == nil {
+	if len(args) == 0 {
 		args = []Value{}
+		_ = args
 	}
 
 	f, err := GetV(v, p)

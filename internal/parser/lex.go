@@ -374,6 +374,7 @@ func lexStringLiteral(i *isolate) bool {
 
 	for n := uint(1); n > 0; n = i.acceptMultipleMatcher(partial) {
 		if i.acceptMatcher(backslash) {
+			_ = lexLineTerminatorSequence // remove warning
 			if !(lexEscapeSequence(i) || lexLineTerminatorSequence(i)) {
 				return false
 			}

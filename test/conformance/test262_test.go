@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gojisvm/gojis/tools/test262"
+	"github.com/gojisvm/gojis/internal/tool/test262"
 	"github.com/stretchr/testify/require"
 )
 

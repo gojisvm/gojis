@@ -117,12 +117,14 @@ func (a *Agent) GetActiveScriptOrModule() lang.InternalValue {
 func (a *Agent) ResolveBinding(name lang.String, env binding.Environment) *binding.Reference {
 	if env == nil {
 		env = a.RunningExecutionContext().LexicalEnvironment
+		_ = env
 	}
 
 	strict := false // FIXME: 8.3.2, Step 3
+	_ = strict
 	panic("#38: 8.3.2, Step 3")
 
-	return binding.GetIdentifierReference(env, name, strict)
+	// return binding.GetIdentifierReference(env, name, strict)
 }
 
 // GetThisEnvironment returns the current environment that currently supplies

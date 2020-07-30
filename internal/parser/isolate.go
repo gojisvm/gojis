@@ -1,8 +1,6 @@
 package parser
 
 import (
-	"fmt"
-
 	"github.com/gojisvm/gojis/internal/parser/ast"
 	"github.com/gojisvm/gojis/internal/parser/token"
 )
@@ -19,10 +17,6 @@ func newIsolate(sourceName string, input []byte) *isolate {
 		sourceName: sourceName,
 		input:      []rune(string(input)),
 	}
-}
-
-func (i *isolate) fatalf(msg string, args ...interface{}) {
-	i.fatal(fmt.Sprintf(msg, args...))
 }
 
 func (i *isolate) fatal(msg string) {

@@ -1,3 +1,5 @@
+//lint:file-ignore U1000 "work in progress"
+
 package parser
 
 import (

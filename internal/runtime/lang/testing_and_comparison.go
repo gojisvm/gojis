@@ -24,7 +24,7 @@ func RequireObjectCoercible(arg Value) (Value, errors.Error) {
 		return arg, nil
 	}
 
-	panic(fmt.Errorf("Unhandled argument type: %v", arg.Type()))
+	panic(fmt.Errorf("unhandled argument type: %v", arg.Type()))
 }
 
 // IsArray is used to determine whether the given value is an array.
