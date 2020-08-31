@@ -3,7 +3,7 @@ module github.com/gojisvm/gojis
 go 1.14
 
 require (
-	github.com/dave/jennifer v1.4.0
+	github.com/dave/jennifer v1.4.1
 	github.com/oklog/ulid v1.3.1
 	github.com/philhofer/fwd v1.0.0 // indirect
 	github.com/pkg/profile v1.5.0
