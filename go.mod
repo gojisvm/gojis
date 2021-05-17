@@ -14,5 +14,5 @@ require (
 	golang.org/x/text v0.3.3
 	golang.org/x/tools v0.0.0-20191112195655-aa38f8e97acc
 	gopkg.in/yaml.v2 v2.3.0
-	zombiezen.com/go/capnproto2 v2.18.0+incompatible
+	zombiezen.com/go/capnproto2 v2.18.2+incompatible
 )

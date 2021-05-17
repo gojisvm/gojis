@@ -336,3 +336,4 @@ honnef.co/go/tools v0.0.1-2019.2.3/go.mod h1:a3bituU0lyd329TUQxRnasdCoJDkEUEAqEt
 rsc.io/binaryregexp v0.2.0/go.mod h1:qTv7/COck+e2FymRvadv62gMdZztPaShugOCi3I+8D8=
 zombiezen.com/go/capnproto2 v2.18.0+incompatible h1:mwfXZniffG5mXokQGHUJWGnqIBggoPfT/CEwon9Yess=
 zombiezen.com/go/capnproto2 v2.18.0+incompatible/go.mod h1:XO5Pr2SbXgqZwn0m0Ru54QBqpOf4K5AYBO+8LAOBQEQ=
+zombiezen.com/go/capnproto2 v2.18.2+incompatible/go.mod h1:XO5Pr2SbXgqZwn0m0Ru54QBqpOf4K5AYBO+8LAOBQEQ=
